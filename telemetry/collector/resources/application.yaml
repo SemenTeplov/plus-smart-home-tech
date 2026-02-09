@@ -1,0 +1,5 @@
+kafka:
+  bootstrap-servers: localhost:9092
+  topics:
+    sensor: telemetry.sensors.v1
+    hub: telemetry.hubs.v1
