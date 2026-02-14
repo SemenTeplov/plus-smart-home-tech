@@ -103,7 +103,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>4.0.0</version>
                 <configuration>
-                    <mainClass>src.java.main.Main</mainClass>
+                    <mainClass>src.main.java.app.Main</mainClass>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
