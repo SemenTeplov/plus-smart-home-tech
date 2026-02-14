@@ -44,7 +44,7 @@ protocol HubEventProtocol {
         string sensor_id;
         ConditionTypeAvro type;
         ConditionOperationAvro operation;
-        union { null, boolean } value;
+        union { null, boolean } value = null;
     }
 
     record DeviceActionAvro {
@@ -66,6 +66,6 @@ protocol HubEventProtocol {
     record HubEventAvro {
         string hub_id;
         timestamp_ms timestamp;
-        union { DeviceAddedEventAvro, DeviceRemovedEventAvro, ScenarioAddedEventAvro, ScenarioRemovedEventAvro } payload;
+        union { null, DeviceAddedEventAvro, DeviceRemovedEventAvro, ScenarioAddedEventAvro, ScenarioRemovedEventAvro } payload = null;
     }
 }
