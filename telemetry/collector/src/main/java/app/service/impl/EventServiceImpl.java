@@ -1,13 +1,12 @@
 package app.service.impl;
 
 import app.constants.Messages;
-
 import app.constants.Values;
 import app.dto.HubEvent;
 import app.dto.SensorEvent;
 import app.mapper.HubEventToAvroMapper;
-
 import app.mapper.SensorEventToAvroMapper;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

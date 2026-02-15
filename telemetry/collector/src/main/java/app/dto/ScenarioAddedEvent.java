@@ -32,7 +32,7 @@ public class ScenarioAddedEvent extends HubEvent {
     List<DeviceAction> actions;
 
     @Override
-    public HubEventType getType() {
+    public HubEventType getHubType() {
         return HubEventType.SCENARIO_ADDED;
     }
 }
