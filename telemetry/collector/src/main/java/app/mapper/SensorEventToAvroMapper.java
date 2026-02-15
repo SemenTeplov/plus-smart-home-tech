@@ -34,14 +34,12 @@ public interface SensorEventToAvroMapper {
     }
 
     default Object mapPayload(SensorEvent event) {
-        switch (event.getType()) {
+        return switch (event.getType()) {
             case CLIMATE_SENSOR_EVENT -> toClimateSensorAvro((ClimateSensorEvent) event);
             case LIGHT_SENSOR_EVENT -> toLightSensorAvro((LightSensorEvent) event);
             case MOTION_SENSOR_EVENT -> toMotionSensorAvro((MotionSensorEvent) event);
             case SWITCH_SENSOR_EVENT -> toSwitchSensorAvro((SwitchSensorEvent) event);
             case TEMPERATURE_SENSOR_EVENT -> toTemperatureSensorAvro((TemperatureSensorEvent) event);
-        }
-
-        return null;
+        };
     }
 }

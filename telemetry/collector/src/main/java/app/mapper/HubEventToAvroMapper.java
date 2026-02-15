@@ -32,13 +32,11 @@ public interface HubEventToAvroMapper {
     }
 
     default Object mapPayload(HubEvent event) {
-        switch (event.getType()) {
+        return switch (event.getType()) {
             case DEVICE_ADDED -> toDeviceAddedEventAvro((DeviceAddedEvent) event);
             case DEVICE_REMOVED -> toDeviceRemovedEventAvro((DeviceRemovedEvent) event);
             case SCENARIO_ADDED -> toScenarioAddedEventAvro((ScenarioAddedEvent) event);
             case SCENARIO_REMOVED -> toScenarioRemovedEventAvro((ScenarioRemovedEvent) event);
-        }
-
-        return null;
+        };
     }
 }
