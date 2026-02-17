@@ -1,21 +1,20 @@
-package app.kafka;
+package kafka.serializer;
 
-import app.constants.Exceptions;
-
-import org.apache.kafka.common.serialization.Serializer;
 import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.specific.SpecificDatumWriter;
+import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.common.errors.SerializationException;
-
-import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
+import org.apache.kafka.common.serialization.Serializer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+
 import java.util.Map;
 
-public class HubEventAvroSerializer implements Serializer<HubEventAvro> {
+public class GeneralAvroSerializer implements Serializer<SpecificRecordBase> {
+
     private final EncoderFactory encoderFactory = EncoderFactory.get();
 
     @Override
@@ -24,21 +23,21 @@ public class HubEventAvroSerializer implements Serializer<HubEventAvro> {
     }
 
     @Override
-    public byte[] serialize(String topic, HubEventAvro event) {
+    public byte[] serialize(String topic, SpecificRecordBase event) {
         if (event == null) {
             return null;
         }
 
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             BinaryEncoder encoder = encoderFactory.binaryEncoder(outputStream, null);
-            DatumWriter<HubEventAvro> datumWriter = new SpecificDatumWriter<>(HubEventAvro.class);
+            DatumWriter<SpecificRecordBase> datumWriter = new SpecificDatumWriter<>(event.getSchema());
 
             datumWriter.write(event, encoder);
             encoder.flush();
 
             return outputStream.toByteArray();
         } catch (IOException e) {
-            throw new SerializationException(Exceptions.EXCEPTION_SERIALIZATION);
+            throw new SerializationException();
         }
     }
 

@@ -10,14 +10,12 @@ import app.mapper.SensorEventToAvroMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
-import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 
 import app.service.EventService;
 
@@ -31,9 +29,7 @@ public class EventServiceImpl implements EventService {
     @Value("${kafka.topics.hub}")
     private String hubEventTopic;
 
-    private final Producer<String, SensorEventAvro> sensorEventProducer;
-
-    private final Producer<String, HubEventAvro> hubEventProducer;
+    private final Producer<String, SpecificRecordBase> eventProducer;
 
     private final HubEventToAvroMapper hubEventToAvroMapper;
 
@@ -43,20 +39,20 @@ public class EventServiceImpl implements EventService {
     public void collectSensorEvent(SensorEvent event) {
         log.info(Messages.MESSAGE_SEND_SENSOR, event);
 
-        ProducerRecord<String, SensorEventAvro> record = new ProducerRecord<>(
+        ProducerRecord<String, SpecificRecordBase> record = new ProducerRecord<>(
                 sensorEventTopic,
                 sensorEventToAvroMapper.map(event));
-        sendRecord(sensorEventProducer, record, Values.EVENT_TYPE_SENSOR);
+        sendRecord(eventProducer, record, Values.EVENT_TYPE_SENSOR);
     }
 
     @Override
     public void collectHubEvent(HubEvent event) {
         log.info(Messages.MESSAGE_SEND_HUB, event);
 
-        ProducerRecord<String, HubEventAvro> record = new ProducerRecord<>(
+        ProducerRecord<String, SpecificRecordBase> record = new ProducerRecord<>(
                 hubEventTopic,
                 hubEventToAvroMapper.map(event));
-        sendRecord(hubEventProducer, record, Values.EVENT_TYPE_HUB);
+        sendRecord(eventProducer, record, Values.EVENT_TYPE_HUB);
     }
 
     private <T> void sendRecord(Producer<String, T> producer, ProducerRecord<String, T> record, String eventType) {
