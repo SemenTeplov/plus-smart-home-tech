@@ -10,7 +10,7 @@ public record ScenarioCondition(
     String sensorId,
     ConditionType type,
     OperationType operation,
-    Boolean value
+    Integer value
 ) {
 
 }
