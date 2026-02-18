@@ -41,6 +41,9 @@ public class EventServiceImpl implements EventService {
 
         ProducerRecord<String, SpecificRecordBase> record = new ProducerRecord<>(
                 sensorEventTopic,
+                null,
+                event.getTimestamp().toEpochMilli(),
+                event.getHubId(),
                 sensorEventToAvroMapper.map(event));
         sendRecord(eventProducer, record, Values.EVENT_TYPE_SENSOR);
     }
@@ -51,6 +54,9 @@ public class EventServiceImpl implements EventService {
 
         ProducerRecord<String, SpecificRecordBase> record = new ProducerRecord<>(
                 hubEventTopic,
+                null,
+                event.getTimestamp().toEpochMilli(),
+                event.getHubId(),
                 hubEventToAvroMapper.map(event));
         sendRecord(eventProducer, record, Values.EVENT_TYPE_HUB);
     }

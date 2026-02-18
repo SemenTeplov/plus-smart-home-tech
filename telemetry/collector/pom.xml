@@ -11,11 +11,22 @@
 
     <artifactId>collector</artifactId>
 
+    <properties>
+        <avro-schemas.version>1.0-SNAPSHOT</avro-schemas.version>
+        <apache.kafka.version>3.6.1</apache.kafka.version>
+        <slf4j.version>1.7.36</slf4j.version>
+        <projectlombok.version>1.18.34</projectlombok.version>
+        <mapstruct.version>1.6.3</mapstruct.version>
+        <jakarta.validation.version>3.1.1</jakarta.validation.version>
+        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+        <spring-boot-maven-plugin.version>4.0.0</spring-boot-maven-plugin.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>ru.yandex.practicum</groupId>
             <artifactId>avro-schemas</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${avro-schemas.version}</version>
         </dependency>
 
         <dependency>
@@ -37,33 +48,33 @@
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
-            <version>3.6.1</version>
+            <version>${apache.kafka.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>1.7.36</version>
+            <version>${slf4j.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.34</version>
+            <version>${projectlombok.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
-            <version>1.6.3</version>
+            <version>${mapstruct.version}</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
-            <version>3.1.1</version>
+            <version>${jakarta.validation.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
@@ -82,7 +93,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -108,7 +119,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>4.0.0</version>
+                <version>${spring-boot-maven-plugin.version}</version>
                 <configuration>
                     <mainClass>app.Main</mainClass>
                     <excludes>
