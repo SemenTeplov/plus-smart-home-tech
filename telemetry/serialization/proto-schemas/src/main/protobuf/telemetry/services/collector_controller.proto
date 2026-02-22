@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package ru.yandex.practicum.grpc.telemetry.collector;
+
+option java_package = "ru.yandex.practicum.grpc.telemetry.collector";
+option java_outer_classname = "CollectorControllerOuterClass";
+option java_multiple_files = true;
+
+message CollectRequest {
+  string data_id = 1;
+  repeated string items = 2;
+}
+
+message CollectResponse {
+  bool success = 1;
+  string message = 2;
+  int32 processed_count = 3;
+}
+
+service CollectorController {
+  rpc CollectData (CollectRequest) returns (CollectResponse);
+}
