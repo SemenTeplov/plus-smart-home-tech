@@ -1,11 +1,11 @@
 syntax = "proto3";
 
+package telemetry.messages;
+
 import "google/protobuf/timestamp.proto";
 
-package telemetry.message.event;
-
+option java_package = "telemetry.messages";
 option java_multiple_files = true;
-option java_package = "ru.yandex.practicum.grpc.telemetry.event";
 
 message HubEventProto {
   string hub_id = 1;
@@ -70,7 +70,7 @@ enum ActionTypeProto {
 message DeviceActionProto {
   string sensor_id = 1;
   ActionTypeProto type = 2;
-  optional int32 value = 3;
+  int32 value = 3;
 }
 
 message ScenarioAddedEventProto {

@@ -20,14 +20,24 @@
         <jakarta.validation.version>3.1.1</jakarta.validation.version>
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <spring-boot-maven-plugin.version>4.0.0</spring-boot-maven-plugin.version>
-        <grpc-client.version>3.1.0.RELEASE</grpc-client.version>
+        <grpc-service.version>2.15.0.RELEASE</grpc-service.version>
+        <protoc-gen-grpc.version>1.79.0</protoc-gen-grpc.version>
     </properties>
 
     <dependencies>
+
         <dependency>
             <groupId>net.devh</groupId>
-            <artifactId>grpc-client-spring-boot-starter</artifactId>
-            <version>${grpc-client.version}</version>
+            <artifactId>grpc-server-spring-boot-starter</artifactId>
+            <version>${grpc-service.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>protoc-gen-grpc-java</artifactId>
+            <version>${protoc-gen-grpc.version}</version>
+            <type>pom</type>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -84,6 +94,7 @@
             <version>${jakarta.validation.version}</version>
             <scope>compile</scope>
         </dependency>
+
         <dependency>
             <groupId>ru.yandex.practicum</groupId>
             <artifactId>proto-schemas</artifactId>
