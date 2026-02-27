@@ -1,16 +1,35 @@
 package app.handler.SensorEventImpl;
 
-import lombok.extern.slf4j.Slf4j;
-
+import app.constants.Messages;
+import app.mapping.MappingSensorEvent;
 import app.handler.SensorEventHandler;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.apache.avro.specific.SpecificRecordBase;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 
 import telemetry.messages.SensorEventProto;
 
+import java.time.Instant;
+
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class TemperatureSensorEventHandler implements SensorEventHandler {
+    private final MappingSensorEvent mapping;
+
+    private final Producer<String, SpecificRecordBase> eventProducer;
+
+    @Value("${kafka.topics.sensor}")
+    private String topic;
 
     @Override
     public SensorEventProto.PayloadCase getMessageType() {
@@ -19,8 +38,17 @@ public class TemperatureSensorEventHandler implements SensorEventHandler {
 
     @Override
     public void handle(SensorEventProto event) {
-        log.info("TemperatureSensor: temperature c: {}, temperature f: {}",
-                event.getTemperatureSensor().getTemperatureC(),
-                event.getTemperatureSensor().getTemperatureF());
+        log.info(Messages.MESSAGE_SEND_SENSOR, event);
+
+        ProducerRecord<String, SpecificRecordBase> record = new ProducerRecord<>(
+                topic,
+                null,
+                SensorEventAvro.newBuilder()
+                        .setId(event.getId())
+                        .setHubId(event.getHubId())
+                        .setTimestamp(Instant.parse(event.getTimestamp().toString()))
+                        .setPayload(mapping.toTemperatureSensorAvro(event.getTemperatureSensor())).build());
+
+        eventProducer.send(record);
     }
 }

@@ -1,5 +1,6 @@
-package app.grpc;
+package app.controller;
 
+import app.constants.Exceptions;
 import app.handler.HubEventHandler;
 import app.handler.SensorEventHandler;
 
@@ -32,7 +33,7 @@ public class EventController extends CollectorControllerGrpc.CollectorController
             if (sensorEventHandlers.containsKey(request.getPayloadCase())) {
                 sensorEventHandlers.get(request.getPayloadCase()).handle(request);
             } else {
-                throw new IllegalArgumentException("Not fount event handler");
+                throw new IllegalArgumentException(Exceptions.EXCEPTION_NOT_FOUND_EVENT);
             }
 
             responseObserver.onNext(Empty.getDefaultInstance());
@@ -51,7 +52,7 @@ public class EventController extends CollectorControllerGrpc.CollectorController
             if (hubEventHandlers.containsKey(request.getPayloadCase())) {
                 hubEventHandlers.get(request.getPayloadCase()).handle(request);
             } else {
-                throw new IllegalArgumentException("Not fount event handler");
+                throw new IllegalArgumentException(Exceptions.EXCEPTION_NOT_FOUND_EVENT);
             }
 
             responseObserver.onNext(Empty.getDefaultInstance());
