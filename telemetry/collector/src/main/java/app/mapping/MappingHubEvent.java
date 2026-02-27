@@ -21,7 +21,7 @@ public interface MappingHubEvent {
     @Mapping(target = "type", source = "type")
     DeviceAddedEventAvro toDeviceAddedEventAvro(DeviceAddedEventProto event);
 
-    @ValueMapping(target = "null", source = "UNRECOGNIZED")
+    @ValueMapping(target = "MOTION_SENSOR", source = "UNRECOGNIZED")
     DeviceTypeAvro map(DeviceTypeProto protoType);
 
     DeviceRemovedEventAvro toDeviceRemovedEventAvro(DeviceRemovedEventProto event);
