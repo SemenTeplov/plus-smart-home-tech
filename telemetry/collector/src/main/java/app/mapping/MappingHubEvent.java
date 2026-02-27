@@ -6,6 +6,7 @@ import org.mapstruct.Named;
 
 import ru.yandex.practicum.kafka.telemetry.event.DeviceAddedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceRemovedEventAvro;
+import ru.yandex.practicum.kafka.telemetry.event.DeviceTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioAddedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioRemovedEventAvro;
 
@@ -26,7 +27,7 @@ public interface MappingHubEvent {
     ScenarioRemovedEventAvro toScenarioRemovedEventAvro(ScenarioRemovedEventProto event);
 
     @Named("getType")
-    default String getType(DeviceAddedEventProto event) {
-        return event.getType().toString();
+    default DeviceTypeAvro getType(DeviceAddedEventProto event) {
+        return DeviceTypeAvro.valueOf(event.getType().toString());
     }
 }
