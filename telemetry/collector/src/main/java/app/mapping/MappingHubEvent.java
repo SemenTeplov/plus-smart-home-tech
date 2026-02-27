@@ -17,7 +17,7 @@ import telemetry.messages.ScenarioRemovedEventProto;
 
 @Mapper(componentModel = "spring")
 public interface MappingHubEvent {
-    @Mapping(target = "type", qualifiedByName = "getType")
+    @Mapping(target = "type", source = "type")
     DeviceAddedEventAvro toDeviceAddedEventAvro(DeviceAddedEventProto event);
 
     DeviceRemovedEventAvro toDeviceRemovedEventAvro(DeviceRemovedEventProto event);
@@ -26,8 +26,7 @@ public interface MappingHubEvent {
 
     ScenarioRemovedEventAvro toScenarioRemovedEventAvro(ScenarioRemovedEventProto event);
 
-    @Named("getType")
-    default DeviceTypeAvro getType(DeviceAddedEventProto event) {
+    default DeviceTypeAvro map(DeviceAddedEventProto event) {
         return DeviceTypeAvro.valueOf(event.getType().toString());
     }
 }
