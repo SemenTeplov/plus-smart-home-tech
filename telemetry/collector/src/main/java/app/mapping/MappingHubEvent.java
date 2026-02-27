@@ -1,6 +1,8 @@
 package app.mapping;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import ru.yandex.practicum.kafka.telemetry.event.DeviceAddedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceRemovedEventAvro;
@@ -14,6 +16,7 @@ import telemetry.messages.ScenarioRemovedEventProto;
 
 @Mapper(componentModel = "spring")
 public interface MappingHubEvent {
+    @Mapping(target = "type", qualifiedByName = "getType")
     DeviceAddedEventAvro toDeviceAddedEventAvro(DeviceAddedEventProto event);
 
     DeviceRemovedEventAvro toDeviceRemovedEventAvro(DeviceRemovedEventProto event);
@@ -21,4 +24,9 @@ public interface MappingHubEvent {
     ScenarioAddedEventAvro toScenarioAddedEventAvro(ScenarioAddedEventProto event);
 
     ScenarioRemovedEventAvro toScenarioRemovedEventAvro(ScenarioRemovedEventProto event);
+
+    @Named("getType")
+    default String getType(DeviceAddedEventProto event) {
+        return event.getType().toString();
+    }
 }
