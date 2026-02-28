@@ -6,7 +6,7 @@ import "google/protobuf/empty.proto";
 import "telemetry/messages/sensor_event.proto";
 import "telemetry/messages/hub_event.proto";
 
-option java_package = "telemetry.services";
+option java_package = "telemetry.service.collector";
 option java_multiple_files = true;
 
 service CollectorController {

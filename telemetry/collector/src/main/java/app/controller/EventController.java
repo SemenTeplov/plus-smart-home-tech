@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
 
 import telemetry.messages.HubEventProto;
-import telemetry.services.CollectorControllerGrpc;
+import telemetry.service.collector.CollectorControllerGrpc;
 import telemetry.messages.SensorEventProto;
 
 import java.util.Map;
