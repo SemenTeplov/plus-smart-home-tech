@@ -45,7 +45,8 @@ public class DeviceAddedEventHandler implements HubEventHandler {
                 null,
                 HubEventAvro.newBuilder()
                         .setHubId(event.getHubId())
-                        .setTimestamp(Instant.parse(event.getTimestamp().toString()))
+                        .setTimestamp(Instant
+                                .ofEpochSecond(event.getTimestamp().getSeconds(), event.getTimestamp().getNanos()))
                         .setPayload(mapping.toDeviceAddedEventAvro(event.getDeviceAdded())).build());
 
         eventProducer.send(record);

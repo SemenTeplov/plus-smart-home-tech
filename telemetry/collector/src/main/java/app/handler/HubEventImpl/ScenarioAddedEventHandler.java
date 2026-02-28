@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
-
+import ru.yandex.practicum.kafka.telemetry.event.ScenarioAddedEventAvro;
 import telemetry.messages.HubEventProto;
 
 import java.time.Instant;
@@ -45,7 +45,8 @@ public class ScenarioAddedEventHandler implements HubEventHandler {
                 null,
                 HubEventAvro.newBuilder()
                         .setHubId(event.getHubId())
-                        .setTimestamp(Instant.parse(event.getTimestamp().toString()))
+                        .setTimestamp(Instant
+                                .ofEpochSecond(event.getTimestamp().getSeconds(), event.getTimestamp().getNanos()))
                         .setPayload(mapping.toScenarioAddedEventAvro(event.getScenarioAdded())).build());
 
         eventProducer.send(record);

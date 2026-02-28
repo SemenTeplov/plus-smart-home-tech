@@ -41,7 +41,7 @@ public class EventController extends CollectorControllerGrpc.CollectorController
     }
 
     @Override
-    public void collectorSensorEvent(SensorEventProto request, StreamObserver<Empty> responseObserver) {
+    public void collectSensorEvent(SensorEventProto request, StreamObserver<Empty> responseObserver) {
         try {
             if (sensorEventHandlers.containsKey(request.getPayloadCase())) {
                 sensorEventHandlers.get(request.getPayloadCase()).handle(request);

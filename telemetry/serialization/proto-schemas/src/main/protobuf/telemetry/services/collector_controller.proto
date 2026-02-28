@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package telemetry.services;
+package telemetry.service.collector;
 
 import "google/protobuf/empty.proto";
 import "telemetry/messages/sensor_event.proto";
@@ -10,7 +10,7 @@ option java_package = "telemetry.service.collector";
 option java_multiple_files = true;
 
 service CollectorController {
-  rpc CollectorSensorEvent (telemetry.messages.SensorEventProto)
+  rpc CollectSensorEvent (telemetry.messages.SensorEventProto)
     returns (google.protobuf.Empty);
 
   rpc CollectHubEvent (telemetry.messages.HubEventProto)
