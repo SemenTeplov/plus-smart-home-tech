@@ -2,8 +2,8 @@ package app.mapping;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
 import org.mapstruct.ValueMapping;
+
 import ru.yandex.practicum.kafka.telemetry.event.DeviceAddedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceRemovedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceTypeAvro;
