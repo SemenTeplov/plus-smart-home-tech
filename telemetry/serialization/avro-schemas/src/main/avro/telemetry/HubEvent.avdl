@@ -48,7 +48,7 @@ protocol HubEventProtocol {
         string sensor_id;
         ConditionTypeAvro type;
         ConditionOperationAvro operation;
-        union { boolean, int } value;
+        int? value;
     }
 
     record DeviceActionAvro {

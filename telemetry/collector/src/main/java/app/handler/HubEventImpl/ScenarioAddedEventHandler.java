@@ -9,16 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerRecord;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
-import ru.yandex.practicum.kafka.telemetry.event.ScenarioAddedEventAvro;
 import telemetry.messages.HubEventProto;
-
-import java.time.Instant;
 
 @Slf4j
 @Component
@@ -40,15 +35,6 @@ public class ScenarioAddedEventHandler implements HubEventHandler {
     public void handle(HubEventProto event) {
         log.info(Messages.MESSAGE_SEND_HUB, event);
 
-        ProducerRecord<String, SpecificRecordBase> record = new ProducerRecord<>(
-                topic,
-                null,
-                HubEventAvro.newBuilder()
-                        .setHubId(event.getHubId())
-                        .setTimestamp(Instant
-                                .ofEpochSecond(event.getTimestamp().getSeconds(), event.getTimestamp().getNanos()))
-                        .setPayload(mapping.toScenarioAddedEventAvro(event.getScenarioAdded())).build());
-
-        eventProducer.send(record);
+        eventProducer.send(getRecord(event, mapping.toScenarioAddedEventAvro(event.getScenarioAdded()), topic));
     }
 }

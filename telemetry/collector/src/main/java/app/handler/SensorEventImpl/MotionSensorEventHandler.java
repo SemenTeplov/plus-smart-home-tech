@@ -9,16 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerRecord;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
-
 import telemetry.messages.SensorEventProto;
-
-import java.time.Instant;
 
 @Slf4j
 @Component
@@ -40,16 +35,6 @@ public class MotionSensorEventHandler implements SensorEventHandler {
     public void handle(SensorEventProto event) {
         log.info(Messages.MESSAGE_SEND_SENSOR, event);
 
-        ProducerRecord<String, SpecificRecordBase> record = new ProducerRecord<>(
-                topic,
-                null,
-                SensorEventAvro.newBuilder()
-                        .setId(event.getId())
-                        .setHubId(event.getHubId())
-                        .setTimestamp(Instant
-                                .ofEpochSecond(event.getTimestamp().getSeconds(), event.getTimestamp().getNanos()))
-                        .setPayload(mapping.toMotionSensorAvro(event.getMotionSensor())).build());
-
-        eventProducer.send(record);
+        eventProducer.send(getRecord(event, mapping.toMotionSensorAvro(event.getMotionSensor()), topic));
     }
 }
