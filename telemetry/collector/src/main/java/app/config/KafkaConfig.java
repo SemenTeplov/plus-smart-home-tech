@@ -1,6 +1,7 @@
 package app.config;
 
 import kafka.serializer.GeneralAvroSerializer;
+
 import lombok.RequiredArgsConstructor;
 
 import org.apache.avro.specific.SpecificRecordBase;
