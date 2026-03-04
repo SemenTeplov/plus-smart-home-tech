@@ -1,4 +1,4 @@
-package main.java.app.service;
+package app.java.app.service;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,6 +1,6 @@
-package main.java.app;
+package app.java.app;
 
-import main.java.app.starter.AggregationStarter;
+import app.java.app.starter.AggregationStarter;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

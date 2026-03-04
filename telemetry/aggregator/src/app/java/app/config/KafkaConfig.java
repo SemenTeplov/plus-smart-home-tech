@@ -1,4 +1,4 @@
-package main.java.app.config;
+package app.java.app.config;
 
 import kafka.serializer.BaseAvroDeserializer;
 import kafka.serializer.GeneralAvroSerializer;

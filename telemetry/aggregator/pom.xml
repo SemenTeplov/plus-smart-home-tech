@@ -68,7 +68,7 @@
 
         <resources>
             <resource>
-                <directory>src/main/resources</directory>
+                <directory>src/app/resources</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>

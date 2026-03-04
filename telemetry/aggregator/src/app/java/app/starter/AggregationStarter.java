@@ -1,9 +1,9 @@
-package main.java.app.starter;
+package app.java.app.starter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import main.java.app.service.AggregatorService;
+import app.java.app.service.AggregatorService;
 
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.consumer.Consumer;
