@@ -55,16 +55,24 @@ public class AggregationStarter {
             }
 
         } catch (WakeupException ignored) {
+
             log.error(ignored.getMessage());
+
         } catch (Exception e) {
+
             log.error(e.getMessage());
+
         } finally {
             try {
+
                 producer.flush();
                 consumer.commitSync();
+
             } finally {
+
                 consumer.close();
                 producer.close();
+
             }
         }
     }
