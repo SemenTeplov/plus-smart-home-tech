@@ -49,6 +49,7 @@ public class KafkaConfig {
         configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, server);
         configs.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configs.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SensorsSnapshotDeserializer.class);
+        configs.put(ConsumerConfig.GROUP_ID_CONFIG, "HubId");
 
         return new KafkaConsumer<>(configs);
     }
@@ -60,6 +61,7 @@ public class KafkaConfig {
         configs.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, server);
         configs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, GeneralAvroSerializer.class);
+        configs.put(ConsumerConfig.GROUP_ID_CONFIG, "HubId");
 
         return new KafkaProducer<>(configs);
     }
