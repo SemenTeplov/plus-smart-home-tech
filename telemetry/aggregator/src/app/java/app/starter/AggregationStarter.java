@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import app.java.app.service.AggregatorService;
 
-import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -29,50 +28,50 @@ import java.util.Optional;
 public class AggregationStarter {
     private final AggregatorService service;
 
-    private final Consumer<String, SpecificRecordBase> consumer;
+    private final Consumer<String, SensorEventAvro> eventConsumer;
 
-    private final Producer<String, SpecificRecordBase> producer;
-
-    @Value("${kafka.topics.snapshot}")
-    private String snapshotTopic;
+    private final Producer<String, SensorsSnapshotAvro> snapshotProducer;
 
     @Value("${kafka.topics.sensor}")
     private String sensorTopic;
 
+    @Value("${kafka.topics.snapshot}")
+    private String snapshotTopic;
+
     public void start() {
         try {
-            consumer.subscribe(List.of(sensorTopic));
+            eventConsumer.subscribe(List.of(sensorTopic));
 
             while (true) {
-                ConsumerRecords<String, SpecificRecordBase> records = consumer.poll(Duration.ofMillis(1000));
+                ConsumerRecords<String, SensorEventAvro> records = eventConsumer.poll(Duration.ofMillis(100));
 
-                for (ConsumerRecord<String, SpecificRecordBase> record : records) {
-                    Optional<SensorsSnapshotAvro> sensor = service.updateState((SensorEventAvro) record.value());
+                for (ConsumerRecord<String, SensorEventAvro> record : records) {
+                    Optional<SensorsSnapshotAvro> sensor = service.updateState(record.value());
 
                     sensor.ifPresent(sensorsSnapshotAvro ->
-                            producer.send(new ProducerRecord<>(snapshotTopic, null, sensorsSnapshotAvro)));
+                            snapshotProducer.send(new ProducerRecord<>(snapshotTopic, null, sensorsSnapshotAvro)));
                 }
             }
 
         } catch (WakeupException ignored) {
-
             log.error(ignored.getMessage());
-
         } catch (Exception e) {
-
             log.error(e.getMessage());
-
         } finally {
-            try {
+            if (eventConsumer != null) {
+                try {
+                    eventConsumer.close();
+                } catch (Exception e) {
+                    log.error(e.getMessage());
+                }
+            }
 
-                producer.flush();
-                consumer.commitSync();
-
-            } finally {
-
-                consumer.close();
-                producer.close();
-
+            if (snapshotProducer != null) {
+                try {
+                    snapshotProducer.close();
+                } catch (Exception e) {
+                    log.error(e.getMessage());
+                }
             }
         }
     }

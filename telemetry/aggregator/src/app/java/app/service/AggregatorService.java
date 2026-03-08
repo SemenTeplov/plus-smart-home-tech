@@ -1,8 +1,7 @@
 package app.java.app.service;
 
 import lombok.RequiredArgsConstructor;
-
-import org.apache.avro.specific.SpecificRecordBase;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -22,46 +21,67 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AggregatorService {
-    private final Consumer<String, SpecificRecordBase> consumer;
+    private final Consumer<String, SensorsSnapshotAvro> snapshotConsumer;
+
+    private SensorsSnapshotAvro snapshot = null;
 
     @Value("${kafka.topics.snapshot}")
     private String snapshotTopic;
 
     public Optional<SensorsSnapshotAvro> updateState(SensorEventAvro event) {
-        consumer.subscribe(List.of(snapshotTopic));
+        try {
+            snapshotConsumer.subscribe(List.of(snapshotTopic));
 
-        ConsumerRecords<String, SpecificRecordBase> records = consumer.poll(Duration.ofMillis(1000));
-        SensorsSnapshotAvro snapshot = null;
+            ConsumerRecords<String, SensorsSnapshotAvro> records = snapshotConsumer.poll(Duration.ofMillis(100));
 
-        for (ConsumerRecord<String, SpecificRecordBase> record : records) {
-            if (record.value().get(1).equals(event.get(1))) {
-                snapshot = (SensorsSnapshotAvro) record.value();
-
-                if (snapshot.getSensorsState().containsKey(event.getId())
-                        && snapshot.getSensorsState().get(event.getId()).getTimestamp().isBefore(event.getTimestamp())) {
-                    snapshot.getSensorsState().put(event.getId(),
-                            SensorStateAvro.newBuilder()
-                                .setTimestamp(event.getTimestamp())
-                                .setData( event.getPayload()).build());
-                } else {
-                    consumer.close();
-
-                    return Optional.empty();
+            for (ConsumerRecord<String, SensorsSnapshotAvro> record : records) {
+                if (record.value().getHubId().equals(event.getHubId())) {
+                    snapshot = record.value();
                 }
-            } else {
+            }
+
+            if (snapshot == null) {
                 snapshot = SensorsSnapshotAvro.newBuilder()
                         .setHubId(event.getHubId())
                         .setTimestamp(Instant.now())
-                        .setSensorsState(Map.of(event.getId(),SensorStateAvro.newBuilder()
+                        .setSensorsState(Map.of(event.getId(), SensorStateAvro.newBuilder()
                                 .setTimestamp(event.getTimestamp())
-                                .setData( event.getPayload()).build())).build();
+                                .setData(event.getPayload()).build()))
+                        .build();
+            }
+
+            if (snapshot.getSensorsState().containsKey(event.getId())) {
+                SensorStateAvro oldState = snapshot.getSensorsState().get(event.getId());
+
+                if (oldState.getTimestamp().isBefore(event.getTimestamp())
+                        || oldState.getData().equals(event.getPayload())) {
+                    return Optional.empty();
+                }
+            }
+
+            SensorStateAvro newState = SensorStateAvro.newBuilder()
+                    .setTimestamp(event.getTimestamp())
+                    .setData(event.getPayload())
+                    .build();
+
+            snapshot.getSensorsState().put(event.getId(), newState);
+            snapshot.setTimestamp(event.getTimestamp());
+
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        } finally {
+            if (snapshotConsumer != null) {
+                try {
+                    snapshotConsumer.close();
+                } catch (Exception e) {
+                    log.error(e.getMessage());
+                }
             }
         }
-
-        consumer.close();
 
         return Optional.of(snapshot);
     }
