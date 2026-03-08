@@ -61,7 +61,6 @@ public class KafkaConfig {
         configs.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, server);
         configs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, GeneralAvroSerializer.class);
-        configs.put(ConsumerConfig.GROUP_ID_CONFIG, "HubId");
 
         return new KafkaProducer<>(configs);
     }
