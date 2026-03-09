@@ -31,8 +31,14 @@ public class KafkaConfig {
     @Value("${kafka.bootstrap-servers}")
     private String server;
 
-    @Value("${kafka.group.consumer}")
-    private String group;
+    @Value("${kafka.group.snapshot-group}")
+    private String snapshotGroup;
+
+    @Value("${kafka.group.sensor-group}")
+    private String sensorGroup;
+
+    @Value("${kafka.offset.rest-config}")
+    private String offsetRest;
 
     @Bean
     public Consumer<String, SensorEventAvro> eventConsumer() {
@@ -41,7 +47,8 @@ public class KafkaConfig {
         configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, server);
         configs.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configs.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SensorEventDeserializer.class);
-        configs.put(ConsumerConfig.GROUP_ID_CONFIG, group);
+        configs.put(ConsumerConfig.GROUP_ID_CONFIG, sensorGroup);
+        configs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offsetRest);
 
         return new KafkaConsumer<>(configs);
     }
@@ -53,7 +60,8 @@ public class KafkaConfig {
         configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, server);
         configs.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configs.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SensorsSnapshotDeserializer.class);
-        configs.put(ConsumerConfig.GROUP_ID_CONFIG, group);
+        configs.put(ConsumerConfig.GROUP_ID_CONFIG, snapshotGroup);
+        configs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offsetRest);
 
         return new KafkaConsumer<>(configs);
     }
