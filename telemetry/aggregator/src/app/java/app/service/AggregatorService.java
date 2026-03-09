@@ -50,7 +50,7 @@ public class AggregatorService {
             if (snapshot == null) {
                 snapshot = SensorsSnapshotAvro.newBuilder()
                         .setHubId(event.getHubId())
-                        .setTimestamp(Instant.now())
+                        .setTimestamp(event.getTimestamp())
                         .setSensorsState(Map.of(event.getId(), SensorStateAvro.newBuilder()
                                 .setTimestamp(event.getTimestamp())
                                 .setData(event.getPayload()).build()))
