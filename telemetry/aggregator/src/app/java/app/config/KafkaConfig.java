@@ -31,6 +31,9 @@ public class KafkaConfig {
     @Value("${kafka.bootstrap-servers}")
     private String server;
 
+    @Value("${kafka.group.consumer}")
+    private String group;
+
     @Bean
     public Consumer<String, SensorEventAvro> eventConsumer() {
         Map<String, Object> configs = new HashMap<>();
@@ -38,7 +41,7 @@ public class KafkaConfig {
         configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, server);
         configs.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configs.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SensorEventDeserializer.class);
-        configs.put(ConsumerConfig.GROUP_ID_CONFIG, "hub");
+        configs.put(ConsumerConfig.GROUP_ID_CONFIG, group);
 
         return new KafkaConsumer<>(configs);
     }
@@ -50,7 +53,7 @@ public class KafkaConfig {
         configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, server);
         configs.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configs.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SensorsSnapshotDeserializer.class);
-        configs.put(ConsumerConfig.GROUP_ID_CONFIG, "hub");
+        configs.put(ConsumerConfig.GROUP_ID_CONFIG, group);
 
         return new KafkaConsumer<>(configs);
     }

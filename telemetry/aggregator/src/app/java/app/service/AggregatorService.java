@@ -27,6 +27,8 @@ import java.util.Optional;
 public class AggregatorService {
     private final Consumer<String, SensorsSnapshotAvro> snapshotConsumer;
 
+    private static final int CONSUME_ATTEMPT_TIMEOUT = 100;
+
     private SensorsSnapshotAvro snapshot = null;
 
     @Value("${kafka.topics.snapshot}")
@@ -36,7 +38,8 @@ public class AggregatorService {
         try {
             snapshotConsumer.subscribe(List.of(snapshotTopic));
 
-            ConsumerRecords<String, SensorsSnapshotAvro> records = snapshotConsumer.poll(Duration.ofMillis(100));
+            ConsumerRecords<String, SensorsSnapshotAvro> records =
+                    snapshotConsumer.poll(Duration.ofMillis(CONSUME_ATTEMPT_TIMEOUT));
 
             for (ConsumerRecord<String, SensorsSnapshotAvro> record : records) {
                 if (record.value().getHubId().equals(event.getHubId())) {

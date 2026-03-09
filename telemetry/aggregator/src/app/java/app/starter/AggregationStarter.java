@@ -32,6 +32,8 @@ public class AggregationStarter {
 
     private final Producer<String, SensorsSnapshotAvro> snapshotProducer;
 
+    private static final int CONSUME_ATTEMPT_TIMEOUT = 100;
+
     @Value("${kafka.topics.sensor}")
     private String sensorTopic;
 
@@ -43,7 +45,8 @@ public class AggregationStarter {
             eventConsumer.subscribe(List.of(sensorTopic));
 
             while (true) {
-                ConsumerRecords<String, SensorEventAvro> records = eventConsumer.poll(Duration.ofMillis(100));
+                ConsumerRecords<String, SensorEventAvro> records =
+                        eventConsumer.poll(Duration.ofMillis(CONSUME_ATTEMPT_TIMEOUT));
 
                 for (ConsumerRecord<String, SensorEventAvro> record : records) {
                     Optional<SensorsSnapshotAvro> sensor = service.updateState(record.value());
@@ -53,8 +56,6 @@ public class AggregationStarter {
                 }
             }
 
-        } catch (WakeupException ignored) {
-            log.error(ignored.getMessage());
         } catch (Exception e) {
             log.error(e.getMessage());
         } finally {
