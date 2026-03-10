@@ -15,7 +15,6 @@ import ru.yandex.practicum.kafka.telemetry.event.SensorStateAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
 
 import java.time.Duration;
-import java.time.Instant;
 
 import java.util.List;
 import java.util.Map;
@@ -55,9 +54,7 @@ public class AggregatorService {
                                 .setTimestamp(event.getTimestamp())
                                 .setData(event.getPayload()).build()))
                         .build();
-            }
-
-            if (snapshot.getSensorsState().containsKey(event.getId())) {
+            } else if (snapshot.getSensorsState().containsKey(event.getId())) {
                 SensorStateAvro oldState = snapshot.getSensorsState().get(event.getId());
 
                 if (oldState.getTimestamp().isBefore(event.getTimestamp())
