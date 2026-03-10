@@ -55,21 +55,19 @@ public class AggregatorService {
         ConsumerRecords<String, SensorsSnapshotAvro> records =
                 snapshotConsumer.poll(Duration.ofMillis(consumeTimeout));
 
-        SensorsSnapshotAvro snapshot = SensorsSnapshotAvro.newBuilder()
+        for (ConsumerRecord<String, SensorsSnapshotAvro> record : records) {
+            if (record.value().getHubId().equals(event.getHubId())) {
+                return record.value();
+            }
+        }
+
+        return SensorsSnapshotAvro.newBuilder()
                 .setHubId(event.getHubId())
                 .setTimestamp(event.getTimestamp())
                 .setSensorsState(Map.of(event.getId(), SensorStateAvro.newBuilder()
                         .setTimestamp(event.getTimestamp())
                         .setData(event.getPayload()).build()))
                 .build();
-
-        for (ConsumerRecord<String, SensorsSnapshotAvro> record : records) {
-            if (record.value().getHubId().equals(event.getHubId())) {
-                snapshot = record.value();
-            }
-        }
-
-        return snapshot;
     }
 
     private boolean shouldUpdate(SensorsSnapshotAvro snapshot, SensorEventAvro event) {
