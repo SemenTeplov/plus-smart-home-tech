@@ -1,5 +1,7 @@
 package app.java.app.starter;
 
+import jakarta.annotation.PreDestroy;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,6 +13,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
+import org.apache.kafka.common.errors.WakeupException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +34,10 @@ public class AggregationStarter {
 
     private final Producer<String, SensorsSnapshotAvro> snapshotProducer;
 
-    private static final int CONSUME_ATTEMPT_TIMEOUT = 100;
+    private volatile boolean running = true;
+
+    @Value("${app.consume.timeout:100}")
+    private int consumeTimeout;
 
     @Value("${kafka.topics.sensor}")
     private String sensorTopic;
@@ -40,12 +46,12 @@ public class AggregationStarter {
     private String snapshotTopic;
 
     public void start() {
-        try {
-            eventConsumer.subscribe(List.of(sensorTopic));
+        eventConsumer.subscribe(List.of(sensorTopic));
 
-            while (true) {
+        try {
+            while (running) {
                 ConsumerRecords<String, SensorEventAvro> records =
-                        eventConsumer.poll(Duration.ofMillis(CONSUME_ATTEMPT_TIMEOUT));
+                        eventConsumer.poll(Duration.ofMillis(consumeTimeout));
 
                 for (ConsumerRecord<String, SensorEventAvro> record : records) {
                     Optional<SensorsSnapshotAvro> sensor = service.updateState(record.value());
@@ -55,24 +61,23 @@ public class AggregationStarter {
                 }
             }
 
+        } catch (WakeupException e) {
+
         } catch (Exception e) {
             log.error(e.getMessage());
-        } finally {
-            if (eventConsumer != null) {
-                try {
-                    eventConsumer.close();
-                } catch (Exception e) {
-                    log.error(e.getMessage());
-                }
-            }
-
-            if (snapshotProducer != null) {
-                try {
-                    snapshotProducer.close();
-                } catch (Exception e) {
-                    log.error(e.getMessage());
-                }
-            }
         }
+    }
+
+    public void stop() {
+        running = false;
+        eventConsumer.wakeup();
+    }
+
+    @PreDestroy
+    public void cleanup() {
+        stop();
+
+        if (eventConsumer != null) eventConsumer.close();
+        if (snapshotProducer != null) snapshotProducer.close();
     }
 }

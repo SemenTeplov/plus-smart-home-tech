@@ -42,26 +42,20 @@ public class KafkaConfig {
 
     @Bean
     public Consumer<String, SensorEventAvro> eventConsumer() {
-        Map<String, Object> configs = new HashMap<>();
+        Map<String, Object> configs = consumerConfig();
 
-        configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, server);
-        configs.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configs.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SensorEventDeserializer.class);
         configs.put(ConsumerConfig.GROUP_ID_CONFIG, sensorGroup);
-        configs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offsetRest);
 
         return new KafkaConsumer<>(configs);
     }
 
     @Bean
     public Consumer<String, SensorsSnapshotAvro> snapshotConsumer() {
-        Map<String, Object> configs = new HashMap<>();
+        Map<String, Object> configs = consumerConfig();
 
-        configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, server);
-        configs.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configs.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SensorsSnapshotDeserializer.class);
         configs.put(ConsumerConfig.GROUP_ID_CONFIG, snapshotGroup);
-        configs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offsetRest);
 
         return new KafkaConsumer<>(configs);
     }
@@ -75,5 +69,15 @@ public class KafkaConfig {
         configs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, GeneralAvroSerializer.class);
 
         return new KafkaProducer<>(configs);
+    }
+
+    private Map<String, Object> consumerConfig() {
+        Map<String, Object> configs = new HashMap<>();
+
+        configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, server);
+        configs.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        configs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offsetRest);
+
+        return configs;
     }
 }
