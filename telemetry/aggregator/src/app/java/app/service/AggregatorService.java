@@ -50,6 +50,8 @@ public class AggregatorService {
             log.error(e.getMessage());
 
             return Optional.empty();
+        } finally {
+            snapshotConsumer.close();
         }
     }
 
@@ -92,10 +94,5 @@ public class AggregatorService {
         snapshot.getSensorsState().put(event.getId(), newState);
 
         return snapshot;
-    }
-
-    @PreDestroy
-    public void destroy() {
-        if (snapshotConsumer != null) snapshotConsumer.close();
     }
 }

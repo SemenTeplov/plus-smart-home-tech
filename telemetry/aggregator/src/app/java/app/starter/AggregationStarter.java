@@ -65,19 +65,14 @@ public class AggregationStarter {
 
         } catch (Exception e) {
             log.error(e.getMessage());
+        } finally {
+            eventConsumer.close();
+            snapshotProducer.close();
         }
     }
 
     public void stop() {
         running = false;
         eventConsumer.wakeup();
-    }
-
-    @PreDestroy
-    public void cleanup() {
-        stop();
-
-        if (eventConsumer != null) eventConsumer.close();
-        if (snapshotProducer != null) snapshotProducer.close();
     }
 }
