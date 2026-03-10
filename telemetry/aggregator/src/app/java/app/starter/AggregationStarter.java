@@ -36,7 +36,7 @@ public class AggregationStarter {
 
     private volatile boolean running = true;
 
-    @Value("${app.consume.timeout:100}")
+    @Value("${kafka.values.timeout}")
     private int consumeTimeout;
 
     @Value("${kafka.topics.sensor}")

@@ -28,7 +28,7 @@ import java.util.Optional;
 public class AggregatorService {
     private final Consumer<String, SensorsSnapshotAvro> snapshotConsumer;
 
-    @Value("${app.consume.timeout:100}")
+    @Value("${kafka.values.timeout}")
     private int consumeTimeout;
 
     @Value("${kafka.topics.snapshot}")

@@ -9,3 +9,5 @@ kafka:
     sensor-group: sensor
   offset:
     rest-config: earliest
+  values:
+    timeout: 1000
