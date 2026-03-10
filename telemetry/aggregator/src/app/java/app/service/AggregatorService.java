@@ -1,5 +1,7 @@
 package app.java.app.service;
 
+import jakarta.annotation.PreDestroy;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -78,7 +80,7 @@ public class AggregatorService {
         SensorStateAvro oldState = snapshot.getSensorsState().get(event.getId());
 
         return oldState.getTimestamp().isBefore(event.getTimestamp())
-                || oldState.getData().equals(event.getPayload());
+                && !oldState.getData().equals(event.getPayload());
     }
 
     private SensorsSnapshotAvro createSensorsSnapshot(SensorsSnapshotAvro snapshot, SensorEventAvro event) {
@@ -90,5 +92,10 @@ public class AggregatorService {
         snapshot.getSensorsState().put(event.getId(), newState);
 
         return snapshot;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        if (snapshotConsumer != null) snapshotConsumer.close();
     }
 }
