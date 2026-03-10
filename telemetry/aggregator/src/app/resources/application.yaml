@@ -10,4 +10,4 @@ kafka:
   offset:
     rest-config: earliest
   values:
-    timeout: 1000
+    timeout: 100
