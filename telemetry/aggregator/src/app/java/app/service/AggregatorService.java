@@ -1,7 +1,5 @@
 package app.java.app.service;
 
-import jakarta.annotation.PreDestroy;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

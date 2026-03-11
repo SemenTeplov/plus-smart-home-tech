@@ -1,7 +1,5 @@
 package app.java.app.starter;
 
-import jakarta.annotation.PreDestroy;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -56,8 +54,11 @@ public class AggregationStarter {
                 for (ConsumerRecord<String, SensorEventAvro> record : records) {
                     Optional<SensorsSnapshotAvro> sensor = service.updateState(record.value());
 
-                    sensor.ifPresent(sensorsSnapshotAvro ->
-                            snapshotProducer.send(new ProducerRecord<>(snapshotTopic, null, sensorsSnapshotAvro)));
+                    sensor.ifPresent(sensorsSnapshotAvro -> {
+                        ProducerRecord<String, SensorsSnapshotAvro> producerRecord =
+                                new ProducerRecord<>(snapshotTopic, null, sensorsSnapshotAvro);
+                        snapshotProducer.send(producerRecord);
+                    });
                 }
             }
 
