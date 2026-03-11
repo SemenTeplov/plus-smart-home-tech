@@ -26,17 +26,14 @@ import java.util.Optional;
 @Slf4j
 @Component
 public class AggregationStarter {
-    @Autowired
     private final AggregatorService service;
 
-    @Autowired
     @Qualifier("eventConsumer")
     private final Consumer<String, SensorEventAvro> eventConsumer;
 
-    @Autowired
     private final Producer<String, SensorsSnapshotAvro> snapshotProducer;
 
-    private boolean running = true;
+    private volatile boolean running = true;
 
     @Value("${kafka.values.timeout}")
     private int consumeTimeout;
@@ -47,6 +44,7 @@ public class AggregationStarter {
     @Value("${kafka.topics.snapshot}")
     private String snapshotTopic;
 
+    @Autowired
     public AggregationStarter(AggregatorService service,
                               Consumer<String, SensorEventAvro> eventConsumer,
                               Producer<String, SensorsSnapshotAvro> snapshotProducer) {

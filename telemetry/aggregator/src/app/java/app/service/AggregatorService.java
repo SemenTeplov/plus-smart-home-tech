@@ -24,7 +24,6 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class AggregatorService {
-    @Autowired
     @Qualifier("snapshotConsumer")
     private final Consumer<String, SensorsSnapshotAvro> snapshotConsumer;
 
@@ -34,6 +33,7 @@ public class AggregatorService {
     @Value("${kafka.topics.snapshot}")
     private String snapshotTopic;
 
+    @Autowired
     public AggregatorService(Consumer<String, SensorsSnapshotAvro> snapshotConsumer) {
         this.snapshotConsumer = snapshotConsumer;
     }
