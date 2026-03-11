@@ -95,18 +95,6 @@ import java.util.Optional;
 ////        return !oldState.getTimestamp().isBefore(event.getTimestamp())
 ////                || !oldState.getData().equals(event.getPayload());
 ////    }
-//
-//    private SensorsSnapshotAvro createSensorsSnapshot(SensorsSnapshotAvro snapshot, SensorEventAvro event) {
-//        SensorStateAvro newState = SensorStateAvro.newBuilder()
-//                .setTimestamp(event.getTimestamp())
-//                .setData(event.getPayload())
-//                .build();
-//
-//        snapshot.getSensorsState().put(event.getId(), newState);
-//
-//        return snapshot;
-//    }
-//}
 
 @Slf4j
 @Service
@@ -114,7 +102,7 @@ import java.util.Optional;
 public class AggregatorService {
     private final Consumer<String, SensorsSnapshotAvro> snapshotConsumer;
 
-    private SensorsSnapshotAvro snapshot = null;
+//    private SensorsSnapshotAvro snapshot = null;
 
     @Value("${kafka.values.timeout}")
     private int consumeTimeout;
@@ -123,27 +111,31 @@ public class AggregatorService {
     private String snapshotTopic;
 
     public Optional<SensorsSnapshotAvro> updateState(SensorEventAvro event) {
+        SensorsSnapshotAvro snapshot = null;
+
         try {
             snapshotConsumer.subscribe(List.of(snapshotTopic));
 
-            ConsumerRecords<String, SensorsSnapshotAvro> records =
-                    snapshotConsumer.poll(Duration.ofMillis(consumeTimeout));
+            snapshot = getSensorsSnapshots(event);
 
-            for (ConsumerRecord<String, SensorsSnapshotAvro> record : records) {
-                if (record.value().getHubId().equals(event.getHubId())) {
-                    snapshot = record.value();
-                }
-            }
-
-            if (snapshot == null) {
-                snapshot = SensorsSnapshotAvro.newBuilder()
-                        .setHubId(event.getHubId())
-                        .setTimestamp(event.getTimestamp())
-                        .setSensorsState(Map.of(event.getId(), SensorStateAvro.newBuilder()
-                                .setTimestamp(event.getTimestamp())
-                                .setData(event.getPayload()).build()))
-                        .build();
-            }
+//            ConsumerRecords<String, SensorsSnapshotAvro> records =
+//                    snapshotConsumer.poll(Duration.ofMillis(consumeTimeout));
+//
+//            for (ConsumerRecord<String, SensorsSnapshotAvro> record : records) {
+//                if (record.value().getHubId().equals(event.getHubId())) {
+//                    snapshot = record.value();
+//                }
+//            }
+//
+//            if (snapshot == null) {
+//                snapshot = SensorsSnapshotAvro.newBuilder()
+//                        .setHubId(event.getHubId())
+//                        .setTimestamp(event.getTimestamp())
+//                        .setSensorsState(Map.of(event.getId(), SensorStateAvro.newBuilder()
+//                                .setTimestamp(event.getTimestamp())
+//                                .setData(event.getPayload()).build()))
+//                        .build();
+//            }
 
             if (snapshot.getSensorsState().containsKey(event.getId())) {
                 SensorStateAvro oldState = snapshot.getSensorsState().get(event.getId());
@@ -154,13 +146,7 @@ public class AggregatorService {
                 }
             }
 
-//            SensorStateAvro newState = SensorStateAvro.newBuilder()
-//                    .setTimestamp(event.getTimestamp())
-//                    .setData(event.getPayload())
-//                    .build();
-//
-//            snapshot.getSensorsState().put(event.getId(), newState);
-            createSensorsSnapshot(snapshot, event);
+            updateSensorsSnapshot(snapshot, event);
 
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -174,11 +160,29 @@ public class AggregatorService {
             }
         }
 
-//        return Optional.of(snapshot);
         return Optional.of(snapshot);
     }
 
-        private void createSensorsSnapshot(SensorsSnapshotAvro snapshot, SensorEventAvro event) {
+    private SensorsSnapshotAvro getSensorsSnapshots(SensorEventAvro event) {
+        ConsumerRecords<String, SensorsSnapshotAvro> records =
+                snapshotConsumer.poll(Duration.ofMillis(consumeTimeout));
+
+        for (ConsumerRecord<String, SensorsSnapshotAvro> record : records) {
+            if (record.value().getHubId().equals(event.getHubId())) {
+                return record.value();
+            }
+        }
+
+        return SensorsSnapshotAvro.newBuilder()
+                .setHubId(event.getHubId())
+                .setTimestamp(event.getTimestamp())
+                .setSensorsState(Map.of(event.getId(), SensorStateAvro.newBuilder()
+                        .setTimestamp(event.getTimestamp())
+                        .setData(event.getPayload()).build()))
+                .build();
+    }
+
+     private void updateSensorsSnapshot(SensorsSnapshotAvro snapshot, SensorEventAvro event) {
         SensorStateAvro newState = SensorStateAvro.newBuilder()
                 .setTimestamp(event.getTimestamp())
                 .setData(event.getPayload())
