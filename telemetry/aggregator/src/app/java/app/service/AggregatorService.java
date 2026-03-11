@@ -44,8 +44,13 @@ public class AggregatorService {
         try {
             SensorsSnapshotAvro snapshot = getSensorsSnapshots(event);
 
-            if (!shouldUpdate(snapshot, event)) {
-                return Optional.empty();
+            if (snapshot.getSensorsState().containsKey(event.getId())) {
+                SensorStateAvro oldState = snapshot.getSensorsState().get(event.getId());
+
+                if (oldState.getTimestamp().isBefore(event.getTimestamp())
+                        || oldState.getData().equals(event.getPayload())) {
+                    return Optional.empty();
+                }
             }
 
             return Optional.of(createSensorsSnapshot(snapshot, event));
@@ -79,16 +84,16 @@ public class AggregatorService {
                 .build();
     }
 
-    private boolean shouldUpdate(SensorsSnapshotAvro snapshot, SensorEventAvro event) {
-        if (!snapshot.getSensorsState().containsKey(event.getId())) {
-            return true;
-        }
-
-        SensorStateAvro oldState = snapshot.getSensorsState().get(event.getId());
-
-        return !oldState.getTimestamp().isBefore(event.getTimestamp())
-                || !oldState.getData().equals(event.getPayload());
-    }
+//    private boolean shouldUpdate(SensorsSnapshotAvro snapshot, SensorEventAvro event) {
+//        if (!snapshot.getSensorsState().containsKey(event.getId())) {
+//            return true;
+//        }
+//
+//        SensorStateAvro oldState = snapshot.getSensorsState().get(event.getId());
+//
+//        return !oldState.getTimestamp().isBefore(event.getTimestamp())
+//                || !oldState.getData().equals(event.getPayload());
+//    }
 
     private SensorsSnapshotAvro createSensorsSnapshot(SensorsSnapshotAvro snapshot, SensorEventAvro event) {
         SensorStateAvro newState = SensorStateAvro.newBuilder()
