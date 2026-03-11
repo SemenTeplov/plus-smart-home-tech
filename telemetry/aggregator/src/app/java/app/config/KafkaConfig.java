@@ -76,7 +76,7 @@ public class KafkaConfig {
 
         configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, server);
         configs.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        //configs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offsetRest);
+        configs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offsetRest);
 
         return configs;
     }
