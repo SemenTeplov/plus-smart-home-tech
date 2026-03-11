@@ -1,12 +1,13 @@
 package app.java.app.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +23,9 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class AggregatorService {
+    @Autowired
+    @Qualifier("snapshotConsumer")
     private final Consumer<String, SensorsSnapshotAvro> snapshotConsumer;
 
     @Value("${kafka.values.timeout}")
@@ -31,6 +33,10 @@ public class AggregatorService {
 
     @Value("${kafka.topics.snapshot}")
     private String snapshotTopic;
+
+    public AggregatorService(Consumer<String, SensorsSnapshotAvro> snapshotConsumer) {
+        this.snapshotConsumer = snapshotConsumer;
+    }
 
     public Optional<SensorsSnapshotAvro> updateState(SensorEventAvro event) {
         snapshotConsumer.subscribe(List.of(snapshotTopic));

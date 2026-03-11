@@ -40,7 +40,7 @@ public class KafkaConfig {
     @Value("${kafka.offset.rest-config}")
     private String offsetRest;
 
-    @Bean
+    @Bean("eventConsumer")
     public Consumer<String, SensorEventAvro> eventConsumer() {
         Map<String, Object> configs = consumerConfig();
 
@@ -50,7 +50,7 @@ public class KafkaConfig {
         return new KafkaConsumer<>(configs);
     }
 
-    @Bean
+    @Bean("snapshotConsumer")
     public Consumer<String, SensorsSnapshotAvro> snapshotConsumer() {
         Map<String, Object> configs = consumerConfig();
 
