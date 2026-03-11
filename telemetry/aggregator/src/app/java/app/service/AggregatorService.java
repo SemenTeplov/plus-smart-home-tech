@@ -55,6 +55,7 @@ public class AggregatorService {
 
             return Optional.empty();
         } finally {
+            snapshotConsumer.commitSync();
             snapshotConsumer.close();
         }
     }

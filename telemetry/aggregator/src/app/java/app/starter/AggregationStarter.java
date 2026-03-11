@@ -9,8 +9,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-
 import org.apache.kafka.common.errors.WakeupException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -76,6 +76,8 @@ public class AggregationStarter {
         } catch (Exception e) {
             log.error(e.getMessage());
         } finally {
+            snapshotProducer.flush();
+            eventConsumer.commitSync();
             eventConsumer.close();
             snapshotProducer.close();
         }
