@@ -1,5 +1,6 @@
 package app.java.app.starter;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import app.java.app.service.AggregatorService;
@@ -11,8 +12,6 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.errors.WakeupException;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -25,10 +24,10 @@ import java.util.Optional;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class AggregationStarter {
     private final AggregatorService service;
 
-    @Qualifier("eventConsumer")
     private final Consumer<String, SensorEventAvro> eventConsumer;
 
     private final Producer<String, SensorsSnapshotAvro> snapshotProducer;
@@ -43,15 +42,6 @@ public class AggregationStarter {
 
     @Value("${kafka.topics.snapshot}")
     private String snapshotTopic;
-
-    @Autowired
-    public AggregationStarter(AggregatorService service,
-                              Consumer<String, SensorEventAvro> eventConsumer,
-                              Producer<String, SensorsSnapshotAvro> snapshotProducer) {
-        this.service = service;
-        this.eventConsumer = eventConsumer;
-        this.snapshotProducer = snapshotProducer;
-    }
 
     public void start() {
         eventConsumer.subscribe(List.of(sensorTopic));
