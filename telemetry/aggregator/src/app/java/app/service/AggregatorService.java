@@ -86,7 +86,7 @@ public class AggregatorService {
 
         SensorStateAvro oldState = snapshot.getSensorsState().get(event.getId());
 
-        return oldState.getTimestamp().isBefore(event.getTimestamp())
+        return !oldState.getTimestamp().isBefore(event.getTimestamp())
                 || !oldState.getData().equals(event.getPayload());
     }
 
