@@ -114,9 +114,10 @@ import java.util.Optional;
 public class AggregatorService {
     private final Consumer<String, SensorsSnapshotAvro> snapshotConsumer;
 
-    private static final int CONSUME_ATTEMPT_TIMEOUT = 100;
-
     private SensorsSnapshotAvro snapshot = null;
+
+    @Value("${kafka.values.timeout}")
+    private int consumeTimeout;
 
     @Value("${kafka.topics.snapshot}")
     private String snapshotTopic;
@@ -126,7 +127,7 @@ public class AggregatorService {
             snapshotConsumer.subscribe(List.of(snapshotTopic));
 
             ConsumerRecords<String, SensorsSnapshotAvro> records =
-                    snapshotConsumer.poll(Duration.ofMillis(CONSUME_ATTEMPT_TIMEOUT));
+                    snapshotConsumer.poll(Duration.ofMillis(consumeTimeout));
 
             for (ConsumerRecord<String, SensorsSnapshotAvro> record : records) {
                 if (record.value().getHubId().equals(event.getHubId())) {
@@ -153,12 +154,12 @@ public class AggregatorService {
                 }
             }
 
-            SensorStateAvro newState = SensorStateAvro.newBuilder()
-                    .setTimestamp(event.getTimestamp())
-                    .setData(event.getPayload())
-                    .build();
-
-            snapshot.getSensorsState().put(event.getId(), newState);
+//            SensorStateAvro newState = SensorStateAvro.newBuilder()
+//                    .setTimestamp(event.getTimestamp())
+//                    .setData(event.getPayload())
+//                    .build();
+//
+//            snapshot.getSensorsState().put(event.getId(), newState);
 
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -172,6 +173,18 @@ public class AggregatorService {
             }
         }
 
-        return Optional.of(snapshot);
+//        return Optional.of(snapshot);
+        return Optional.of(createSensorsSnapshot(snapshot, event));
+    }
+
+        private SensorsSnapshotAvro createSensorsSnapshot(SensorsSnapshotAvro snapshot, SensorEventAvro event) {
+        SensorStateAvro newState = SensorStateAvro.newBuilder()
+                .setTimestamp(event.getTimestamp())
+                .setData(event.getPayload())
+                .build();
+
+        snapshot.getSensorsState().put(event.getId(), newState);
+
+        return snapshot;
     }
 }
