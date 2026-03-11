@@ -36,7 +36,7 @@ public class AggregationStarter {
     @Autowired
     private final Producer<String, SensorsSnapshotAvro> snapshotProducer;
 
-    private volatile boolean running = true;
+    private boolean running = true;
 
     @Value("${kafka.values.timeout}")
     private int consumeTimeout;
