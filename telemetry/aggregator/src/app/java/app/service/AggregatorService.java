@@ -160,6 +160,7 @@ public class AggregatorService {
 //                    .build();
 //
 //            snapshot.getSensorsState().put(event.getId(), newState);
+            createSensorsSnapshot(snapshot, event);
 
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -174,17 +175,15 @@ public class AggregatorService {
         }
 
 //        return Optional.of(snapshot);
-        return Optional.of(createSensorsSnapshot(snapshot, event));
+        return Optional.of(snapshot);
     }
 
-        private SensorsSnapshotAvro createSensorsSnapshot(SensorsSnapshotAvro snapshot, SensorEventAvro event) {
+        private void createSensorsSnapshot(SensorsSnapshotAvro snapshot, SensorEventAvro event) {
         SensorStateAvro newState = SensorStateAvro.newBuilder()
                 .setTimestamp(event.getTimestamp())
                 .setData(event.getPayload())
                 .build();
 
         snapshot.getSensorsState().put(event.getId(), newState);
-
-        return snapshot;
     }
 }
