@@ -43,6 +43,12 @@ public class AggregationStarter {
 
     @KafkaListener(topics = "${kafka.topics.sensor}", containerFactory = "eventConsumer")
     public void handler(SensorEventAvro event) {
-        sensors.addIfAbsent(event);
+        if (!sensors.contains(event)) {
+            sensors.addIfAbsent(event);
+        } else {
+            sensors.set(sensors.indexOf(sensors.stream()
+                    .filter(s -> s.getId().equals(event.getId()))
+                    .findFirst().get()), event);
+        }
     }
 }
