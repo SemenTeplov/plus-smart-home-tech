@@ -73,7 +73,7 @@ public class AggregatorService {
 //
 //        snapshot.getSensorsState().put(event.getId(), newState);
 
-        SensorsSnapshotAvro snapshot = null;
+        SensorsSnapshotAvro snapshot;
 
         if (snapshots.containsKey(event.getHubId())) {
             snapshot = snapshots.get(event.getHubId());
@@ -90,7 +90,7 @@ public class AggregatorService {
         if (snapshot.getSensorsState().containsKey(event.getId())) {
             SensorStateAvro oldState = snapshot.getSensorsState().get(event.getId());
 
-            if (oldState.getTimestamp().isAfter(event.getTimestamp())
+            if (oldState.getTimestamp().isBefore(event.getTimestamp())
                     || oldState.getData().equals(event.getPayload())) {
                 return Optional.empty();
             }
