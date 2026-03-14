@@ -9,5 +9,6 @@ kafka:
     sensor-group: sensor
   offset:
     rest-config: earliest
-  values:
-    timeout: 5000
+  consumer:
+    session-timeout-ms: 30000
+    heartbeat-interval-ms: 10000

@@ -35,6 +35,12 @@ public class KafkaConsumerConfig {
     @Value("${kafka.offset.rest-config}")
     private String offsetRest;
 
+    @Value("${kafka.consumer.session-timeout-ms}")
+    private String sessionTimeout;
+
+    @Value("${kafka.consumer.heartbeat-interval-ms}")
+    private String heartbeatInterval;
+
     @Bean
     public ConsumerFactory<String, SensorEventAvro> eventConsumerFactory() {
         Map<String, Object> configs = consumerConfig();
@@ -81,6 +87,8 @@ public class KafkaConsumerConfig {
         configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, server);
         configs.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offsetRest);
+        configs.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, sessionTimeout);
+        configs.put(ConsumerConfig.HEARTBEAT_INTERVAL_MS_CONFIG, heartbeatInterval);
 
         return configs;
     }
