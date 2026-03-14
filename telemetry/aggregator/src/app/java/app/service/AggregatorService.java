@@ -73,6 +73,8 @@ public class AggregatorService {
             log.info("Создан новый снимок {}", snapshot);
         }
 
+        snapshots.remove(event.getHubId());
+
         return Optional.of(snapshot);
     }
 
