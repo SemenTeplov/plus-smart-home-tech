@@ -18,13 +18,13 @@ import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
 
 //import java.time.Duration;
 
-import java.util.ArrayList;
-import java.util.List;
+//import java.util.ArrayList;
+//import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CopyOnWriteArrayList;
+//import java.util.concurrent.CopyOnWriteArrayList;
 //import java.util.function.Function;
 
 @Slf4j
@@ -38,7 +38,7 @@ public class AggregatorService {
 //    @Value("${kafka.topics.snapshot}")
 //    private String snapshotTopic;
 
-    private final ConcurrentMap<String, List<SensorsSnapshotAvro>> snapshots;
+    private final ConcurrentMap<String, SensorsSnapshotAvro> snapshots;
 
     public AggregatorService() {
         this.snapshots = new ConcurrentHashMap<>();
@@ -73,16 +73,37 @@ public class AggregatorService {
 //
 //        snapshot.getSensorsState().put(event.getId(), newState);
 
-//        return Optional.of(snapshot);
+        SensorsSnapshotAvro snapshot = null;
 
-        return Optional.of(SensorsSnapshotAvro.newBuilder()
+        if (snapshots.containsKey(event.getHubId())) {
+            snapshot = snapshots.get(event.getHubId());
+        } else {
+            snapshot = SensorsSnapshotAvro.newBuilder()
                             .setHubId(event.getHubId())
                             .setTimestamp(event.getTimestamp())
                             .setSensorsState(Map.of(event.getId(), SensorStateAvro.newBuilder()
                                     .setTimestamp(event.getTimestamp())
                                     .setData(event.getPayload()).build()))
-                            .build());
+                            .build();
+        }
 
+        if (snapshot.getSensorsState().containsKey(event.getId())) {
+            SensorStateAvro oldState = snapshot.getSensorsState().get(event.getId());
+
+            if (oldState.getTimestamp().isAfter(event.getTimestamp())
+                    || oldState.getData().equals(event.getPayload())) {
+                return Optional.empty();
+            }
+        }
+
+        SensorStateAvro newState = SensorStateAvro.newBuilder()
+                .setTimestamp(event.getTimestamp())
+                .setData(event.getPayload())
+                .build();
+
+        snapshot.getSensorsState().put(event.getId(), newState);
+
+        return Optional.of(snapshot);
 
 //        SensorsSnapshotAvro snapshot = null;
 //
@@ -145,13 +166,6 @@ public class AggregatorService {
 
     @KafkaListener(topics = "${kafka.topics.snapshot}", containerFactory = "snapshotConsumer")
     public void handler(SensorsSnapshotAvro event) {
-        List<SensorsSnapshotAvro> list = snapshots.computeIfAbsent(
-                event.getHubId(),
-                k -> new ArrayList<>()
-        );
-
-        if (!list.contains(event)) {
-            list.add(event);
-        }
+        snapshots.putIfAbsent(event.getHubId(), event);
     }
 }
