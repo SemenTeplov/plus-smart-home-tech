@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -34,8 +36,11 @@ public class AggregationStarter {
     public void sendSnapshots() {
         log.info("Получен список сенсоров для отправки {}", sensors);
 
-        for (SensorEventAvro sensor : sensors) {
+        List<SensorEventAvro> temp = new ArrayList<>(sensors);
+
+        for (SensorEventAvro sensor : temp) {
             Optional<SensorsSnapshotAvro> snapshot = service.updateState(sensor);
+            sensors.remove(sensor);
 
             snapshot.ifPresent(sensorsSnapshotAvro -> template.send(snapshotTopic, sensorsSnapshotAvro));
         }
@@ -43,12 +48,6 @@ public class AggregationStarter {
 
     @KafkaListener(topics = "${kafka.topics.sensor}", containerFactory = "eventConsumer")
     public void handler(SensorEventAvro event) {
-        if (!sensors.contains(event)) {
-            sensors.addIfAbsent(event);
-        } else {
-            sensors.set(sensors.indexOf(sensors.stream()
-                    .filter(s -> s.getId().equals(event.getId()))
-                    .findFirst().get()), event);
-        }
+        sensors.addIfAbsent(event);
     }
 }
