@@ -1,6 +1,6 @@
 package app.java.app.service;
 
-import lombok.RequiredArgsConstructor;
+//import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 //import org.apache.kafka.clients.consumer.Consumer;
@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 //import org.apache.kafka.clients.consumer.ConsumerRecords;
 //
 //import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 //import java.util.function.Function;
 
 @Slf4j
@@ -45,7 +46,7 @@ public class AggregatorService {
 
     public Optional<SensorsSnapshotAvro> updateState(SensorEventAvro event) {
         if (!snapshots.containsKey(event.getHubId())) {
-            snapshots.putIfAbsent(event.getHubId(), new ArrayList<>());
+            snapshots.putIfAbsent(event.getHubId(), new CopyOnWriteArrayList<>());
         }
 
         SensorsSnapshotAvro snapshot = snapshots.get(event.getHubId()).stream()

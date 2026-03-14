@@ -15,6 +15,7 @@ import app.java.app.service.AggregatorService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
@@ -51,7 +52,9 @@ public class AggregationStarter {
     @Value("${kafka.topics.snapshot}")
     private String snapshotTopic;
 
-    public void start() {
+//    public void start() {
+    @Scheduled(fixedDelay = 5000)
+    public void sendSnapshots() {
         for (SensorEventAvro sensor : sensors) {
             Optional<SensorsSnapshotAvro> snapshot = service.updateState(sensor);
 
