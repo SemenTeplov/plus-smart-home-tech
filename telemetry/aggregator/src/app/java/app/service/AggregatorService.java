@@ -9,6 +9,7 @@ import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorStateAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,12 +59,15 @@ public class AggregatorService {
         } else {
             log.info("В снимке не найдено событие {}", event);
 
+            Map<String, SensorStateAvro> states = new HashMap<>();
+            states.put(event.getId(), SensorStateAvro.newBuilder()
+                        .setTimestamp(event.getTimestamp())
+                        .setData(event.getPayload()).build());
+
             snapshot = SensorsSnapshotAvro.newBuilder()
                             .setHubId(event.getHubId())
                             .setTimestamp(event.getTimestamp())
-                            .setSensorsState(Map.of(event.getId(), SensorStateAvro.newBuilder()
-                                    .setTimestamp(event.getTimestamp())
-                                    .setData(event.getPayload()).build()))
+                            .setSensorsState(states)
                             .build();
 
             log.info("Создан новый снимок {}", snapshot);
