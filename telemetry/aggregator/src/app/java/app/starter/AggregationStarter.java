@@ -32,6 +32,8 @@ public class AggregationStarter {
 
     @Scheduled(fixedDelay = 5000)
     public void sendSnapshots() {
+        log.info("Получен список сенсоров для отправки {}", sensors);
+
         for (SensorEventAvro sensor : sensors) {
             Optional<SensorsSnapshotAvro> snapshot = service.updateState(sensor);
 
