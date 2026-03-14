@@ -134,7 +134,7 @@ public class AggregatorService {
 //        snapshot.getSensorsState().put(event.getId(), newState);
 //    }
 
-    @KafkaListener(topics = "${kafka.topics.snapshot}", groupId = "${kafka.group.snapshot-group}")
+    @KafkaListener(topics = "${kafka.topics.snapshot}", containerFactory = "snapshotConsumer")
     public void handler(SensorsSnapshotAvro event) {
         List<SensorsSnapshotAvro> list = snapshots.computeIfAbsent(
                 event.getHubId(),

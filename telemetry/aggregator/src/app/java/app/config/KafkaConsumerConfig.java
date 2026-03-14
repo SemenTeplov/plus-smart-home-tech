@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 
@@ -35,7 +36,7 @@ public class KafkaConsumerConfig {
     private String offsetRest;
 
     @Bean
-    public ConsumerFactory<String, SensorEventAvro> eventConsumer() {
+    public ConsumerFactory<String, SensorEventAvro> eventConsumerFactory() {
         Map<String, Object> configs = consumerConfig();
 
         configs.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SensorEventDeserializer.class);
@@ -45,13 +46,33 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, SensorsSnapshotAvro> snapshotConsumer() {
+    public ConsumerFactory<String, SensorsSnapshotAvro> snapshotConsumerFactory() {
         Map<String, Object> configs = consumerConfig();
 
         configs.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SensorsSnapshotDeserializer.class);
         configs.put(ConsumerConfig.GROUP_ID_CONFIG, snapshotGroup);
 
         return new DefaultKafkaConsumerFactory<>(configs);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, SensorEventAvro> eventConsumer(
+            ConsumerFactory<String, SensorEventAvro> eventConsumerFactory) {
+        ConcurrentKafkaListenerContainerFactory<String, SensorEventAvro> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(eventConsumerFactory);
+
+        return factory;
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, SensorsSnapshotAvro> snapshotConsumer(
+            ConsumerFactory<String, SensorsSnapshotAvro> snapshotConsumerFactory) {
+        ConcurrentKafkaListenerContainerFactory<String, SensorsSnapshotAvro> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(snapshotConsumerFactory);
+
+        return factory;
     }
 
     private Map<String, Object> consumerConfig() {

@@ -91,7 +91,7 @@ public class AggregationStarter {
 //        eventConsumer.wakeup();
 //    }
 
-    @KafkaListener(topics = "${kafka.topics.sensor}", groupId = "${kafka.group.sensor-group}")
+    @KafkaListener(topics = "${kafka.topics.sensor}", containerFactory = "eventConsumer")
     public void handler(SensorEventAvro event) {
         sensors.addIfAbsent(event);
     }
