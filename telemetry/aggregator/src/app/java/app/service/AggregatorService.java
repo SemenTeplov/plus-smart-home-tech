@@ -38,21 +38,21 @@ public class AggregatorService {
                             .build();
         }
 
-//        if (snapshot.getSensorsState().containsKey(event.getId())) {
-//            SensorStateAvro oldState = snapshot.getSensorsState().get(event.getId());
+        if (snapshot.getSensorsState().containsKey(event.getId())) {
+            SensorStateAvro oldState = snapshot.getSensorsState().get(event.getId());
+
+            if (oldState.getTimestamp().isBefore(event.getTimestamp())
+                    || oldState.getData().equals(event.getPayload())) {
+                return Optional.empty();
+            }
+        }
+
+//        SensorStateAvro newState = SensorStateAvro.newBuilder()
+//                .setTimestamp(event.getTimestamp())
+//                .setData(event.getPayload())
+//                .build();
 //
-//            if (oldState.getTimestamp().isBefore(event.getTimestamp())
-//                    || oldState.getData().equals(event.getPayload())) {
-//                return Optional.empty();
-//            }
-//        }
-
-        SensorStateAvro newState = SensorStateAvro.newBuilder()
-                .setTimestamp(event.getTimestamp())
-                .setData(event.getPayload())
-                .build();
-
-        snapshot.getSensorsState().put(event.getId(), newState);
+//        snapshot.getSensorsState().put(event.getId(), newState);
 
         return Optional.of(snapshot);
     }
