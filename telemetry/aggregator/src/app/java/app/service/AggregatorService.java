@@ -1,5 +1,8 @@
 package app.java.app.service;
 
+import app.java.app.constant.Message;
+import app.java.app.constant.Values;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.kafka.annotation.KafkaListener;
@@ -13,35 +16,35 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 @Slf4j
 @Service
 public class AggregatorService {
-    private final ConcurrentMap<String, SensorsSnapshotAvro> snapshots;
+    private final Map<String, SensorsSnapshotAvro> snapshots;
 
     public AggregatorService() {
         this.snapshots = new ConcurrentHashMap<>();
     }
 
+
     public Optional<SensorsSnapshotAvro> updateState(SensorEventAvro event) {
-        log.info("Получен список снимков {}", snapshots);
+        log.info(Message.GET_LIST_OF_SNAPSHOTS, snapshots);
 
         SensorsSnapshotAvro snapshot;
 
         if (snapshots.containsKey(event.getHubId())) {
-            log.info("В снимке найдено событие {}", event);
+            log.info(Message.FINED_EVENT, event);
 
             snapshot = snapshots.get(event.getHubId());
 
             if (snapshot.getSensorsState().containsKey(event.getId())) {
-                log.info("В снимке {} найдено событие {}", snapshot, event);
+                log.info(Message.FINED_EVENT_DETAIL, snapshot, event);
 
                 SensorStateAvro oldState = snapshot.getSensorsState().get(event.getId());
 
                 if (oldState.getTimestamp().isBefore(event.getTimestamp())
                         || oldState.getData().equals(event.getPayload())) {
-                    log.info("Событие {} не нужно изминениять", event);
+                    log.info(Message.EVENT_DO_NOT_CHANGE, event);
 
                     return Optional.empty();
                 }
@@ -55,9 +58,9 @@ public class AggregatorService {
             snapshot.getSensorsState().put(event.getId(), newState);
             snapshot.setTimestamp(event.getTimestamp());
 
-            log.info("Сенсор {} в снимке {} был изменен и готов к отправке", newState, snapshot);
+            log.info(Message.EVENT_CHANGED, newState, snapshot);
         } else {
-            log.info("В снимке не найдено событие {}", event);
+            log.info(Message.DO_NOT_FOUND_EVENT, event);
 
             Map<String, SensorStateAvro> states = new HashMap<>();
             states.put(event.getId(), SensorStateAvro.newBuilder()
@@ -70,13 +73,13 @@ public class AggregatorService {
                             .setSensorsState(states)
                             .build();
 
-            log.info("Создан новый снимок {}", snapshot);
+            log.info(Message.CREATED_SNAPSHOT, snapshot);
         }
 
         return Optional.of(snapshot);
     }
 
-    @KafkaListener(topics = "${kafka.topics.snapshot}", containerFactory = "snapshotConsumer")
+    @KafkaListener(topics = "${kafka.topics.snapshot}", containerFactory = Values.SNAPSHOT_CONSUMER)
     public void handler(SensorsSnapshotAvro event) {
         if (!snapshots.containsKey(event.getHubId())) {
             snapshots.putIfAbsent(event.getHubId(), event);

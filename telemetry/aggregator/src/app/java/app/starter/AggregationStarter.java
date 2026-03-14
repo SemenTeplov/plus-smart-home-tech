@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import app.java.app.service.AggregatorService;
+import app.java.app.constant.Values;
+import app.java.app.constant.Message;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -32,9 +34,9 @@ public class AggregationStarter {
     @Value("${kafka.topics.snapshot}")
     private String snapshotTopic;
 
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(fixedDelay = Values.FIXED_DELAY)
     public void sendSnapshots() {
-        log.info("Получен список сенсоров для отправки {}", sensors);
+        log.info(Message.GET_LIST_OF_SENSORS, sensors);
 
         List<SensorEventAvro> temp = new ArrayList<>(sensors);
 
@@ -46,7 +48,7 @@ public class AggregationStarter {
         }
     }
 
-    @KafkaListener(topics = "${kafka.topics.sensor}", containerFactory = "eventConsumer")
+    @KafkaListener(topics = "${kafka.topics.sensor}", containerFactory = Values.EVENT_CONSUMER)
     public void handler(SensorEventAvro event) {
         sensors.addIfAbsent(event);
     }
