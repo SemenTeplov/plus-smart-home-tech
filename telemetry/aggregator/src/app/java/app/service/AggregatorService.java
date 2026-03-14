@@ -73,13 +73,15 @@ public class AggregatorService {
             log.info("Создан новый снимок {}", snapshot);
         }
 
-        snapshots.remove(event.getHubId());
-
         return Optional.of(snapshot);
     }
 
     @KafkaListener(topics = "${kafka.topics.snapshot}", containerFactory = "snapshotConsumer")
     public void handler(SensorsSnapshotAvro event) {
-        snapshots.putIfAbsent(event.getHubId(), event);
+        if (!snapshots.containsKey(event.getHubId())) {
+            snapshots.putIfAbsent(event.getHubId(), event);
+        } else {
+            snapshots.replace(event.getHubId(), event);
+        }
     }
 }
