@@ -8,7 +8,7 @@ kafka:
     snapshot-group: hub
     sensor-group: sensor
   offset:
-    rest-config: earliest
+    rest-config: latest
   consumer:
     session-timeout-ms: 30000
     heartbeat-interval-ms: 10000
