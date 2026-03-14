@@ -33,18 +33,18 @@ public class AggregatorService {
 
             snapshot = snapshots.get(event.getHubId());
 
-            if (snapshot.getSensorsState().containsKey(event.getId())) {
-                log.info("В снимке {} найдено событие {}", snapshot, event);
-
-                SensorStateAvro oldState = snapshot.getSensorsState().get(event.getId());
-
-                if (oldState.getTimestamp().isAfter(event.getTimestamp())
-                        || oldState.getData().equals(event.getPayload())) {
-                    log.info("Событие {} не нужно изминениять", event);
-
-                    return Optional.empty();
-                }
-            }
+//            if (snapshot.getSensorsState().containsKey(event.getId())) {
+//                log.info("В снимке {} найдено событие {}", snapshot, event);
+//
+//                SensorStateAvro oldState = snapshot.getSensorsState().get(event.getId());
+//
+//                if (oldState.getTimestamp().isBefore(event.getTimestamp())
+//                        || oldState.getData().equals(event.getPayload())) {
+//                    log.info("Событие {} не нужно изминениять", event);
+//
+//                    return Optional.empty();
+//                }
+//            }
 
             SensorStateAvro newState = SensorStateAvro.newBuilder()
                     .setTimestamp(event.getTimestamp())
