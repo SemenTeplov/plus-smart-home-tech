@@ -45,35 +45,43 @@ public class AggregatorService {
     }
 
     public Optional<SensorsSnapshotAvro> updateState(SensorEventAvro event) {
-        if (!snapshots.containsKey(event.getHubId())) {
-            snapshots.putIfAbsent(event.getHubId(), new CopyOnWriteArrayList<>());
-        }
+//        if (!snapshots.containsKey(event.getHubId())) {
+//            snapshots.putIfAbsent(event.getHubId(), new CopyOnWriteArrayList<>());
+//        }
+//
+//        SensorsSnapshotAvro snapshot = snapshots.get(event.getHubId()).stream()
+//                .filter(e -> e.getSensorsState().containsKey(event.getId()))
+//                .findFirst().orElse(
+//                        SensorsSnapshotAvro.newBuilder()
+//                            .setHubId(event.getHubId())
+//                            .setTimestamp(event.getTimestamp())
+//                            .setSensorsState(Map.of(event.getId(), SensorStateAvro.newBuilder()
+//                                    .setTimestamp(event.getTimestamp())
+//                                    .setData(event.getPayload()).build()))
+//                            .build());
+//
+//        SensorStateAvro oldState = snapshot.getSensorsState().get(event.getId());
+//
+//        if (oldState.getTimestamp().isBefore(event.getTimestamp())) {
+//            return Optional.empty();
+//        }
+//
+//        SensorStateAvro newState = SensorStateAvro.newBuilder()
+//                .setTimestamp(event.getTimestamp())
+//                .setData(event.getPayload())
+//                .build();
+//
+//        snapshot.getSensorsState().put(event.getId(), newState);
 
-        SensorsSnapshotAvro snapshot = snapshots.get(event.getHubId()).stream()
-                .filter(e -> e.getSensorsState().containsKey(event.getId()))
-                .findFirst().orElse(
-                        SensorsSnapshotAvro.newBuilder()
+//        return Optional.of(snapshot);
+
+        return Optional.of(SensorsSnapshotAvro.newBuilder()
                             .setHubId(event.getHubId())
                             .setTimestamp(event.getTimestamp())
                             .setSensorsState(Map.of(event.getId(), SensorStateAvro.newBuilder()
                                     .setTimestamp(event.getTimestamp())
                                     .setData(event.getPayload()).build()))
                             .build());
-
-        SensorStateAvro oldState = snapshot.getSensorsState().get(event.getId());
-
-        if (oldState.getTimestamp().isBefore(event.getTimestamp())) {
-            return Optional.empty();
-        }
-
-        SensorStateAvro newState = SensorStateAvro.newBuilder()
-                .setTimestamp(event.getTimestamp())
-                .setData(event.getPayload())
-                .build();
-
-        snapshot.getSensorsState().put(event.getId(), newState);
-
-        return Optional.of(snapshot);
 
 
 //        SensorsSnapshotAvro snapshot = null;
