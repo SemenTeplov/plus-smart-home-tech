@@ -46,13 +46,13 @@ public class AggregatorService {
 //                return Optional.empty();
 //            }
 //        }
-//
-//        SensorStateAvro newState = SensorStateAvro.newBuilder()
-//                .setTimestamp(event.getTimestamp())
-//                .setData(event.getPayload())
-//                .build();
-//
-//        snapshot.getSensorsState().put(event.getId(), newState);
+
+        SensorStateAvro newState = SensorStateAvro.newBuilder()
+                .setTimestamp(event.getTimestamp())
+                .setData(event.getPayload())
+                .build();
+
+        snapshot.getSensorsState().put(event.getId(), newState);
 
         return Optional.of(snapshot);
     }
