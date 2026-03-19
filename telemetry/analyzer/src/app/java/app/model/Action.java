@@ -1,13 +1,9 @@
 package app.java.app.model;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 import lombok.AccessLevel;
@@ -17,9 +13,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -37,26 +30,4 @@ public class Action {
     String type;
 
     Integer value;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "scenario_actions",
-            joinColumns = @JoinColumn(name = "action_id"),
-            inverseJoinColumns = @JoinColumn(name = "scenario_id"))
-    private Set<Scenario> scenarios = new HashSet<>();
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "scenario_actions",
-            joinColumns = @JoinColumn(name = "action_id"),
-            inverseJoinColumns = @JoinColumn(name = "sensor_id"))
-    private Set<Sensor> sensors = new HashSet<>();
-
-    public void addScenario(Scenario scenario) {
-        scenarios.add(scenario);
-    }
-
-    public void addSensor(Sensor sensor) {
-        sensors.add(sensor);
-    }
 }

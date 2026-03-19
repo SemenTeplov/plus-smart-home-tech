@@ -7,6 +7,7 @@ import app.java.app.model.Sensor;
 import app.java.app.repository.ActionRepository;
 import app.java.app.repository.ConditionRepository;
 import app.java.app.repository.ScenarioRepository;
+import app.java.app.repository.SensorRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,13 +32,17 @@ public class HubEventProcessor {
 
     private final ActionRepository actionRepository;
 
+    private final SensorRepository sensorRepository;
+
     @Autowired
     public HubEventProcessor(ScenarioRepository scenarioRepository,
                              ConditionRepository conditionRepository,
-                             ActionRepository actionRepository) {
+                             ActionRepository actionRepository,
+                             SensorRepository sensorRepository) {
         this.scenarioRepository = scenarioRepository;
         this.conditionRepository = conditionRepository;
         this.actionRepository = actionRepository;
+        this.sensorRepository = sensorRepository;
     }
 
     @Transactional
@@ -46,35 +51,33 @@ public class HubEventProcessor {
         if (event.getPayload().getClass().equals(ScenarioAddedEventAvro.class)) {
             ScenarioAddedEventAvro eventAvro = (ScenarioAddedEventAvro) event.getPayload();
 
-            Scenario scenario = Scenario.builder()
-                    .hubId(event.getHubId())
-                    .name(eventAvro.getName())
-                    .conditions(new HashSet<>())
-                    .actions(new HashSet<>())
-                    .build();
+            Scenario scenario = getScenario(event.getHubId(), eventAvro.getName());
 
             for (var item : eventAvro.getConditions()) {
-                Set<Sensor> sensors = new HashSet<>();
-                sensors.add(Sensor.builder().hubId(event.getHubId()).id(item.getSensorId()).build());
+                Condition condition = getCondition(
+                        item.getType().name(),
+                        item.getOperation().name(),
+                        item.getValue(),
+                        scenario.getConditions());
 
-                scenario.addCondition(conditionRepository.saveAndFlush(
-                        Condition.builder()
-                            .type(item.getType().name())
-                            .operation(item.getOperation().name())
-                            .value(item.getValue())
-                            .sensors(sensors)
-                            .build()));
+                Sensor sensor = getSensor(event, item.getSensorId());
+                sensor.addCondition(condition);
+                sensorRepository.save(sensor);
+
+                scenario.addCondition(condition);
             }
 
             for (var item : eventAvro.getActions()) {
-                Set<Sensor> sensors = new HashSet<>();
-                sensors.add(Sensor.builder().hubId(event.getHubId()).id(item.getSensorId()).build());
+                Action action = getAction(
+                        item.getType().name(),
+                        item.getValue(),
+                        scenario.getActions());
 
-                scenario.addAction(actionRepository.saveAndFlush(Action.builder()
-                        .type(item.getType().name())
-                        .value(item.getValue())
-                        .sensors(sensors)
-                        .build()));
+                Sensor sensor = getSensor(event, item.getSensorId());
+                sensor.addAction(action);
+                sensorRepository.save(sensor);
+
+                scenario.addAction(action);
             }
 
             scenarioRepository.save(scenario);
@@ -85,5 +88,51 @@ public class HubEventProcessor {
             scenarioRepository
                     .findByHubIdAndName(event.getHubId(), eventAvro.getName()).ifPresent(scenarioRepository::delete);
         }
+    }
+
+    private Sensor getSensor(HubEventAvro event, String id) {
+        return sensorRepository.findByIdAndHubId(id, event.getHubId()).orElse(
+                Sensor.builder()
+                    .hubId(event.getHubId())
+                    .id(id)
+                    .conditions(new HashSet<>())
+                    .actions(new HashSet<>())
+                    .build());
+    }
+
+    private Scenario getScenario(String hubId, String name) {
+        return scenarioRepository.findByHubIdAndName(hubId, name).orElse(
+                Scenario.builder()
+                        .hubId(hubId)
+                        .name(name)
+                        .conditions(new HashSet<>())
+                        .actions(new HashSet<>())
+                        .build());
+    }
+
+    private Condition getCondition(String type, String operation, Integer value, Set<Condition> set) {
+        return set.stream()
+                .filter(i ->
+                        i.getType().equals(type) &&
+                        i.getOperation().equals(operation) &&
+                        i.getValue().equals(value))
+                .findFirst()
+                .orElse(conditionRepository.saveAndFlush(
+                        Condition.builder()
+                                .type(type)
+                                .operation(operation)
+                                .value(value)
+                                .build()));
+    }
+
+    private Action getAction(String type, Integer value, Set<Action> set) {
+        return set.stream()
+                .filter(i -> i.getType().equals(type) && i.getValue().equals(value))
+                .findFirst()
+                .orElse(actionRepository.saveAndFlush(
+                        Action.builder()
+                            .type(type)
+                            .value(value)
+                            .build()));
     }
 }
