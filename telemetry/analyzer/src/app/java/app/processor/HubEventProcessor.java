@@ -39,6 +39,8 @@ public class HubEventProcessor {
             Scenario scenario = Scenario.builder()
                     .hubId(event.getHubId())
                     .name(eventAvro.getName())
+                    .conditions(new HashSet<>())
+                    .actions(new HashSet<>())
                     .build();
 
             for (var item : eventAvro.getConditions()) {
