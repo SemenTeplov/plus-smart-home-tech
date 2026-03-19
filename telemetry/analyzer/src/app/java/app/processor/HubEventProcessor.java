@@ -91,13 +91,13 @@ public class HubEventProcessor {
     }
 
     private Sensor getSensor(HubEventAvro event, String id) {
-        return sensorRepository.findByIdAndHubId(id, event.getHubId()).orElse(
+        return sensorRepository.findByIdAndHubId(id, event.getHubId()).orElse(sensorRepository.saveAndFlush(
                 Sensor.builder()
                     .hubId(event.getHubId())
                     .id(id)
                     .conditions(new HashSet<>())
                     .actions(new HashSet<>())
-                    .build());
+                    .build()));
     }
 
     private Scenario getScenario(String hubId, String name) {
