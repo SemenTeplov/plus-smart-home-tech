@@ -37,7 +37,8 @@ public class SnapshotProcessor {
                         .forEach(o -> {
                             actions.stream()
                                     .filter(a -> o.getClass().equals(a.getActionClass()))
-                                    .forEach(a -> a.addAction(o, condition, scenario, scenarioRepository));
+                                    .forEach(a -> a.addAction(
+                                            o, condition.getCondition(), scenario, scenarioRepository));
                         });
             }
         }

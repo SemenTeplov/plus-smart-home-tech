@@ -1,13 +1,11 @@
 package app.java.app.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import lombok.AccessLevel;
@@ -38,47 +36,19 @@ public class Scenario {
 
     String name;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "scenario_conditions",
-            joinColumns = @JoinColumn(name = "scenario_id"),
-            inverseJoinColumns = @JoinColumn(name = "condition_id"))
-    private Set<Condition> conditions = new HashSet<>();
+    @OneToMany(mappedBy = "scenario", cascade = CascadeType.ALL, orphanRemoval = true)
+    Set<ScenarioCondition> conditions = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "scenario_conditions",
-            joinColumns = @JoinColumn(name = "scenario_id"),
-            inverseJoinColumns = @JoinColumn(name = "sensor_id"))
-    private Set<Sensor> sensorsForCondition = new HashSet<>();
+    @OneToMany(mappedBy = "scenario", cascade = CascadeType.ALL, orphanRemoval = true)
+    Set<ScenarioAction> actions = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "scenario_actions",
-            joinColumns = @JoinColumn(name = "scenario_id"),
-            inverseJoinColumns = @JoinColumn(name = "action_id"))
-    private Set<Action> actions = new HashSet<>();
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "scenario_actions",
-            joinColumns = @JoinColumn(name = "scenario_id"),
-            inverseJoinColumns = @JoinColumn(name = "sensor_id"))
-    private Set<Sensor> sensorsForActions = new HashSet<>();
-
-    public void addCondition(Condition condition) {
+    public void addCondition(ScenarioCondition condition) {
         conditions.add(condition);
+        condition.setScenario(this);
     }
 
-    public void addAction(Action action) {
+    public void addAction(ScenarioAction action) {
         actions.add(action);
-    }
-
-    public void addSensorForCondition(Sensor sensor) {
-        sensorsForCondition.add(sensor);
-    }
-
-    public void addSensorForAction(Sensor sensor) {
-        sensorsForActions.add(sensor);
+        action.setScenario(this);
     }
 }

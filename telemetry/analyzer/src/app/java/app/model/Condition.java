@@ -1,9 +1,11 @@
 package app.java.app.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import lombok.AccessLevel;
@@ -13,6 +15,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -32,4 +37,12 @@ public class Condition {
     String operation;
 
     Integer value;
+
+    @OneToMany(mappedBy = "condition", cascade = CascadeType.ALL, orphanRemoval = true)
+    Set<ScenarioCondition> conditions = new HashSet<>();
+
+    public void addCondition(ScenarioCondition condition) {
+        conditions.add(condition);
+        condition.setCondition(this);
+    }
 }
