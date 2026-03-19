@@ -18,9 +18,8 @@ public class EventService {
 
     private final ActionRepository actionRepository;
 
-    @Autowired
     public EventService(@GrpcClient("hub-router") HubRouterControllerGrpc.HubRouterControllerBlockingStub hubRouterClient,
-                        ActionRepository actionRepository) {
+                        @Autowired ActionRepository actionRepository) {
         this.hubRouterClient = hubRouterClient;
         this.actionRepository = actionRepository;
     }
