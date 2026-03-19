@@ -4,6 +4,8 @@ import app.java.app.model.Action;
 import app.java.app.model.Condition;
 import app.java.app.model.Scenario;
 import app.java.app.model.Sensor;
+import app.java.app.repository.ActionRepository;
+import app.java.app.repository.ConditionRepository;
 import app.java.app.repository.ScenarioRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -25,9 +27,17 @@ import java.util.Set;
 public class HubEventProcessor {
     private final ScenarioRepository scenarioRepository;
 
+    private final ConditionRepository conditionRepository;
+
+    private final ActionRepository actionRepository;
+
     @Autowired
-    public HubEventProcessor(ScenarioRepository scenarioRepository) {
+    public HubEventProcessor(ScenarioRepository scenarioRepository,
+                             ConditionRepository conditionRepository,
+                             ActionRepository actionRepository) {
         this.scenarioRepository = scenarioRepository;
+        this.conditionRepository = conditionRepository;
+        this.actionRepository = actionRepository;
     }
 
     @Transactional
@@ -47,24 +57,24 @@ public class HubEventProcessor {
                 Set<Sensor> sensors = new HashSet<>();
                 sensors.add(Sensor.builder().hubId(event.getHubId()).id(item.getSensorId()).build());
 
-                scenario.addCondition(
+                scenario.addCondition(conditionRepository.saveAndFlush(
                         Condition.builder()
                             .type(item.getType().name())
                             .operation(item.getOperation().name())
                             .value(item.getValue())
                             .sensors(sensors)
-                            .build());
+                            .build()));
             }
 
             for (var item : eventAvro.getActions()) {
                 Set<Sensor> sensors = new HashSet<>();
                 sensors.add(Sensor.builder().hubId(event.getHubId()).id(item.getSensorId()).build());
 
-                scenario.addAction(Action.builder()
+                scenario.addAction(actionRepository.saveAndFlush(Action.builder()
                         .type(item.getType().name())
                         .value(item.getValue())
                         .sensors(sensors)
-                        .build());
+                        .build()));
             }
 
             scenarioRepository.save(scenario);
