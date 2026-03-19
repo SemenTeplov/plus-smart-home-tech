@@ -14,12 +14,14 @@ import net.devh.boot.grpc.client.inject.GrpcClient;
 
 @Service
 public class EventService {
+    @GrpcClient("hub-router")
     private final HubRouterControllerGrpc.HubRouterControllerBlockingStub hubRouterClient;
 
+    @Autowired
     private final ActionRepository actionRepository;
 
-    public EventService(@GrpcClient("hub-router") HubRouterControllerGrpc.HubRouterControllerBlockingStub hubRouterClient,
-                        @Autowired ActionRepository actionRepository) {
+    public EventService(HubRouterControllerGrpc.HubRouterControllerBlockingStub hubRouterClient,
+                        ActionRepository actionRepository) {
         this.hubRouterClient = hubRouterClient;
         this.actionRepository = actionRepository;
     }
