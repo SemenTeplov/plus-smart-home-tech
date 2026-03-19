@@ -62,8 +62,8 @@ public class HubEventProcessor {
 
                 Sensor sensor = getSensor(event, item.getSensorId());
                 sensor.addCondition(condition);
-                sensorRepository.save(sensor);
 
+                scenario.addSensorForCondition(sensor);
                 scenario.addCondition(condition);
             }
 
@@ -75,8 +75,8 @@ public class HubEventProcessor {
 
                 Sensor sensor = getSensor(event, item.getSensorId());
                 sensor.addAction(action);
-                sensorRepository.save(sensor);
 
+                scenario.addSensorForAction(sensor);
                 scenario.addAction(action);
             }
 
@@ -107,6 +107,8 @@ public class HubEventProcessor {
                         .name(name)
                         .conditions(new HashSet<>())
                         .actions(new HashSet<>())
+                        .sensorsForActions(new HashSet<>())
+                        .sensorsForCondition(new HashSet<>())
                         .build());
     }
 

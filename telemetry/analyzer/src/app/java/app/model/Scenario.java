@@ -47,10 +47,24 @@ public class Scenario {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
+            name = "scenario_conditions",
+            joinColumns = @JoinColumn(name = "scenario_id"),
+            inverseJoinColumns = @JoinColumn(name = "sensor_id"))
+    private Set<Sensor> sensorsForCondition = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
             name = "scenario_actions",
             joinColumns = @JoinColumn(name = "scenario_id"),
             inverseJoinColumns = @JoinColumn(name = "action_id"))
     private Set<Action> actions = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "scenario_actions",
+            joinColumns = @JoinColumn(name = "scenario_id"),
+            inverseJoinColumns = @JoinColumn(name = "sensor_id"))
+    private Set<Sensor> sensorsForActions = new HashSet<>();
 
     public void addCondition(Condition condition) {
         conditions.add(condition);
@@ -58,5 +72,13 @@ public class Scenario {
 
     public void addAction(Action action) {
         actions.add(action);
+    }
+
+    public void addSensorForCondition(Sensor sensor) {
+        sensorsForCondition.add(sensor);
+    }
+
+    public void addSensorForAction(Sensor sensor) {
+        sensorsForActions.add(sensor);
     }
 }
