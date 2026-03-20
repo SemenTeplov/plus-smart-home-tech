@@ -43,4 +43,9 @@ public class ScenarioCondition {
     @MapsId("conditionId")
     @JoinColumn(name = "condition_id", referencedColumnName = "id")
     private Condition condition;
+
+    @Override
+    public String toString() {
+        return String.format("id: %s", id);
+    }
 }

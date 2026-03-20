@@ -45,4 +45,9 @@ public class Condition {
         conditions.add(condition);
         condition.setCondition(this);
     }
+
+    @Override
+    public String toString() {
+        return String.format("id: %d, type: %s, operation: %s, value: %d", id, type, operation, value);
+    }
 }

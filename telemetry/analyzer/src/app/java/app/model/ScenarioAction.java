@@ -39,4 +39,9 @@ public class ScenarioAction {
     @MapsId("actionId")
     @JoinColumn(name = "action_id", referencedColumnName = "id")
     private Action action;
+
+    @Override
+    public String toString() {
+        return String.format("id: %s", id);
+    }
 }

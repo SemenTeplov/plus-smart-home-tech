@@ -51,4 +51,9 @@ public class Scenario {
         actions.add(action);
         action.setScenario(this);
     }
+
+    @Override
+    public String toString() {
+        return String.format("id: %d, hubId: %s, name: %s", id, hubId, name);
+    }
 }

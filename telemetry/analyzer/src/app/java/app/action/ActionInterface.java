@@ -23,15 +23,12 @@ public interface ActionInterface {
     Class getActionClass();
 
     default public boolean compareValues(String operator, Integer value, Integer other) {
-        if (ConditionOperationAvro.EQUALS.name().equals(operator)) {
-            return value.equals(other);
-        } else if (ConditionOperationAvro.GREATER_THAN.name().equals(operator)) {
-            return value > other;
-        } else if (ConditionOperationAvro.LOWER_THAN.name().equals(operator)) {
-            return value < other;
-        }
-
-        return false;
+        return switch (ConditionOperationAvro.valueOf(operator)) {
+            case EQUALS -> value.equals(other);
+            case GREATER_THAN -> value > other;
+            case LOWER_THAN -> value < other;
+            default -> false;
+        };
     }
 
     @Transactional

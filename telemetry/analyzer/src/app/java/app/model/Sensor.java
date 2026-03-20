@@ -46,4 +46,9 @@ public class Sensor {
         actions.add(action);
         action.setSensor(this);
     }
+
+    @Override
+    public String toString() {
+        return String.format("id: %s, hubId: %s", id, hubId);
+    }
 }

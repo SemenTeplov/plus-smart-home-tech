@@ -20,4 +20,9 @@ public class ScenarioConditionId implements Serializable {
     private String sensorId;
 
     private Long conditionId;
+
+    @Override
+    public String toString() {
+        return String.format("scenarioId: %d, sensorId: %s, conditionId: %d", scenarioId, sensorId, conditionId);
+    }
 }

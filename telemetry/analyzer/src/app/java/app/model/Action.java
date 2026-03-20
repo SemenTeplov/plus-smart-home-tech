@@ -43,4 +43,9 @@ public class Action {
         actions.add(action);
         action.setAction(this);
     }
+
+    @Override
+    public String toString() {
+        return String.format("id: %d, type: %s, value: %d", id, type, value);
+    }
 }

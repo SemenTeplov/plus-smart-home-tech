@@ -20,4 +20,9 @@ public class ScenarioActionId implements Serializable {
     private String sensorId;
 
     private Long actionId;
+
+    @Override
+    public String toString() {
+        return String.format("scenarioId: %d, sensorId: %s, actionId: %d", scenarioId, sensorId, actionId);
+    }
 }

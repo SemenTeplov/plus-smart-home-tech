@@ -49,7 +49,7 @@ public class HubEventProcessor {
     @Transactional
     @KafkaListener(topics = "${kafka.topics.hub}", containerFactory = "hubConsumer")
     public void handler(HubEventAvro event) {
-        log.info("Поступил HubEventAvro: {}", event);
+        log.info("Поступил HubEventAvro с HubId: {}", event.getHubId());
 
         if (event.getPayload().getClass().equals(ScenarioAddedEventAvro.class)) {
             log.info("HubEventAvro является ScenarioAddedEventAvro");
@@ -119,6 +119,14 @@ public class HubEventProcessor {
     }
 
     private Sensor getSensor(HubEventAvro event, String id) {
+        if (event == null) {
+            throw new IllegalArgumentException("В методе getSensor не может event быть null");
+        }
+
+        if (id == null) {
+            throw new IllegalArgumentException("В методе getSensor не может id быть null");
+        }
+
         Sensor sensor = sensorRepository
                 .findByIdAndHubId(id, event.getHubId())
                 .orElse(sensorRepository.saveAndFlush(Sensor.builder()
@@ -134,6 +142,14 @@ public class HubEventProcessor {
     }
 
     private Scenario getScenario(String hubId, String name) {
+        if (hubId == null) {
+            throw new IllegalArgumentException("В методе getScenario не может hubId быть null");
+        }
+
+        if (name == null) {
+            throw new IllegalArgumentException("В методе getScenario не может name быть null");
+        }
+
         Scenario scenario = scenarioRepository
                 .findByHubIdAndName(hubId, name)
                 .orElse(Scenario.builder()
@@ -149,6 +165,18 @@ public class HubEventProcessor {
     }
 
     private Condition getCondition(String type, String operation, Integer value, Set<Condition> set) {
+        if (type == null) {
+            throw new IllegalArgumentException("В методе getCondition не может type быть null");
+        }
+
+        if (operation == null) {
+            throw new IllegalArgumentException("В методе getCondition не может operation быть null");
+        }
+
+        if (value == null) {
+            throw new IllegalArgumentException("В методе getCondition не может value быть null");
+        }
+
         Condition condition =  set.stream()
                 .filter(i ->
                         i.getType().equals(type) &&
@@ -163,12 +191,20 @@ public class HubEventProcessor {
                                 .conditions(new HashSet<>())
                                 .build()));
 
-        log.info("Получен Condition: {}", condition);
+        log.info("Получен Condition {}", condition);
 
         return condition;
     }
 
     private Action getAction(String type, Integer value, Set<Action> set) {
+        if (type == null) {
+            throw new IllegalArgumentException("В методе getAction не может type быть null");
+        }
+
+        if (value == null) {
+            throw new IllegalArgumentException("В методе getAction не может value быть null");
+        }
+
         Action action = set.stream()
                 .filter(i -> type.equals(i.getType()) && value.equals(i.getValue()))
                 .findFirst()
