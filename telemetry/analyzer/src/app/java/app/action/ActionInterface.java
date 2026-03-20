@@ -10,6 +10,8 @@ import app.java.app.model.Sensor;
 import app.java.app.repository.ActionRepository;
 import app.java.app.repository.ScenarioActionRepository;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import ru.yandex.practicum.kafka.telemetry.event.ConditionOperationAvro;
 
 public interface ActionInterface {
@@ -32,6 +34,7 @@ public interface ActionInterface {
         return false;
     }
 
+    @Transactional
     default public void save(String type,
                              ScenarioCondition scenarioCondition,
                              int value,
@@ -51,6 +54,10 @@ public interface ActionInterface {
                     .action(action)
                     .id(new ScenarioActionId(scenario.getId(), sensor.getId(), action.getId()))
                     .build();
+
+            scenario.addAction(scenarioAction);
+            sensor.addAction(scenarioAction);
+            action.addAction(scenarioAction);
 
             scenarioActionRepository.save(scenarioAction);
         }
