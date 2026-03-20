@@ -152,8 +152,8 @@ public class HubEventProcessor {
         Condition condition =  set.stream()
                 .filter(i ->
                         i.getType().equals(type) &&
-                                i.getOperation().equals(operation) &&
-                                i.getValue().equals(value))
+                                operation.equals(i.getOperation()) &&
+                                value.equals(i.getValue()))
                 .findFirst()
                 .orElse(conditionRepository.saveAndFlush(
                         Condition.builder()
