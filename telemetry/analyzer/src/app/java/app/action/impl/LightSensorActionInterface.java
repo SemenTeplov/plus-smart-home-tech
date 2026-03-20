@@ -2,6 +2,7 @@ package app.java.app.action.impl;
 
 import app.java.app.action.ActionInterface;
 import app.java.app.model.ScenarioCondition;
+import app.java.app.repository.ActionRepository;
 import app.java.app.repository.ScenarioActionRepository;
 
 import org.springframework.stereotype.Component;
@@ -15,7 +16,8 @@ public class LightSensorActionInterface implements ActionInterface {
     public void addAction(
             Object obj,
             ScenarioCondition scenarioCondition,
-            ScenarioActionRepository scenarioActionRepository) {
+            ScenarioActionRepository scenarioActionRepository,
+            ActionRepository actionRepository) {
         LightSensorAvro sensor = (LightSensorAvro) obj;
         String type = scenarioCondition.getCondition().getType();
 
@@ -23,7 +25,8 @@ public class LightSensorActionInterface implements ActionInterface {
             save(ConditionTypeAvro.LUMINOSITY.name(),
                     scenarioCondition,
                     sensor.getLuminosity(),
-                    scenarioActionRepository);
+                    scenarioActionRepository,
+                    actionRepository);
         }
     }
 

@@ -2,6 +2,7 @@ package app.java.app.action.impl;
 
 import app.java.app.action.ActionInterface;
 import app.java.app.model.ScenarioCondition;
+import app.java.app.repository.ActionRepository;
 import app.java.app.repository.ScenarioActionRepository;
 
 import org.springframework.stereotype.Component;
@@ -15,7 +16,8 @@ public class ClimateSensorActionInterface implements ActionInterface {
     public void addAction(
             Object obj,
             ScenarioCondition scenarioCondition,
-            ScenarioActionRepository scenarioActionRepository) {
+            ScenarioActionRepository scenarioActionRepository,
+            ActionRepository actionRepository) {
         ClimateSensorAvro sensor = (ClimateSensorAvro) obj;
         String type = scenarioCondition.getCondition().getType();
 
@@ -23,21 +25,24 @@ public class ClimateSensorActionInterface implements ActionInterface {
             save(ConditionTypeAvro.TEMPERATURE.name(),
                     scenarioCondition,
                     sensor.getTemperatureC(),
-                    scenarioActionRepository);
+                    scenarioActionRepository,
+                    actionRepository);
         }
 
         if (type.equals(ConditionTypeAvro.HUMIDITY.name())) {
             save(ConditionTypeAvro.HUMIDITY.name(),
                     scenarioCondition,
                     sensor.getHumidity(),
-                    scenarioActionRepository);
+                    scenarioActionRepository,
+                    actionRepository);
         }
 
         if (type.equals(ConditionTypeAvro.CO2LEVEL.name())) {
             save(ConditionTypeAvro.CO2LEVEL.name(),
                     scenarioCondition,
                     sensor.getCo2Level(),
-                    scenarioActionRepository);
+                    scenarioActionRepository,
+                    actionRepository);
         }
     }
 

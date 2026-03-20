@@ -2,6 +2,7 @@ package app.java.app.action.impl;
 
 import app.java.app.action.ActionInterface;
 import app.java.app.model.ScenarioCondition;
+import app.java.app.repository.ActionRepository;
 import app.java.app.repository.ScenarioActionRepository;
 
 import org.springframework.stereotype.Component;
@@ -15,14 +16,15 @@ public class MotionSensorActionInterface implements ActionInterface {
     public void addAction(
             Object obj,
             ScenarioCondition scenarioCondition,
-            ScenarioActionRepository scenarioActionRepository) {
+            ScenarioActionRepository scenarioActionRepository,
+            ActionRepository actionRepository) {
         MotionSensorAvro sensor = (MotionSensorAvro) obj;
         String type = scenarioCondition.getCondition().getType();
 
         if (type.equals(ConditionTypeAvro.MOTION.name())) {
             int motion = sensor.getMotion() ? 1 : 0;
 
-            save(ConditionTypeAvro.MOTION.name(), scenarioCondition, motion, scenarioActionRepository);
+            save(ConditionTypeAvro.MOTION.name(), scenarioCondition, motion, scenarioActionRepository, actionRepository);
         }
     }
 

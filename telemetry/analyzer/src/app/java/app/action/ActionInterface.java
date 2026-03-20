@@ -7,12 +7,16 @@ import app.java.app.model.ScenarioAction;
 import app.java.app.model.ScenarioActionId;
 import app.java.app.model.ScenarioCondition;
 import app.java.app.model.Sensor;
+import app.java.app.repository.ActionRepository;
 import app.java.app.repository.ScenarioActionRepository;
 
 import ru.yandex.practicum.kafka.telemetry.event.ConditionOperationAvro;
 
 public interface ActionInterface {
-    void addAction(Object obj, ScenarioCondition scenarioCondition, ScenarioActionRepository scenarioActionRepository);
+    void addAction(Object obj,
+                   ScenarioCondition scenarioCondition,
+                   ScenarioActionRepository scenarioActionRepository,
+                   ActionRepository actionRepository);
 
     Class getActionClass();
 
@@ -31,14 +35,15 @@ public interface ActionInterface {
     default public void save(String type,
                              ScenarioCondition scenarioCondition,
                              int value,
-                             ScenarioActionRepository scenarioActionRepository) {
+                             ScenarioActionRepository scenarioActionRepository,
+                             ActionRepository actionRepository) {
         Condition condition = scenarioCondition.getCondition();
 
         if (condition.getType().equals(type) &&
                 compareValues(condition.getOperation(), condition.getValue(), value)) {
             Scenario scenario = scenarioCondition.getScenario();
             Sensor sensor = scenarioCondition.getSensor();
-            Action action = Action.builder().type(type).value(value).build();
+            Action action = actionRepository.saveAndFlush(Action.builder().type(type).value(value).build());
 
             ScenarioAction scenarioAction = ScenarioAction.builder()
                     .sensor(sensor)

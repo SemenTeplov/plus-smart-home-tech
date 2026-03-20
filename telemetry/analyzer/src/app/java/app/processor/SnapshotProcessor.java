@@ -1,6 +1,7 @@
 package app.java.app.processor;
 
 import app.java.app.model.ScenarioCondition;
+import app.java.app.repository.ActionRepository;
 import app.java.app.repository.ScenarioActionRepository;
 import app.java.app.repository.ScenarioConditionRepository;
 import app.java.app.action.ActionInterface;
@@ -22,16 +23,20 @@ public class SnapshotProcessor {
 
     private final ScenarioActionRepository scenarioActionRepository;
 
+    private final ActionRepository actionRepository;
+
     private final List<ActionInterface> actions;
 
     @Autowired
     public SnapshotProcessor(
             List<ActionInterface> actions,
             ScenarioActionRepository scenarioActionRepository,
-            ScenarioConditionRepository scenarioConditionRepository) {
+            ScenarioConditionRepository scenarioConditionRepository,
+            ActionRepository actionRepository) {
         this.actions = actions;
         this.scenarioActionRepository = scenarioActionRepository;
         this.scenarioConditionRepository = scenarioConditionRepository;
+        this.actionRepository = actionRepository;
     }
 
     @KafkaListener(topics = "${kafka.topics.snapshot}", containerFactory = "snapshotConsumer")
@@ -44,7 +49,7 @@ public class SnapshotProcessor {
             event.getSensorsState().values().forEach(o -> {
                 actions.stream()
                         .filter(a -> o.getClass().equals(a.getActionClass()))
-                        .forEach(a -> a.addAction(o, scenario, scenarioActionRepository));
+                        .forEach(a -> a.addAction(o, scenario, scenarioActionRepository, actionRepository));
             });
         }
     }
