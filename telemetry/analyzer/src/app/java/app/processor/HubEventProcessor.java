@@ -5,6 +5,7 @@ import app.java.app.model.Condition;
 import app.java.app.model.Scenario;
 import app.java.app.model.ScenarioAction;
 import app.java.app.model.ScenarioCondition;
+import app.java.app.model.ScenarioConditionId;
 import app.java.app.model.Sensor;
 import app.java.app.repository.ActionRepository;
 import app.java.app.repository.ConditionRepository;
@@ -68,6 +69,7 @@ public class HubEventProcessor {
                             .scenario(scenario)
                             .condition(condition)
                             .sensor(sensor)
+                            .id(new ScenarioConditionId(scenario.getId(), sensor.getId(), condition.getId()))
                             .build());
 
                 scenario.addCondition(scenarioCondition);

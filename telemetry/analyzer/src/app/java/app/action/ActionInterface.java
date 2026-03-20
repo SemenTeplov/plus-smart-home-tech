@@ -4,6 +4,7 @@ import app.java.app.model.Action;
 import app.java.app.model.Condition;
 import app.java.app.model.Scenario;
 import app.java.app.model.ScenarioAction;
+import app.java.app.model.ScenarioActionId;
 import app.java.app.model.ScenarioCondition;
 import app.java.app.model.Sensor;
 import app.java.app.repository.ScenarioActionRepository;
@@ -40,7 +41,11 @@ public interface ActionInterface {
             Action action = Action.builder().type(type).value(value).build();
 
             ScenarioAction scenarioAction = ScenarioAction.builder()
-                    .sensor(sensor).scenario(scenario).action(action).build();
+                    .sensor(sensor)
+                    .scenario(scenario)
+                    .action(action)
+                    .id(new ScenarioActionId(scenario.getId(), sensor.getId(), action.getId()))
+                    .build();
 
             scenarioActionRepository.save(scenarioAction);
         }
