@@ -1,9 +1,8 @@
 package app.java.app.action.impl;
 
 import app.java.app.action.ActionInterface;
-import app.java.app.model.Condition;
-import app.java.app.model.Scenario;
-import app.java.app.repository.ScenarioRepository;
+import app.java.app.model.ScenarioCondition;
+import app.java.app.repository.ScenarioActionRepository;
 
 import org.springframework.stereotype.Component;
 
@@ -13,13 +12,17 @@ import ru.yandex.practicum.kafka.telemetry.event.MotionSensorAvro;
 @Component
 public class MotionSensorActionInterface implements ActionInterface {
     @Override
-    public void addAction(Object obj, Condition condition, Scenario scenario, ScenarioRepository scenarioRepository) {
+    public void addAction(
+            Object obj,
+            ScenarioCondition scenarioCondition,
+            ScenarioActionRepository scenarioActionRepository) {
         MotionSensorAvro sensor = (MotionSensorAvro) obj;
+        String type = scenarioCondition.getCondition().getType();
 
-        if (condition.getType().equals(ConditionTypeAvro.MOTION.name())) {
+        if (type.equals(ConditionTypeAvro.MOTION.name())) {
             int motion = sensor.getMotion() ? 1 : 0;
 
-            save(condition, ConditionTypeAvro.MOTION.name(), scenario, motion, scenarioRepository);
+            save(ConditionTypeAvro.MOTION.name(), scenarioCondition, motion, scenarioActionRepository);
         }
     }
 

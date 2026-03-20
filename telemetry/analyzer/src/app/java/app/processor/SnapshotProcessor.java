@@ -1,7 +1,8 @@
 package app.java.app.processor;
 
-import app.java.app.model.Scenario;
-import app.java.app.repository.ScenarioRepository;
+import app.java.app.model.ScenarioCondition;
+import app.java.app.repository.ScenarioActionRepository;
+import app.java.app.repository.ScenarioConditionRepository;
 import app.java.app.action.ActionInterface;
 
 import lombok.extern.slf4j.Slf4j;
@@ -17,30 +18,34 @@ import java.util.List;
 @Slf4j
 @Service
 public class SnapshotProcessor {
-    private final ScenarioRepository scenarioRepository;
+    private final ScenarioConditionRepository scenarioConditionRepository;
+
+    private final ScenarioActionRepository scenarioActionRepository;
 
     private final List<ActionInterface> actions;
 
     @Autowired
-    public SnapshotProcessor(ScenarioRepository scenarioRepository, List<ActionInterface> actions) {
-        this.scenarioRepository = scenarioRepository;
+    public SnapshotProcessor(
+            List<ActionInterface> actions,
+            ScenarioActionRepository scenarioActionRepository,
+            ScenarioConditionRepository scenarioConditionRepository) {
         this.actions = actions;
+        this.scenarioActionRepository = scenarioActionRepository;
+        this.scenarioConditionRepository = scenarioConditionRepository;
     }
 
     @KafkaListener(topics = "${kafka.topics.snapshot}", containerFactory = "snapshotConsumer")
     public void handler(SensorsSnapshotAvro event) {
-        List<Scenario> scenarios = scenarioRepository.findByHubId(event.getHubId());
+        List<ScenarioCondition> scenarioConditions =
+                scenarioConditionRepository.findAll().stream()
+                        .filter(s -> s.getScenario().getHubId().equals(event.getHubId())).toList();
 
-        for (var scenario : scenarios) {
-            for (var condition : scenario.getConditions()) {
-                event.getSensorsState().values()
-                        .forEach(o -> {
-                            actions.stream()
-                                    .filter(a -> o.getClass().equals(a.getActionClass()))
-                                    .forEach(a -> a.addAction(
-                                            o, condition.getCondition(), scenario, scenarioRepository));
-                        });
-            }
+        for (var scenario : scenarioConditions) {
+            event.getSensorsState().values().forEach(o -> {
+                actions.stream()
+                        .filter(a -> o.getClass().equals(a.getActionClass()))
+                        .forEach(a -> a.addAction(o, scenario, scenarioActionRepository));
+            });
         }
     }
 }

@@ -1,9 +1,8 @@
 package app.java.app.action.impl;
 
 import app.java.app.action.ActionInterface;
-import app.java.app.model.Condition;
-import app.java.app.model.Scenario;
-import app.java.app.repository.ScenarioRepository;
+import app.java.app.model.ScenarioCondition;
+import app.java.app.repository.ScenarioActionRepository;
 
 import org.springframework.stereotype.Component;
 
@@ -13,19 +12,32 @@ import ru.yandex.practicum.kafka.telemetry.event.ConditionTypeAvro;
 @Component
 public class ClimateSensorActionInterface implements ActionInterface {
     @Override
-    public void addAction(Object obj, Condition condition, Scenario scenario, ScenarioRepository scenarioRepository) {
+    public void addAction(
+            Object obj,
+            ScenarioCondition scenarioCondition,
+            ScenarioActionRepository scenarioActionRepository) {
         ClimateSensorAvro sensor = (ClimateSensorAvro) obj;
+        String type = scenarioCondition.getCondition().getType();
 
-        if (condition.getType().equals(ConditionTypeAvro.TEMPERATURE.name())) {
-            save(condition, ConditionTypeAvro.TEMPERATURE.name(), scenario, sensor.getTemperatureC(), scenarioRepository);
+        if (type.equals(ConditionTypeAvro.TEMPERATURE.name())) {
+            save(ConditionTypeAvro.TEMPERATURE.name(),
+                    scenarioCondition,
+                    sensor.getTemperatureC(),
+                    scenarioActionRepository);
         }
 
-        if (condition.getType().equals(ConditionTypeAvro.HUMIDITY.name())) {
-            save(condition, ConditionTypeAvro.HUMIDITY.name(), scenario, sensor.getHumidity(), scenarioRepository);
+        if (type.equals(ConditionTypeAvro.HUMIDITY.name())) {
+            save(ConditionTypeAvro.HUMIDITY.name(),
+                    scenarioCondition,
+                    sensor.getHumidity(),
+                    scenarioActionRepository);
         }
 
-        if (condition.getType().equals(ConditionTypeAvro.CO2LEVEL.name())) {
-            save(condition, ConditionTypeAvro.CO2LEVEL.name(), scenario, sensor.getCo2Level(), scenarioRepository);
+        if (type.equals(ConditionTypeAvro.CO2LEVEL.name())) {
+            save(ConditionTypeAvro.CO2LEVEL.name(),
+                    scenarioCondition,
+                    sensor.getCo2Level(),
+                    scenarioActionRepository);
         }
     }
 

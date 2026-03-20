@@ -1,13 +1,17 @@
 package app.java.app.action;
 
+import app.java.app.model.Action;
 import app.java.app.model.Condition;
 import app.java.app.model.Scenario;
-import app.java.app.repository.ScenarioRepository;
+import app.java.app.model.ScenarioAction;
+import app.java.app.model.ScenarioCondition;
+import app.java.app.model.Sensor;
+import app.java.app.repository.ScenarioActionRepository;
 
 import ru.yandex.practicum.kafka.telemetry.event.ConditionOperationAvro;
 
 public interface ActionInterface {
-    void addAction(Object obj, Condition condition, Scenario scenario, ScenarioRepository scenarioRepository);
+    void addAction(Object obj, ScenarioCondition scenarioCondition, ScenarioActionRepository scenarioActionRepository);
 
     Class getActionClass();
 
@@ -23,14 +27,22 @@ public interface ActionInterface {
         return false;
     }
 
-    default public void save(Condition condition, String type, Scenario scenario, Integer value, ScenarioRepository scenarioRepository) {
-        if (condition.getType().equals(type) && compareValues(condition.getOperation(), condition.getValue(), value)) {
-            scenario.addAction(app.java.app.model.Action.builder()
-                    .type(type)
-                    .value(value)
-                    .build());
+    default public void save(String type,
+                             ScenarioCondition scenarioCondition,
+                             int value,
+                             ScenarioActionRepository scenarioActionRepository) {
+        Condition condition = scenarioCondition.getCondition();
 
-            scenarioRepository.save(scenario);
+        if (condition.getType().equals(type) &&
+                compareValues(condition.getOperation(), condition.getValue(), value)) {
+            Scenario scenario = scenarioCondition.getScenario();
+            Sensor sensor = scenarioCondition.getSensor();
+            Action action = Action.builder().type(type).value(value).build();
+
+            ScenarioAction scenarioAction = ScenarioAction.builder()
+                    .sensor(sensor).scenario(scenario).action(action).build();
+
+            scenarioActionRepository.save(scenarioAction);
         }
     }
 }

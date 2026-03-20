@@ -1,9 +1,8 @@
 package app.java.app.action.impl;
 
 import app.java.app.action.ActionInterface;
-import app.java.app.model.Condition;
-import app.java.app.model.Scenario;
-import app.java.app.repository.ScenarioRepository;
+import app.java.app.model.ScenarioCondition;
+import app.java.app.repository.ScenarioActionRepository;
 
 import org.springframework.stereotype.Component;
 
@@ -13,13 +12,17 @@ import ru.yandex.practicum.kafka.telemetry.event.SwitchSensorAvro;
 @Component
 public class SwitchSensorActionInterface implements ActionInterface {
     @Override
-    public void addAction(Object obj, Condition condition, Scenario scenario, ScenarioRepository scenarioRepository) {
+    public void addAction(
+            Object obj,
+            ScenarioCondition scenarioCondition,
+            ScenarioActionRepository scenarioActionRepository) {
         SwitchSensorAvro sensor = (SwitchSensorAvro) obj;
+        String type = scenarioCondition.getCondition().getType();
 
-        if (condition.getType().equals(ConditionTypeAvro.SWITCH.name())) {
+        if (type.equals(ConditionTypeAvro.SWITCH.name())) {
             int switchSensor = sensor.getState() ? 1 : 0;
 
-            save(condition, ConditionTypeAvro.SWITCH.name(), scenario, switchSensor, scenarioRepository);
+            save(ConditionTypeAvro.SWITCH.name(), scenarioCondition, switchSensor, scenarioActionRepository);
         }
     }
 
