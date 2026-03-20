@@ -170,7 +170,7 @@ public class HubEventProcessor {
 
     private Action getAction(String type, Integer value, Set<Action> set) {
         Action action = set.stream()
-                .filter(i -> i.getType().equals(type) && i.getValue().equals(value))
+                .filter(i -> type.equals(i.getType()) && value.equals(i.getValue()))
                 .findFirst()
                 .orElse(actionRepository.saveAndFlush(
                         Action.builder()
