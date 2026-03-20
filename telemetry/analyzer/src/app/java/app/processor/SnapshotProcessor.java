@@ -41,9 +41,13 @@ public class SnapshotProcessor {
 
     @KafkaListener(topics = "${kafka.topics.snapshot}", containerFactory = "snapshotConsumer")
     public void handler(SensorsSnapshotAvro event) {
+        log.info("Поступил SensorsSnapshotAvro: {}", event);
+
         List<ScenarioCondition> scenarioConditions =
                 scenarioConditionRepository.findAll().stream()
                         .filter(s -> s.getScenario().getHubId().equals(event.getHubId())).toList();
+
+        log.info("Получен список {} по HubId: {}", scenarioConditions, event.getHubId());
 
         for (var scenario : scenarioConditions) {
             event.getSensorsState().values().forEach(o -> {

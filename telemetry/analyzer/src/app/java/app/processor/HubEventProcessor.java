@@ -4,6 +4,7 @@ import app.java.app.model.Action;
 import app.java.app.model.Condition;
 import app.java.app.model.Scenario;
 import app.java.app.model.ScenarioAction;
+import app.java.app.model.ScenarioActionId;
 import app.java.app.model.ScenarioCondition;
 import app.java.app.model.ScenarioConditionId;
 import app.java.app.model.Sensor;
@@ -48,7 +49,11 @@ public class HubEventProcessor {
     @Transactional
     @KafkaListener(topics = "${kafka.topics.hub}", containerFactory = "hubConsumer")
     public void handler(HubEventAvro event) {
+        log.info("Поступил HubEventAvro: {}", event);
+
         if (event.getPayload().getClass().equals(ScenarioAddedEventAvro.class)) {
+            log.info("HubEventAvro является ScenarioAddedEventAvro");
+
             ScenarioAddedEventAvro eventAvro = (ScenarioAddedEventAvro) event.getPayload();
 
             Scenario scenario = getScenario(event.getHubId(), eventAvro.getName());
@@ -72,6 +77,8 @@ public class HubEventProcessor {
                             .id(new ScenarioConditionId(scenario.getId(), sensor.getId(), condition.getId()))
                             .build());
 
+                log.info("Был создан ScenarioCondition: {}", scenarioCondition);
+
                 scenario.addCondition(scenarioCondition);
                 condition.addCondition(scenarioCondition);
                 sensor.addCondition(scenarioCondition);
@@ -91,7 +98,10 @@ public class HubEventProcessor {
                             .scenario(scenario)
                             .action(action)
                             .sensor(sensor)
+                            .id(new ScenarioActionId(scenario.getId(), sensor.getId(), action.getId()))
                             .build());
+
+                log.info("Был создан ScenarioAction: {}", scenarioAction);
 
                 scenario.addAction(scenarioAction);
                 action.addAction(scenarioAction);
@@ -99,6 +109,8 @@ public class HubEventProcessor {
             }
 
         } else if (event.getPayload().getClass().equals(ScenarioRemovedEventAvro.class)) {
+            log.info("HubEventAvro является ScenarioRemovedEventAvro");
+
             ScenarioRemovedEventAvro eventAvro = (ScenarioRemovedEventAvro) event.getPayload();
 
             scenarioRepository
@@ -107,31 +119,41 @@ public class HubEventProcessor {
     }
 
     private Sensor getSensor(HubEventAvro event, String id) {
-        return sensorRepository.findByIdAndHubId(id, event.getHubId()).orElse(sensorRepository.saveAndFlush(
-                Sensor.builder()
-                    .hubId(event.getHubId())
-                    .id(id)
-                    .conditions(new HashSet<>())
-                    .actions(new HashSet<>())
-                    .build()));
+        Sensor sensor = sensorRepository
+                .findByIdAndHubId(id, event.getHubId())
+                .orElse(sensorRepository.saveAndFlush(Sensor.builder()
+                                .hubId(event.getHubId())
+                                .id(id)
+                                .conditions(new HashSet<>())
+                                .actions(new HashSet<>())
+                                .build()));
+
+        log.info("Получен Sensor: {}", sensor);
+
+        return sensor;
     }
 
     private Scenario getScenario(String hubId, String name) {
-        return scenarioRepository.findByHubIdAndName(hubId, name).orElse(
-                Scenario.builder()
+        Scenario scenario = scenarioRepository
+                .findByHubIdAndName(hubId, name)
+                .orElse(Scenario.builder()
                         .hubId(hubId)
                         .name(name)
                         .conditions(new HashSet<>())
                         .actions(new HashSet<>())
                         .build());
+
+        log.info("Получен Scenario: {}", scenario);
+
+        return scenario;
     }
 
     private Condition getCondition(String type, String operation, Integer value, Set<Condition> set) {
-        return set.stream()
+        Condition condition =  set.stream()
                 .filter(i ->
                         i.getType().equals(type) &&
-                        i.getOperation().equals(operation) &&
-                        i.getValue().equals(value))
+                                i.getOperation().equals(operation) &&
+                                i.getValue().equals(value))
                 .findFirst()
                 .orElse(conditionRepository.saveAndFlush(
                         Condition.builder()
@@ -140,17 +162,25 @@ public class HubEventProcessor {
                                 .value(value)
                                 .conditions(new HashSet<>())
                                 .build()));
+
+        log.info("Получен Condition: {}", condition);
+
+        return condition;
     }
 
     private Action getAction(String type, Integer value, Set<Action> set) {
-        return set.stream()
+        Action action = set.stream()
                 .filter(i -> i.getType().equals(type) && i.getValue().equals(value))
                 .findFirst()
                 .orElse(actionRepository.saveAndFlush(
                         Action.builder()
-                            .type(type)
-                            .value(value)
-                            .actions(new HashSet<>())
-                            .build()));
+                                .type(type)
+                                .value(value)
+                                .actions(new HashSet<>())
+                                .build()));
+
+        log.info("Получен Action: {}", action);
+
+        return action;
     }
 }
