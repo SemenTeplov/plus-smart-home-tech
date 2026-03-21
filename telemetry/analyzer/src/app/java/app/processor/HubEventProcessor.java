@@ -85,27 +85,29 @@ public class HubEventProcessor {
             }
 
             for (var item : eventAvro.getActions()) {
-                Action action = getAction(
-                        item.getType().name(),
-                        item.getValue(),
-                        scenario.getActions().stream().map(ScenarioAction::getAction)
-                                .collect(Collectors.toSet()));
+                if (item.getType() != null && item.getValue() != null) {
+                    Action action = getAction(
+                            item.getType().name(),
+                            item.getValue(),
+                            scenario.getActions().stream().map(ScenarioAction::getAction)
+                                    .collect(Collectors.toSet()));
 
-                Sensor sensor = getSensor(event, item.getSensorId());
+                    Sensor sensor = getSensor(event, item.getSensorId());
 
-                ScenarioAction scenarioAction = scenarioActionRepository.save(
-                        ScenarioAction.builder()
-                            .scenario(scenario)
-                            .action(action)
-                            .sensor(sensor)
-                            .id(new ScenarioActionId(scenario.getId(), sensor.getId(), action.getId()))
-                            .build());
+                    ScenarioAction scenarioAction = scenarioActionRepository.save(
+                            ScenarioAction.builder()
+                                    .scenario(scenario)
+                                    .action(action)
+                                    .sensor(sensor)
+                                    .id(new ScenarioActionId(scenario.getId(), sensor.getId(), action.getId()))
+                                    .build());
 
-                log.info("Был создан ScenarioAction: {}", scenarioAction);
+                    log.info("Был создан ScenarioAction: {}", scenarioAction);
 
-                scenario.addAction(scenarioAction);
-                action.addAction(scenarioAction);
-                sensor.addAction(scenarioAction);
+                    scenario.addAction(scenarioAction);
+                    action.addAction(scenarioAction);
+                    sensor.addAction(scenarioAction);
+                }
             }
 
         } else if (event.getPayload().getClass().equals(ScenarioRemovedEventAvro.class)) {

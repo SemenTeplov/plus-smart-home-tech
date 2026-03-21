@@ -21,12 +21,8 @@ public class LightSensorActionInterface implements ActionInterface {
         LightSensorAvro sensor = (LightSensorAvro) obj;
         String type = scenarioCondition.getCondition().getType();
 
-        if (type.equals(ConditionTypeAvro.LUMINOSITY.name())) {
-            save(ConditionTypeAvro.LUMINOSITY.name(),
-                    scenarioCondition,
-                    sensor.getLuminosity(),
-                    scenarioActionRepository,
-                    actionRepository);
+        if (ConditionTypeAvro.valueOf(type).equals(ConditionTypeAvro.LUMINOSITY)) {
+            save(type, scenarioCondition, sensor.getLuminosity(), scenarioActionRepository, actionRepository);
         }
     }
 

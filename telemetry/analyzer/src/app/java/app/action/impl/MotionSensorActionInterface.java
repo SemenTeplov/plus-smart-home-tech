@@ -21,10 +21,8 @@ public class MotionSensorActionInterface implements ActionInterface {
         MotionSensorAvro sensor = (MotionSensorAvro) obj;
         String type = scenarioCondition.getCondition().getType();
 
-        if (type.equals(ConditionTypeAvro.MOTION.name())) {
-            int motion = sensor.getMotion() ? 1 : 0;
-
-            save(ConditionTypeAvro.MOTION.name(), scenarioCondition, motion, scenarioActionRepository, actionRepository);
+        if (ConditionTypeAvro.valueOf(type).equals(ConditionTypeAvro.MOTION)) {
+            save(type, scenarioCondition, sensor.getMotion() ? 1 : 0, scenarioActionRepository, actionRepository);
         }
     }
 

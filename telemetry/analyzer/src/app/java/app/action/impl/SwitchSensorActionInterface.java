@@ -21,10 +21,8 @@ public class SwitchSensorActionInterface implements ActionInterface {
         SwitchSensorAvro sensor = (SwitchSensorAvro) obj;
         String type = scenarioCondition.getCondition().getType();
 
-        if (type.equals(ConditionTypeAvro.SWITCH.name())) {
-            int switchSensor = sensor.getState() ? 1 : 0;
-
-            save(ConditionTypeAvro.SWITCH.name(), scenarioCondition, switchSensor, scenarioActionRepository, actionRepository);
+        if (ConditionTypeAvro.valueOf(type).equals(ConditionTypeAvro.SWITCH)) {
+            save(type, scenarioCondition, sensor.getState() ? 1 : 0, scenarioActionRepository, actionRepository);
         }
     }
 

@@ -21,24 +21,21 @@ public class ClimateSensorActionInterface implements ActionInterface {
         ClimateSensorAvro sensor = (ClimateSensorAvro) obj;
         String type = scenarioCondition.getCondition().getType();
 
-        if (type.equals(ConditionTypeAvro.TEMPERATURE.name())) {
-            save(ConditionTypeAvro.TEMPERATURE.name(),
+        switch (ConditionTypeAvro.valueOf(type)) {
+            case ConditionTypeAvro.TEMPERATURE -> save(
+                    type,
                     scenarioCondition,
                     sensor.getTemperatureC(),
                     scenarioActionRepository,
                     actionRepository);
-        }
-
-        if (type.equals(ConditionTypeAvro.HUMIDITY.name())) {
-            save(ConditionTypeAvro.HUMIDITY.name(),
+            case ConditionTypeAvro.HUMIDITY -> save(
+                    type,
                     scenarioCondition,
                     sensor.getHumidity(),
                     scenarioActionRepository,
                     actionRepository);
-        }
-
-        if (type.equals(ConditionTypeAvro.CO2LEVEL.name())) {
-            save(ConditionTypeAvro.CO2LEVEL.name(),
+            case ConditionTypeAvro.CO2LEVEL -> save(
+                    type,
                     scenarioCondition,
                     sensor.getCo2Level(),
                     scenarioActionRepository,

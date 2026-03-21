@@ -21,12 +21,8 @@ public class TemperatureSensorActionInterface implements ActionInterface {
         TemperatureSensorAvro sensor = (TemperatureSensorAvro) obj;
         String type = scenarioCondition.getCondition().getType();
 
-        if (type.equals(ConditionTypeAvro.TEMPERATURE.name())) {
-            save(ConditionTypeAvro.TEMPERATURE.name(),
-                    scenarioCondition,
-                    sensor.getTemperatureC(),
-                    scenarioActionRepository,
-                    actionRepository);
+        if (ConditionTypeAvro.valueOf(type).equals(ConditionTypeAvro.TEMPERATURE)) {
+            save(type, scenarioCondition, sensor.getTemperatureC(), scenarioActionRepository, actionRepository);
         }
     }
 
