@@ -154,12 +154,12 @@ public class HubEventProcessor {
 
         Scenario scenario = scenarioRepository
                 .findByHubIdAndName(hubId, name)
-                .orElse(Scenario.builder()
+                .orElse(scenarioRepository.saveAndFlush(Scenario.builder()
                         .hubId(hubId)
                         .name(name)
                         .conditions(new HashSet<>())
                         .actions(new HashSet<>())
-                        .build());
+                        .build()));
 
         log.info("Получен Scenario: {}", scenario);
 
