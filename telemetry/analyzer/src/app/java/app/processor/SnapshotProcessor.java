@@ -2,10 +2,7 @@ package app.java.app.processor;
 
 import app.java.app.action.dto.ActionDto;
 import app.java.app.action.dto.ConditionDto;
-import app.java.app.model.Scenario;
 import app.java.app.action.ActionInterface;
-import app.java.app.model.Sensor;
-import app.java.app.repository.ScenarioRepository;
 
 import app.java.app.repository.SensorRepository;
 import lombok.extern.slf4j.Slf4j;
