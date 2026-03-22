@@ -23,6 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ru.yandex.practicum.kafka.telemetry.event.ActionTypeAvro;
+import ru.yandex.practicum.kafka.telemetry.event.DeviceAddedEventAvro;
+import ru.yandex.practicum.kafka.telemetry.event.DeviceRemovedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioAddedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioRemovedEventAvro;
@@ -118,6 +120,12 @@ public class HubEventProcessor {
                 sensor.addAction(scenarioAction);
             }
 
+        } else if (event.getPayload().getClass().equals(DeviceAddedEventAvro.class)) {
+            log.info("HubEventAvro является DeviceAddedEventAvro");
+
+            DeviceAddedEventAvro eventAvro = (DeviceAddedEventAvro) event.getPayload();
+
+            log.info("Пришел DeviceAddedEventAvro: id - {}, name {}", eventAvro.getId(), eventAvro.getType().name());
         } else if (event.getPayload().getClass().equals(ScenarioRemovedEventAvro.class)) {
             log.info("HubEventAvro является ScenarioRemovedEventAvro");
 
@@ -125,6 +133,8 @@ public class HubEventProcessor {
 
             scenarioRepository
                     .findByHubIdAndName(event.getHubId(), eventAvro.getName()).ifPresent(scenarioRepository::delete);
+        } else if (event.getPayload().getClass().equals(DeviceRemovedEventAvro.class)) {
+            log.info("HubEventAvro является DeviceRemovedEventAvro");
         }
     }
 
