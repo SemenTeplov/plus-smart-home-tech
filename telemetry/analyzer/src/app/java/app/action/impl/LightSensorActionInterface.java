@@ -32,11 +32,8 @@ public class LightSensorActionInterface implements ActionInterface {
 
         for (var item : conditionList) {
             String type = item.getCondition().getType();
-            List<ActionDto> filteredActionList = actionList.stream()
-                    .filter(a -> a.getScenario().getName().equals(item.getScenario().getName()))
-                    .toList();
 
-            filteredActionList.forEach(a -> {
+            actionList.forEach(a -> {
                 if (ConditionTypeAvro.valueOf(type).equals(ConditionTypeAvro.LUMINOSITY)) {
                     log.info("Проверка Luminosity");
 
