@@ -4,8 +4,10 @@ import app.java.app.action.dto.ActionDto;
 import app.java.app.action.dto.ConditionDto;
 import app.java.app.model.Scenario;
 import app.java.app.action.ActionInterface;
+import app.java.app.model.Sensor;
 import app.java.app.repository.ScenarioRepository;
 
+import app.java.app.repository.SensorRepository;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,16 +22,16 @@ import java.util.List;
 @Slf4j
 @Service
 public class SnapshotProcessor {
-    private final ScenarioRepository scenarioRepository;
+    private final SensorRepository sensorRepository;
 
     private final List<ActionInterface> actions;
 
     @Autowired
     public SnapshotProcessor(
             List<ActionInterface> actions,
-            ScenarioRepository scenarioRepository) {
+            SensorRepository sensorRepository) {
         this.actions = actions;
-        this.scenarioRepository = scenarioRepository;
+        this.sensorRepository = sensorRepository;
     }
 
     @Transactional
@@ -37,39 +39,38 @@ public class SnapshotProcessor {
     public void handler(SensorsSnapshotAvro event) {
         log.info("Поступил SensorsSnapshotAvro с HubId: {}", event.getHubId());
 
-        List<Scenario> scenarios = scenarioRepository.findByHubId(event.getHubId());
-
-        log.info("Найдены scenarios: {}", scenarios);
-
-        List<ConditionDto> conditionsDto = scenarios.stream()
-                .flatMap(s -> s.getConditions().stream()
+        event.getSensorsState().entrySet()
+            .forEach(e -> {
+                sensorRepository.findByIdAndHubId(e.getKey(), event.getHubId()).ifPresent(s -> {
+                    List<ConditionDto> conditionsDto = s.getConditions().stream()
                         .map(c -> ConditionDto.builder()
-                                .scenario(s)
+                                .scenario(c.getScenario())
                                 .condition(c.getCondition())
-                                .sensor(c.getSensor()).build()))
-                .toList();
+                                .sensor(c.getSensor()).build())
+                        .toList();
 
-        log.info("Найдено: {}", conditionsDto);
+                    log.info("Список ConditionDto: {}", conditionsDto);
 
-        List<ActionDto> actionsDto = scenarios.stream()
-                .flatMap(s -> s.getActions().stream()
+                    List<ActionDto> actionsDto = s.getActions().stream()
+                        .filter(a -> conditionsDto.stream()
+                                .map(c -> c.getScenario().getName())
+                                .toList()
+                                .contains(a.getScenario().getName()))
                         .map(a -> ActionDto.builder()
-                                .scenario(s)
+                                .scenario(a.getScenario())
                                 .sensor(a.getSensor())
-                                .action(a.getAction()).build()))
-                .toList();
+                                .action(a.getAction()).build())
+                        .toList();
 
-        log.info("Найдено: {}", actionsDto);
+                    log.info("Список ActionDto: {}", conditionsDto);
 
-        event.getSensorsState().entrySet().forEach(o -> {
-            actions.stream()
-                .filter(a -> a.getType().equals(conditionsDto.stream()
-                    .filter(c -> c.getSensor().getId().equals(o.getKey())).findFirst()
-                        .get().getCondition().getType()))
-                .forEach(a -> a.sendAction(o.getValue().getData(),
-                        conditionsDto.stream()
-                                .filter(c -> c.getCondition().getType().equals(a.getType())).toList(),
-                        actionsDto));
+                    actions.stream()
+                        .filter(a -> a.getType()
+                                .equals(conditionsDto.getFirst().getCondition().getType()))
+                        .forEach(a -> {
+                            a.sendAction(e.getValue(), conditionsDto, actionsDto);
+                        });
+                });
             });
     }
 }
