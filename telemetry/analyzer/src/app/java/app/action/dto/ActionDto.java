@@ -22,4 +22,9 @@ public class ActionDto {
     Sensor sensor;
     Scenario scenario;
     Action action;
+
+    @Override
+    public String toString() {
+        return String.format("%s, %s, %s", sensor, scenario, action);
+    }
 }

@@ -22,4 +22,9 @@ public class ConditionDto {
         Sensor sensor;
         Scenario scenario;
         Condition condition;
+
+        @Override
+        public String toString() {
+                return String.format("%s, %s, %s", sensor, scenario, condition);
+        }
 }

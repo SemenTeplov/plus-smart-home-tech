@@ -49,6 +49,8 @@ public class SnapshotProcessor {
                                 .sensor(c.getSensor()).build()))
                 .toList();
 
+        log.info("Найдено: {}", conditionsDto);
+
         List<ActionDto> actionsDto = scenarios.stream()
                 .flatMap(s -> s.getActions().stream()
                         .map(a -> ActionDto.builder()
@@ -56,6 +58,8 @@ public class SnapshotProcessor {
                                 .sensor(a.getSensor())
                                 .action(a.getAction()).build()))
                 .toList();
+
+        log.info("Найдено: {}", actionsDto);
 
         event.getSensorsState().values().forEach(o -> {
                 actions.stream()
