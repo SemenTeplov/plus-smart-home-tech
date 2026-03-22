@@ -6,6 +6,7 @@ import app.java.app.action.dto.ConditionDto;
 import app.java.app.grpc.RpcClient;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
@@ -13,8 +14,11 @@ import ru.yandex.practicum.kafka.telemetry.event.ConditionTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SwitchSensorAvro;
 
+import telemetry.messages.DeviceActionRequest;
+
 import java.util.List;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class SwitchSensorActionInterface implements ActionInterface {
@@ -36,7 +40,21 @@ public class SwitchSensorActionInterface implements ActionInterface {
                             item.getCondition().getOperation(),
                             item.getCondition().getValue(),
                             sensor.getState() ? 1 : 0)) {
-                        client.send(getDeviceActionRequest(a, item));
+                        DeviceActionRequest request = getDeviceActionRequest(a, item);
+
+                        log.info("Отправлен DeviceActionRequest: " +
+                                        "HubId - {}, " +
+                                        "ScenarioName - {}," +
+                                        "SensorId - {}," +
+                                        "TypeValue - {}," +
+                                        "Value - {}",
+                                request.getHubId(),
+                                request.getScenarioName(),
+                                request.getAction().getSensorId(),
+                                request.getAction().getType(),
+                                request.getAction().getValue());
+
+                        client.send(request);
                     }
                 }
             });
