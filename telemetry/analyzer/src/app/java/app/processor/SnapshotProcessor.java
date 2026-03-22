@@ -61,6 +61,8 @@ public class SnapshotProcessor {
 
         log.info("Найдено: {}", actionsDto);
 
+        log.info("Используемые ключи: {}", event.getSensorsState().keySet());
+
         event.getSensorsState().values().forEach(o -> {
                 actions.stream()
                         .peek(a -> log.info("Action - {}, SensorState - {}",
