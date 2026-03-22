@@ -3,8 +3,8 @@ package app.java.app.processor;
 import app.java.app.action.dto.ActionDto;
 import app.java.app.action.dto.ConditionDto;
 import app.java.app.action.ActionInterface;
-
 import app.java.app.repository.SensorRepository;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +65,7 @@ public class SnapshotProcessor {
                         .filter(a -> a.getActionClass().getName()
                                 .equals(e.getValue().getData().getClass().getName()))
                         .forEach(a -> {
-                            a.sendAction(e.getValue(), conditionsDto, actionsDto);
+                            a.sendAction(e.getValue().getData(), conditionsDto, actionsDto);
                         });
                 });
             });
