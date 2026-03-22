@@ -66,7 +66,7 @@ public class SnapshotProcessor {
                         .filter(a -> o.getData().getClass().equals(a.getActionClass()))
                         .forEach(a -> a.sendAction(o.getData(),
                                 conditionsDto.stream()
-                                        .filter(c -> c.getSensor().getId().equals(a.getType())).toList(),
+                                        .filter(c -> c.getCondition().getType().equals(a.getType())).toList(),
                                 actionsDto));
             });
     }
