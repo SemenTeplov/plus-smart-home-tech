@@ -1,26 +1,22 @@
 package app.java.app.action;
 
-import app.java.app.model.Action;
-import app.java.app.model.Condition;
-import app.java.app.model.Scenario;
-import app.java.app.model.ScenarioAction;
-import app.java.app.model.ScenarioActionId;
-import app.java.app.model.ScenarioCondition;
-import app.java.app.model.Sensor;
-import app.java.app.repository.ActionRepository;
-import app.java.app.repository.ScenarioActionRepository;
-
-import org.springframework.transaction.annotation.Transactional;
+import app.java.app.action.dto.ActionDto;
+import app.java.app.action.dto.ConditionDto;
 
 import ru.yandex.practicum.kafka.telemetry.event.ConditionOperationAvro;
 
+import telemetry.messages.ActionTypeProto;
+import telemetry.messages.DeviceActionProto;
+import telemetry.messages.DeviceActionRequest;
+
+import java.util.List;
+
 public interface ActionInterface {
-    void addAction(Object obj,
-                   ScenarioCondition scenarioCondition,
-                   ScenarioActionRepository scenarioActionRepository,
-                   ActionRepository actionRepository);
+    void sendAction(Object obj, List<ConditionDto> conditionList, List<ActionDto> actionList);
 
     Class getActionClass();
+
+    String getType();
 
     default public boolean compareValues(String operator, Integer value, Integer other) {
         return switch (ConditionOperationAvro.valueOf(operator)) {
@@ -31,32 +27,17 @@ public interface ActionInterface {
         };
     }
 
-    @Transactional
-    default public void save(String type,
-                             ScenarioCondition scenarioCondition,
-                             int value,
-                             ScenarioActionRepository scenarioActionRepository,
-                             ActionRepository actionRepository) {
-        Condition condition = scenarioCondition.getCondition();
+    default public DeviceActionRequest getDeviceActionRequest(ActionDto action, ConditionDto condition) {
+        DeviceActionProto deviceActionProto = DeviceActionProto.newBuilder()
+                .setSensorId(action.getSensor().getId())
+                .setTypeValue(ActionTypeProto.valueOf(action.getAction().getType()).getNumber())
+                .setValue(action.getAction().getValue())
+                .build();
 
-        if (condition.getType().equals(type) &&
-                compareValues(condition.getOperation(), condition.getValue(), value)) {
-            Scenario scenario = scenarioCondition.getScenario();
-            Sensor sensor = scenarioCondition.getSensor();
-            Action action = actionRepository.saveAndFlush(Action.builder().type(type).value(value).build());
-
-            ScenarioAction scenarioAction = ScenarioAction.builder()
-                    .sensor(sensor)
-                    .scenario(scenario)
-                    .action(action)
-                    .id(new ScenarioActionId(scenario.getId(), sensor.getId(), action.getId()))
-                    .build();
-
-            scenario.addAction(scenarioAction);
-            sensor.addAction(scenarioAction);
-            action.addAction(scenarioAction);
-
-            scenarioActionRepository.save(scenarioAction);
-        }
+        return DeviceActionRequest.newBuilder()
+                .setHubId(condition.getSensor().getHubId())
+                .setScenarioName(action.getScenario().getName())
+                .setAction(deviceActionProto)
+                .build();
     }
 }

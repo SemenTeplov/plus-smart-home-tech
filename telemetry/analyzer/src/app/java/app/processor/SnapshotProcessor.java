@@ -1,16 +1,17 @@
 package app.java.app.processor;
 
-import app.java.app.model.ScenarioCondition;
-import app.java.app.repository.ActionRepository;
-import app.java.app.repository.ScenarioActionRepository;
-import app.java.app.repository.ScenarioConditionRepository;
+import app.java.app.action.dto.ActionDto;
+import app.java.app.action.dto.ConditionDto;
+import app.java.app.model.Scenario;
 import app.java.app.action.ActionInterface;
+import app.java.app.repository.ScenarioRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
 
@@ -19,42 +20,49 @@ import java.util.List;
 @Slf4j
 @Service
 public class SnapshotProcessor {
-    private final ScenarioConditionRepository scenarioConditionRepository;
-
-    private final ScenarioActionRepository scenarioActionRepository;
-
-    private final ActionRepository actionRepository;
+    private final ScenarioRepository scenarioRepository;
 
     private final List<ActionInterface> actions;
 
     @Autowired
     public SnapshotProcessor(
             List<ActionInterface> actions,
-            ScenarioActionRepository scenarioActionRepository,
-            ScenarioConditionRepository scenarioConditionRepository,
-            ActionRepository actionRepository) {
+            ScenarioRepository scenarioRepository) {
         this.actions = actions;
-        this.scenarioActionRepository = scenarioActionRepository;
-        this.scenarioConditionRepository = scenarioConditionRepository;
-        this.actionRepository = actionRepository;
+        this.scenarioRepository = scenarioRepository;
     }
 
+    @Transactional
     @KafkaListener(topics = "${kafka.topics.snapshot}", containerFactory = "snapshotConsumer")
     public void handler(SensorsSnapshotAvro event) {
         log.info("Поступил SensorsSnapshotAvro с HubId: {}", event.getHubId());
 
-        List<ScenarioCondition> scenarioConditions =
-                scenarioConditionRepository.findAll().stream()
-                        .filter(s -> s.getScenario().getHubId().equals(event.getHubId())).toList();
+        List<Scenario> scenarios = scenarioRepository.findByHubId(event.getHubId());
 
-        log.info("Получен список {} по HubId: {}", scenarioConditions, event.getHubId());
+        List<ConditionDto> conditionsDto = scenarios.stream()
+                .flatMap(s -> s.getConditions().stream()
+                        .map(c -> ConditionDto.builder()
+                                .scenario(s)
+                                .condition(c.getCondition())
+                                .sensor(c.getSensor()).build()))
+                .toList();
 
-        for (var scenario : scenarioConditions) {
-            event.getSensorsState().values().forEach(o -> {
+        List<ActionDto> actionsDto = scenarios.stream()
+                .flatMap(s -> s.getActions().stream()
+                        .map(a -> ActionDto.builder()
+                                .scenario(s)
+                                .sensor(a.getSensor())
+                                .action(a.getAction()).build()))
+                .toList();
+
+        event.getSensorsState().values().forEach(o -> {
                 actions.stream()
                         .filter(a -> o.getClass().equals(a.getActionClass()))
-                        .forEach(a -> a.addAction(o, scenario, scenarioActionRepository, actionRepository));
+                        .forEach(a -> a.sendAction(o,
+                                conditionsDto.stream()
+                                        .filter(c -> c.getSensor().getId().equals(a.getType())).toList(),
+                                actionsDto.stream()
+                                        .filter(c -> c.getSensor().getId().equals(a.getType())).toList()));
             });
-        }
     }
 }
