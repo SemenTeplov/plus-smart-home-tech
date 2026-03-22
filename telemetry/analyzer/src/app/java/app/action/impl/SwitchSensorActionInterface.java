@@ -26,6 +26,8 @@ public class SwitchSensorActionInterface implements ActionInterface {
 
     @Override
     public void sendAction(Object obj, List<ConditionDto> conditionList, List<ActionDto> actionList) {
+        log.info("Объектом является SwitchSensorAvro");
+
         SwitchSensorAvro sensor = (SwitchSensorAvro) obj;
 
         for (var item : conditionList) {
@@ -35,7 +37,9 @@ public class SwitchSensorActionInterface implements ActionInterface {
                             a.getScenario().getName().equals(item.getScenario().getName())).toList();
 
             filteredActionList.forEach(a -> {
-                if (ConditionTypeAvro.valueOf(type).equals(ConditionTypeAvro.LUMINOSITY)) {
+                if (ConditionTypeAvro.valueOf(type).equals(ConditionTypeAvro.SWITCH)) {
+                    log.info("Проверка Switch");
+
                     if (compareValues(
                             item.getCondition().getOperation(),
                             item.getCondition().getValue(),

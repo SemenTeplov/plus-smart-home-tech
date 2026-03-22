@@ -25,6 +25,8 @@ public class TemperatureSensorActionInterface implements ActionInterface {
 
     @Override
     public void sendAction(Object obj, List<ConditionDto> conditionList, List<ActionDto> actionList) {
+        log.info("Объектом является TemperatureSensorAvro");
+
         TemperatureSensorAvro sensor = (TemperatureSensorAvro) obj;
 
         for (var item : conditionList) {
@@ -34,7 +36,9 @@ public class TemperatureSensorActionInterface implements ActionInterface {
                             a.getScenario().getName().equals(item.getScenario().getName())).toList();
 
             filteredActionList.forEach(a -> {
-                if (ConditionTypeAvro.valueOf(type).equals(ConditionTypeAvro.LUMINOSITY)) {
+                if (ConditionTypeAvro.valueOf(type).equals(ConditionTypeAvro.TEMPERATURE)) {
+                    log.info("Проверка Temperature");
+
                     if (compareValues(
                             item.getCondition().getOperation(),
                             item.getCondition().getValue(),

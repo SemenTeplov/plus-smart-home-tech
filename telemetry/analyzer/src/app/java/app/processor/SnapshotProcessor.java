@@ -39,6 +39,8 @@ public class SnapshotProcessor {
 
         List<Scenario> scenarios = scenarioRepository.findByHubId(event.getHubId());
 
+        log.info("Найдены scenarios: {}", scenarios);
+
         List<ConditionDto> conditionsDto = scenarios.stream()
                 .flatMap(s -> s.getConditions().stream()
                         .map(c -> ConditionDto.builder()

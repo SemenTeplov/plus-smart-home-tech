@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.kafka.telemetry.event.ConditionTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.LightSensorAvro;
+
 import telemetry.messages.DeviceActionRequest;
 
 import java.util.List;
@@ -25,6 +26,8 @@ public class LightSensorActionInterface implements ActionInterface {
 
     @Override
     public void sendAction(Object obj, List<ConditionDto> conditionList, List<ActionDto> actionList) {
+        log.info("Объектом является LightSensorAvro");
+
         LightSensorAvro sensor = (LightSensorAvro) obj;
 
         for (var item : conditionList) {
@@ -35,6 +38,8 @@ public class LightSensorActionInterface implements ActionInterface {
 
             filteredActionList.forEach(a -> {
                 if (ConditionTypeAvro.valueOf(type).equals(ConditionTypeAvro.LUMINOSITY)) {
+                    log.info("Проверка Luminosity");
+
                     if (compareValues(
                             item.getCondition().getOperation(),
                             item.getCondition().getValue(),

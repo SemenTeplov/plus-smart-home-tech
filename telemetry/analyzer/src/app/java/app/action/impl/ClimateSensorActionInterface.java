@@ -26,6 +26,8 @@ public class ClimateSensorActionInterface implements ActionInterface {
 
     @Override
     public void sendAction(Object obj, List<ConditionDto> conditionList, List<ActionDto> actionList) {
+        log.info("Объектом является ClimateSensorAvro");
+
         ClimateSensorAvro sensor = (ClimateSensorAvro) obj;
 
         for (var item : conditionList) {
@@ -37,6 +39,8 @@ public class ClimateSensorActionInterface implements ActionInterface {
             filteredActionList.forEach(a -> {
                 switch (ConditionTypeAvro.valueOf(type)) {
                     case ConditionTypeAvro.TEMPERATURE -> {
+                        log.info("Проверка Temperature");
+
                         if (compareValues(
                                 item.getCondition().getOperation(),
                                 item.getCondition().getValue(),
@@ -59,6 +63,8 @@ public class ClimateSensorActionInterface implements ActionInterface {
                         }
                     }
                     case ConditionTypeAvro.HUMIDITY -> {
+                        log.info("Проверка Humidity");
+
                         if (compareValues(
                                 item.getCondition().getOperation(),
                                 item.getCondition().getValue(),
@@ -81,6 +87,8 @@ public class ClimateSensorActionInterface implements ActionInterface {
                         }
                     }
                     case ConditionTypeAvro.CO2LEVEL -> {
+                        log.info("Проверка Co2Level");
+
                         if (compareValues(
                                 item.getCondition().getOperation(),
                                 item.getCondition().getValue(),
