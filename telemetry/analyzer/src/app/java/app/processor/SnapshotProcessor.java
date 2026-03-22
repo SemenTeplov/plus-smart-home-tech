@@ -63,7 +63,7 @@ public class SnapshotProcessor {
 
         event.getSensorsState().values().forEach(o -> {
                 actions.stream()
-                        .filter(a -> o.getData().getClass().equals(a.getActionClass()))
+                        .filter(a -> o.getData().getClass().getName().equals(a.getActionClass().getName()))
                         .forEach(a -> a.sendAction(o.getData(),
                                 conditionsDto.stream()
                                         .filter(c -> c.getCondition().getType().equals(a.getType())).toList(),
