@@ -59,6 +59,11 @@ public class HubEventProcessor {
             Scenario scenario = getScenario(event.getHubId(), eventAvro.getName());
 
             for (var item : eventAvro.getConditions()) {
+                log.info("Обработка ScenarioCondition: Type - {}, Operation - {}, Value - {}",
+                        item.getType().name(),
+                        item.getOperation().name(),
+                        item.getValue());
+
                 Condition condition = getCondition(
                         item.getType().name(),
                         item.getOperation().name(),
@@ -85,6 +90,10 @@ public class HubEventProcessor {
             }
 
             for (var item : eventAvro.getActions()) {
+                log.info("Обработка ScenarioAction: Type - {}, Value - {}",
+                        item.getType().name(),
+                        item.getValue());
+
                 if (item.getType() != null && item.getValue() != null) {
                     Action action = getAction(
                             item.getType().name(),
