@@ -33,9 +33,7 @@ public class ClimateSensorActionInterface implements ActionInterface {
         for (var item : conditionList) {
             String type = item.getCondition().getType();
             List<ActionDto> filteredActionList = actionList.stream()
-                    .peek(a -> log.info(a.toString()))
                     .filter(a -> a.getScenario().getName().equals(item.getScenario().getName()))
-                    .peek(a -> log.info(a.toString()))
                     .toList();
 
             filteredActionList.forEach(a -> {

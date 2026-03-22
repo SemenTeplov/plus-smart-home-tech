@@ -61,17 +61,15 @@ public class SnapshotProcessor {
 
         log.info("Найдено: {}", actionsDto);
 
-        log.info("Используемые ключи: {}", event.getSensorsState().keySet());
-
-        event.getSensorsState().values().forEach(o -> {
-                actions.stream()
-                        .peek(a -> log.info("Action - {}, SensorState - {}",
-                                o.getData().getClass().getName(), a.getActionClass().getName()))
-                        .filter(a -> o.getData().getClass().getName().equals(a.getActionClass().getName()))
-                        .forEach(a -> a.sendAction(o.getData(),
-                                conditionsDto.stream()
-                                        .filter(c -> c.getCondition().getType().equals(a.getType())).toList(),
-                                actionsDto));
+        event.getSensorsState().entrySet().forEach(o -> {
+            actions.stream()
+                .filter(a -> a.getType().equals(conditionsDto.stream()
+                    .filter(c -> c.getSensor().getId().equals(o.getKey())).findFirst()
+                        .get().getCondition().getType()))
+                .forEach(a -> a.sendAction(o.getValue().getData(),
+                        conditionsDto.stream()
+                                .filter(c -> c.getCondition().getType().equals(a.getType())).toList(),
+                        actionsDto));
             });
     }
 }
