@@ -125,7 +125,7 @@ public class HubEventProcessor {
 
             DeviceAddedEventAvro eventAvro = (DeviceAddedEventAvro) event.getPayload();
 
-            log.info("Пришел DeviceAddedEventAvro: id - {}, name {}", eventAvro.getId(), eventAvro.getType().name());
+            getSensor(event, eventAvro.getId());
         } else if (event.getPayload().getClass().equals(ScenarioRemovedEventAvro.class)) {
             log.info("HubEventAvro является ScenarioRemovedEventAvro");
 
@@ -135,6 +135,11 @@ public class HubEventProcessor {
                     .findByHubIdAndName(event.getHubId(), eventAvro.getName()).ifPresent(scenarioRepository::delete);
         } else if (event.getPayload().getClass().equals(DeviceRemovedEventAvro.class)) {
             log.info("HubEventAvro является DeviceRemovedEventAvro");
+
+            DeviceRemovedEventAvro eventAvro = (DeviceRemovedEventAvro) event.getPayload();
+
+            sensorRepository
+                    .findByIdAndHubId(eventAvro.getId(), event.getHubId()).ifPresent(sensorRepository::delete);
         }
     }
 

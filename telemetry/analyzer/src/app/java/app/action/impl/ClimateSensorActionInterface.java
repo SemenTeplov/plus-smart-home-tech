@@ -3,6 +3,7 @@ package app.java.app.action.impl;
 import app.java.app.action.ActionInterface;
 import app.java.app.action.dto.ActionDto;
 import app.java.app.action.dto.ConditionDto;
+import app.java.app.constant.Message;
 import app.java.app.grpc.RpcClient;
 
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class ClimateSensorActionInterface implements ActionInterface {
 
     @Override
     public void sendAction(Object obj, List<ConditionDto> conditionList, List<ActionDto> actionList) {
-        log.info("Объектом является ClimateSensorAvro");
+        log.info(Message.OBJECT_NAME, obj.getClass().getSimpleName());
 
         ClimateSensorAvro sensor = (ClimateSensorAvro) obj;
 
@@ -38,7 +39,7 @@ public class ClimateSensorActionInterface implements ActionInterface {
             actionList.forEach(a -> {
                 switch (ConditionTypeAvro.valueOf(type)) {
                     case ConditionTypeAvro.TEMPERATURE -> {
-                        log.info("Проверка Temperature");
+                        log.info(Message.CHECK_PARAMETER, type);
 
                         if (compareValues(
                                 item.getCondition().getOperation(),
@@ -62,7 +63,7 @@ public class ClimateSensorActionInterface implements ActionInterface {
                         }
                     }
                     case ConditionTypeAvro.HUMIDITY -> {
-                        log.info("Проверка Humidity");
+                        log.info(Message.CHECK_PARAMETER, type);
 
                         if (compareValues(
                                 item.getCondition().getOperation(),
@@ -86,7 +87,7 @@ public class ClimateSensorActionInterface implements ActionInterface {
                         }
                     }
                     case ConditionTypeAvro.CO2LEVEL -> {
-                        log.info("Проверка Co2Level");
+                        log.info(Message.CHECK_PARAMETER, type);
 
                         if (compareValues(
                                 item.getCondition().getOperation(),

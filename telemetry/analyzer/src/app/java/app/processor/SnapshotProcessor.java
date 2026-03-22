@@ -49,17 +49,13 @@ public class SnapshotProcessor {
                     log.info("Список ConditionDto: {}", conditionsDto);
 
                     List<ActionDto> actionsDto = s.getActions().stream()
-                        .filter(a -> conditionsDto.stream()
-                                .map(c -> c.getScenario().getName())
-                                .toList()
-                                .contains(a.getScenario().getName()))
                         .map(a -> ActionDto.builder()
                                 .scenario(a.getScenario())
                                 .sensor(a.getSensor())
                                 .action(a.getAction()).build())
                         .toList();
 
-                    log.info("Список ActionDto: {}", conditionsDto);
+                    log.info("Список ActionDto: {}", actionsDto);
 
                     actions.stream()
                         .filter(a -> a.getActionClass().getName()

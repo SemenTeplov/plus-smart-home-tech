@@ -3,6 +3,7 @@ package app.java.app.action.impl;
 import app.java.app.action.ActionInterface;
 import app.java.app.action.dto.ActionDto;
 import app.java.app.action.dto.ConditionDto;
+import app.java.app.constant.Message;
 import app.java.app.grpc.RpcClient;
 
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class TemperatureSensorActionInterface implements ActionInterface {
 
     @Override
     public void sendAction(Object obj, List<ConditionDto> conditionList, List<ActionDto> actionList) {
-        log.info("Объектом является TemperatureSensorAvro");
+        log.info(Message.OBJECT_NAME, obj.getClass().getSimpleName());
 
         TemperatureSensorAvro sensor = (TemperatureSensorAvro) obj;
 
@@ -34,7 +35,7 @@ public class TemperatureSensorActionInterface implements ActionInterface {
 
             actionList.forEach(a -> {
                 if (ConditionTypeAvro.valueOf(type).equals(ConditionTypeAvro.TEMPERATURE)) {
-                    log.info("Проверка Temperature");
+                    log.info(Message.CHECK_PARAMETER, type);
 
                     if (compareValues(
                             item.getCondition().getOperation(),

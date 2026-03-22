@@ -3,6 +3,7 @@ package app.java.app.action.impl;
 import app.java.app.action.ActionInterface;
 import app.java.app.action.dto.ActionDto;
 import app.java.app.action.dto.ConditionDto;
+import app.java.app.constant.Message;
 import app.java.app.grpc.RpcClient;
 
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class SwitchSensorActionInterface implements ActionInterface {
 
     @Override
     public void sendAction(Object obj, List<ConditionDto> conditionList, List<ActionDto> actionList) {
-        log.info("Объектом является SwitchSensorAvro");
+        log.info(Message.OBJECT_NAME, obj.getClass().getSimpleName());
 
         SwitchSensorAvro sensor = (SwitchSensorAvro) obj;
 
@@ -35,7 +36,7 @@ public class SwitchSensorActionInterface implements ActionInterface {
 
             actionList.forEach(a -> {
                 if (ConditionTypeAvro.valueOf(type).equals(ConditionTypeAvro.SWITCH)) {
-                    log.info("Проверка Switch");
+                    log.info(Message.CHECK_PARAMETER, type);
 
                     if (compareValues(
                             item.getCondition().getOperation(),
