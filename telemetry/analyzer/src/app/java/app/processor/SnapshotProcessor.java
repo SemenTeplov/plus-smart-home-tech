@@ -62,9 +62,8 @@ public class SnapshotProcessor {
                     log.info("Список ActionDto: {}", conditionsDto);
 
                     actions.stream()
-                        .peek(a -> log.info("action class: {}, SensorState class: {}", a.getActionClass().getName(), e.getValue().getData().getClass().getName()))
-                        .filter(a -> a.getType()
-                                .equals(conditionsDto.getFirst().getCondition().getType()))
+                        .filter(a -> a.getActionClass().getName()
+                                .equals(e.getValue().getData().getClass().getName()))
                         .forEach(a -> {
                             a.sendAction(e.getValue(), conditionsDto, actionsDto);
                         });
