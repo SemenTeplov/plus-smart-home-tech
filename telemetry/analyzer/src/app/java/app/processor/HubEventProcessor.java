@@ -22,6 +22,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.yandex.practicum.kafka.telemetry.event.ActionTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioAddedEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ScenarioRemovedEventAvro;
@@ -89,34 +90,32 @@ public class HubEventProcessor {
                 sensor.addCondition(scenarioCondition);
             }
 
-            for (var item : eventAvro.getActions()) {
-                log.info("Обработка ScenarioAction: Type - {}, Value - {}",
+        for (var item : eventAvro.getActions()) {
+            log.info("Обработка ScenarioAction: Type - {}, Value - {}",
+                    item.getType().name(),
+                    item.getValue());
+
+                Action action = getAction(
                         item.getType().name(),
-                        item.getValue());
+                        item.getValue(),
+                        scenario.getActions().stream().map(ScenarioAction::getAction)
+                                .collect(Collectors.toSet()));
 
-                if (item.getType() != null && item.getValue() != null) {
-                    Action action = getAction(
-                            item.getType().name(),
-                            item.getValue(),
-                            scenario.getActions().stream().map(ScenarioAction::getAction)
-                                    .collect(Collectors.toSet()));
+                Sensor sensor = getSensor(event, item.getSensorId());
 
-                    Sensor sensor = getSensor(event, item.getSensorId());
+                ScenarioAction scenarioAction = scenarioActionRepository.save(
+                        ScenarioAction.builder()
+                                .scenario(scenario)
+                                .action(action)
+                                .sensor(sensor)
+                                .id(new ScenarioActionId(scenario.getId(), sensor.getId(), action.getId()))
+                                .build());
 
-                    ScenarioAction scenarioAction = scenarioActionRepository.save(
-                            ScenarioAction.builder()
-                                    .scenario(scenario)
-                                    .action(action)
-                                    .sensor(sensor)
-                                    .id(new ScenarioActionId(scenario.getId(), sensor.getId(), action.getId()))
-                                    .build());
+                log.info("Был создан ScenarioAction: {}", scenarioAction);
 
-                    log.info("Был создан ScenarioAction: {}", scenarioAction);
-
-                    scenario.addAction(scenarioAction);
-                    action.addAction(scenarioAction);
-                    sensor.addAction(scenarioAction);
-                }
+                scenario.addAction(scenarioAction);
+                action.addAction(scenarioAction);
+                sensor.addAction(scenarioAction);
             }
 
         } else if (event.getPayload().getClass().equals(ScenarioRemovedEventAvro.class)) {
@@ -212,12 +211,14 @@ public class HubEventProcessor {
             throw new IllegalArgumentException("В методе getAction не может type быть null");
         }
 
-        if (value == null) {
-            throw new IllegalArgumentException("В методе getAction не может value быть null");
+        if (ActionTypeAvro.ACTIVATE.name().equals(type)) {
+            value = 1;
+        } else if (ActionTypeAvro.DEACTIVATE.name().equals(type)) {
+            value = 0;
         }
 
         Action action = set.stream()
-                .filter(i -> type.equals(i.getType()) && value.equals(i.getValue()))
+                .filter(i -> type.equals(i.getType()))
                 .findFirst()
                 .orElse(actionRepository.saveAndFlush(
                         Action.builder()
