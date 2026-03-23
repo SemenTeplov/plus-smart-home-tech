@@ -103,19 +103,19 @@ public class HubEventProcessor {
                     condition.addCondition(scenarioCondition);
                     sensor.addCondition(scenarioCondition);
 
-                    ScenarioAction scenarioAction =
-                            ScenarioAction.builder()
-                                    .scenario(scenario)
-                                    .action(action)
-                                    .sensor(sensor)
-                                    .id(new ScenarioActionId(scenario.getId(), sensor.getId(), action.getId()))
-                                    .build();
-
-                    log.info(Message.CREATED_SCENARIO_ACTION, scenarioAction);
-
-                    scenario.addAction(scenarioAction);
-                    action.addAction(scenarioAction);
-                    sensor.addAction(scenarioAction);
+//                    ScenarioAction scenarioAction =
+//                            ScenarioAction.builder()
+//                                    .scenario(scenario)
+//                                    .action(action)
+//                                    .sensor(sensor)
+//                                    .id(new ScenarioActionId(scenario.getId(), sensor.getId(), action.getId()))
+//                                    .build();
+//
+//                    log.info(Message.CREATED_SCENARIO_ACTION, scenarioAction);
+//
+//                    scenario.addAction(scenarioAction);
+//                    action.addAction(scenarioAction);
+//                    sensor.addAction(scenarioAction);
 
                     scenarioRepository.save(scenario);
                 }
