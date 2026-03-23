@@ -43,12 +43,7 @@ public class TemperatureSensorActionInterface implements ActionInterface {
                             sensor.getTemperatureC())) {
                         DeviceActionRequest request = getDeviceActionRequest(a, item);
 
-                        log.info("Отправлен DeviceActionRequest: " +
-                                        "HubId - {}, " +
-                                        "ScenarioName - {}," +
-                                        "SensorId - {}," +
-                                        "TypeValue - {}," +
-                                        "Value - {}",
+                        log.info(Message.SEND_REQUEST,
                                 request.getHubId(),
                                 request.getScenarioName(),
                                 request.getAction().getSensorId(),

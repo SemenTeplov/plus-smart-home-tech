@@ -61,63 +61,87 @@ public class HubEventProcessor {
 
             Scenario scenario = getScenario(event.getHubId(), eventAvro.getName());
 
-            for (var item : eventAvro.getConditions()) {
-                log.info("Обработка ScenarioCondition: Type - {}, Operation - {}, Value - {}",
-                        item.getType().name(),
-                        item.getOperation().name(),
-                        item.getValue());
+            for (var conditionItem : eventAvro.getConditions()) {
+                for (var actionItem : eventAvro.getActions()) {
+                    log.info("Обработка ScenarioCondition: Type - {}, Operation - {}, Value - {}",
+                            conditionItem.getType().name(),
+                            conditionItem.getOperation().name(),
+                            conditionItem.getValue());
 
-                Condition condition = getCondition(
-                        item.getType().name(),
-                        item.getOperation().name(),
-                        item.getValue(),
-                        scenario.getConditions().stream()
-                                .map(ScenarioCondition::getCondition)
-                                .collect(Collectors.toSet()));
+                    log.info("Обработка ScenarioAction: Type - {}, Value - {}",
+                            actionItem.getType().name(),
+                            actionItem.getValue());
 
-                Sensor sensor = getSensor(event, item.getSensorId());
+                    Condition condition = getCondition(
+                            conditionItem.getType().name(),
+                            conditionItem.getOperation().name(),
+                            conditionItem.getValue(),
+                            scenario.getConditions().stream()
+                                    .map(ScenarioCondition::getCondition)
+                                    .collect(Collectors.toSet()));
 
-                ScenarioCondition scenarioCondition = scenarioConditionRepository.save(
-                        ScenarioCondition.builder()
-                            .scenario(scenario)
-                            .condition(condition)
-                            .sensor(sensor)
-                            .id(new ScenarioConditionId(scenario.getId(), sensor.getId(), condition.getId()))
-                            .build());
+                    Action action = getAction(
+                            actionItem.getType().name(),
+                            actionItem.getValue(),
+                            scenario.getActions().stream().map(ScenarioAction::getAction)
+                                    .collect(Collectors.toSet()));
 
-                log.info("Был создан ScenarioCondition: {}", scenarioCondition);
+                    Sensor sensor = getSensor(event, conditionItem.getSensorId());
 
-                scenario.addCondition(scenarioCondition);
-                condition.addCondition(scenarioCondition);
-                sensor.addCondition(scenarioCondition);
+                    ScenarioCondition scenarioCondition = scenarioConditionRepository.save(
+                            ScenarioCondition.builder()
+                                    .scenario(scenario)
+                                    .condition(condition)
+                                    .sensor(sensor)
+                                    .id(new ScenarioConditionId(scenario.getId(), sensor.getId(), condition.getId()))
+                                    .build());
+
+                    log.info("Был создан ScenarioCondition: {}", scenarioCondition);
+
+                    scenario.addCondition(scenarioCondition);
+                    condition.addCondition(scenarioCondition);
+                    sensor.addCondition(scenarioCondition);
+
+                    ScenarioAction scenarioAction = scenarioActionRepository.save(
+                            ScenarioAction.builder()
+                                    .scenario(scenario)
+                                    .action(action)
+                                    .sensor(sensor)
+                                    .id(new ScenarioActionId(scenario.getId(), sensor.getId(), action.getId()))
+                                    .build());
+
+                    log.info("Был создан ScenarioAction: {}", scenarioAction);
+
+                    scenario.addAction(scenarioAction);
+                    action.addAction(scenarioAction);
+                    sensor.addAction(scenarioAction);
+                }
             }
 
         for (var item : eventAvro.getActions()) {
-            log.info("Обработка ScenarioAction: Type - {}, Value - {}",
-                    item.getType().name(),
-                    item.getValue());
+//            log.info("Обработка ScenarioAction: Type - {}, Value - {}",
+//                    item.getType().name(),
+//                    item.getValue());
 
-                Action action = getAction(
-                        item.getType().name(),
-                        item.getValue(),
-                        scenario.getActions().stream().map(ScenarioAction::getAction)
-                                .collect(Collectors.toSet()));
+//                Action action = getAction(
+//                        item.getType().name(),
+//                        item.getValue(),
+//                        scenario.getActions().stream().map(ScenarioAction::getAction)
+//                                .collect(Collectors.toSet()));
 
-                Sensor sensor = getSensor(event, item.getSensorId());
+//                ScenarioAction scenarioAction = scenarioActionRepository.save(
+//                        ScenarioAction.builder()
+//                                .scenario(scenario)
+//                                .action(action)
+//                                .sensor(sensor)
+//                                .id(new ScenarioActionId(scenario.getId(), sensor.getId(), action.getId()))
+//                                .build());
 
-                ScenarioAction scenarioAction = scenarioActionRepository.save(
-                        ScenarioAction.builder()
-                                .scenario(scenario)
-                                .action(action)
-                                .sensor(sensor)
-                                .id(new ScenarioActionId(scenario.getId(), sensor.getId(), action.getId()))
-                                .build());
-
-                log.info("Был создан ScenarioAction: {}", scenarioAction);
-
-                scenario.addAction(scenarioAction);
-                action.addAction(scenarioAction);
-                sensor.addAction(scenarioAction);
+//                log.info("Был создан ScenarioAction: {}", scenarioAction);
+//
+//                scenario.addAction(scenarioAction);
+//                action.addAction(scenarioAction);
+//                sensor.addAction(scenarioAction);
             }
 
         } else if (event.getPayload().getClass().equals(DeviceAddedEventAvro.class)) {

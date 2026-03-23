@@ -44,12 +44,7 @@ public class SwitchSensorActionInterface implements ActionInterface {
                             sensor.getState() ? 1 : 0)) {
                         DeviceActionRequest request = getDeviceActionRequest(a, item);
 
-                        log.info("Отправлен DeviceActionRequest: " +
-                                        "HubId - {}, " +
-                                        "ScenarioName - {}," +
-                                        "SensorId - {}," +
-                                        "TypeValue - {}," +
-                                        "Value - {}",
+                        log.info(Message.SEND_REQUEST,
                                 request.getHubId(),
                                 request.getScenarioName(),
                                 request.getAction().getSensorId(),

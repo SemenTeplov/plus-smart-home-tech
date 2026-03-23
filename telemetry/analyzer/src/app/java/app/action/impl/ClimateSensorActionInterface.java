@@ -34,8 +34,6 @@ public class ClimateSensorActionInterface implements ActionInterface {
         for (var item : conditionList) {
             String type = item.getCondition().getType();
 
-            log.info("Список action: {}", actionList);
-
             actionList.forEach(a -> {
                 switch (ConditionTypeAvro.valueOf(type)) {
                     case ConditionTypeAvro.TEMPERATURE -> {
@@ -47,12 +45,7 @@ public class ClimateSensorActionInterface implements ActionInterface {
                                 sensor.getTemperatureC())) {
                             DeviceActionRequest request = getDeviceActionRequest(a, item);
 
-                            log.info("Отправлен DeviceActionRequest: " +
-                                    "HubId - {}, " +
-                                    "ScenarioName - {}," +
-                                    "SensorId - {}," +
-                                    "TypeValue - {}," +
-                                    "Value - {}",
+                            log.info(Message.SEND_REQUEST,
                                     request.getHubId(),
                                     request.getScenarioName(),
                                     request.getAction().getSensorId(),
@@ -71,12 +64,7 @@ public class ClimateSensorActionInterface implements ActionInterface {
                                 sensor.getHumidity())) {
                             DeviceActionRequest request = getDeviceActionRequest(a, item);
 
-                            log.info("Отправлен DeviceActionRequest: " +
-                                            "HubId - {}, " +
-                                            "ScenarioName - {}," +
-                                            "SensorId - {}," +
-                                            "TypeValue - {}," +
-                                            "Value - {}",
+                            log.info(Message.SEND_REQUEST,
                                     request.getHubId(),
                                     request.getScenarioName(),
                                     request.getAction().getSensorId(),
@@ -95,12 +83,7 @@ public class ClimateSensorActionInterface implements ActionInterface {
                                 sensor.getCo2Level())) {
                             DeviceActionRequest request = getDeviceActionRequest(a, item);
 
-                            log.info("Отправлен DeviceActionRequest: " +
-                                            "HubId - {}, " +
-                                            "ScenarioName - {}," +
-                                            "SensorId - {}," +
-                                            "TypeValue - {}," +
-                                            "Value - {}",
+                            log.info(Message.SEND_REQUEST,
                                     request.getHubId(),
                                     request.getScenarioName(),
                                     request.getAction().getSensorId(),

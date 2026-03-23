@@ -3,6 +3,7 @@ package app.java.app.processor;
 import app.java.app.action.dto.ActionDto;
 import app.java.app.action.dto.ConditionDto;
 import app.java.app.action.ActionInterface;
+import app.java.app.constant.Message;
 import app.java.app.repository.SensorRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +35,7 @@ public class SnapshotProcessor {
     @Transactional
     @KafkaListener(topics = "${kafka.topics.snapshot}", containerFactory = "snapshotConsumer")
     public void handler(SensorsSnapshotAvro event) {
-        log.info("Поступил SensorsSnapshotAvro с HubId: {}", event.getHubId());
+        log.info(Message.GET_SENSORS_SNAPSHOT, event.getHubId());
 
         event.getSensorsState().entrySet()
             .forEach(e -> {
