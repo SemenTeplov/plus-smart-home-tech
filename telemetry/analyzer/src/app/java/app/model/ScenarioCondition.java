@@ -29,17 +29,17 @@ public class ScenarioCondition {
     @EmbeddedId
     private ScenarioConditionId id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("scenarioId")
     @JoinColumn(name = "scenario_id", referencedColumnName = "id")
     private Scenario scenario;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("sensorId")
     @JoinColumn(name = "sensor_id", referencedColumnName = "id")
     private Sensor sensor;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("conditionId")
     @JoinColumn(name = "condition_id", referencedColumnName = "id")
     private Condition condition;

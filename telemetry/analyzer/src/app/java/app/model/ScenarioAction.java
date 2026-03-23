@@ -26,17 +26,17 @@ public class ScenarioAction {
     @EmbeddedId
     private ScenarioActionId id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("scenarioId")
     @JoinColumn(name = "scenario_id", referencedColumnName = "id")
     private Scenario scenario;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("sensorId")
     @JoinColumn(name = "sensor_id", referencedColumnName = "id")
     private Sensor sensor;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("actionId")
     @JoinColumn(name = "action_id", referencedColumnName = "id")
     private Action action;
