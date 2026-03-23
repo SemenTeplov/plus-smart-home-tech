@@ -91,39 +91,48 @@ public class HubEventProcessor {
 
                 Sensor sensorCondition = getSensor(event, conditionItem.getSensorId());
 
-                ScenarioCondition scenarioCondition =
-                        ScenarioCondition.builder()
-                                .scenario(scenario)
-                                .condition(condition)
-                                .sensor(sensorCondition)
-                                .id(new ScenarioConditionId(scenario.getId(), sensorCondition.getId(), condition.getId()))
-                                .build();
+                ScenarioConditionId scId = new ScenarioConditionId(scenario.getId(), sensorCondition.getId(), condition.getId());
 
-                scenarioConditionRepository.save(scenarioCondition);
+                scenarioConditionRepository.findById(scId).ifPresent(o -> {
+                    ScenarioCondition scenarioCondition =
+                            ScenarioCondition.builder()
+                                    .scenario(scenario)
+                                    .condition(condition)
+                                    .sensor(sensorCondition)
+                                    .id(scId)
+                                    .build();
 
-                log.info(Message.CREATED_SCENARIO_CONDITION, scenarioCondition);
 
-                scenario.addCondition(scenarioCondition);
-                condition.addCondition(scenarioCondition);
-                sensorCondition.addCondition(scenarioCondition);
+                    scenarioConditionRepository.save(scenarioCondition);
+
+                    log.info(Message.CREATED_SCENARIO_CONDITION, scenarioCondition);
+
+                    scenario.addCondition(scenarioCondition);
+                    condition.addCondition(scenarioCondition);
+                    sensorCondition.addCondition(scenarioCondition);
+                });
 
                 Sensor sensorAction = getSensor(event, actionItem.getSensorId());
 
-                ScenarioAction scenarioAction =
-                        ScenarioAction.builder()
-                                .scenario(scenario)
-                                .action(action)
-                                .sensor(sensorAction)
-                                .id(new ScenarioActionId(scenario.getId(), sensorAction.getId(), action.getId()))
-                                .build();
+                ScenarioActionId saId = new ScenarioActionId(scenario.getId(), sensorAction.getId(), action.getId());
 
-                scenarioActionRepository.save(scenarioAction);
+                scenarioActionRepository.findById(saId).ifPresent(o -> {
+                    ScenarioAction scenarioAction =
+                            ScenarioAction.builder()
+                                    .scenario(scenario)
+                                    .action(action)
+                                    .sensor(sensorAction)
+                                    .id(saId)
+                                    .build();
 
-                log.info(Message.CREATED_SCENARIO_ACTION, scenarioAction);
+                    scenarioActionRepository.save(scenarioAction);
 
-                scenario.addAction(scenarioAction);
-                action.addAction(scenarioAction);
-                sensorAction.addAction(scenarioAction);
+                    log.info(Message.CREATED_SCENARIO_ACTION, scenarioAction);
+
+                    scenario.addAction(scenarioAction);
+                    action.addAction(scenarioAction);
+                    sensorAction.addAction(scenarioAction);
+                });
             }
 
         } else if (event.getPayload().getClass().equals(DeviceAddedEventAvro.class)) {
