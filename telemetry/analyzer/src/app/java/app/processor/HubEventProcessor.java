@@ -89,19 +89,19 @@ public class HubEventProcessor {
 
                     Sensor sensor = getSensor(event, conditionItem.getSensorId());
 
-                    ScenarioCondition scenarioCondition =
-                            ScenarioCondition.builder()
-                                    .scenario(scenario)
-                                    .condition(condition)
-                                    .sensor(sensor)
-                                    .id(new ScenarioConditionId(scenario.getId(), sensor.getId(), condition.getId()))
-                                    .build();
+//                    ScenarioCondition scenarioCondition =
+//                            ScenarioCondition.builder()
+//                                    .scenario(scenario)
+//                                    .condition(condition)
+//                                    .sensor(sensor)
+//                                    .id(new ScenarioConditionId(scenario.getId(), sensor.getId(), condition.getId()))
+//                                    .build();
+//
+//                    log.info(Message.CREATED_SCENARIO_CONDITION, scenarioCondition);
 
-                    log.info(Message.CREATED_SCENARIO_CONDITION, scenarioCondition);
-
-                    scenario.addCondition(scenarioCondition);
-                    condition.addCondition(scenarioCondition);
-                    sensor.addCondition(scenarioCondition);
+//                    scenario.addCondition(scenarioCondition);
+//                    condition.addCondition(scenarioCondition);
+//                    sensor.addCondition(scenarioCondition);
 
 //                    ScenarioAction scenarioAction =
 //                            ScenarioAction.builder()
@@ -116,8 +116,8 @@ public class HubEventProcessor {
 //                    scenario.addAction(scenarioAction);
 //                    action.addAction(scenarioAction);
 //                    sensor.addAction(scenarioAction);
-
-                    scenarioRepository.save(scenario);
+//
+//                    scenarioRepository.save(scenario);
                 }
             }
 
