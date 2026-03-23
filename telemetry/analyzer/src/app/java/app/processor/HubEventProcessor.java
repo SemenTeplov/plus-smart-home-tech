@@ -62,63 +62,68 @@ public class HubEventProcessor {
 
             Scenario scenario = getScenario(event.getHubId(), eventAvro.getName());
 
-            for (var conditionItem : eventAvro.getConditions()) {
-                for (var actionItem : eventAvro.getActions()) {
-                    log.info(Message.WORK_SCENARIO_CONDITION,
-                            conditionItem.getType().name(),
-                            conditionItem.getOperation().name(),
-                            conditionItem.getValue());
+            for (int i = 0; i < eventAvro.getConditions().size(); i++) {
+                var conditionItem = eventAvro.getConditions().get(i);
+                var actionItem = eventAvro.getActions().get(i);
 
-                    log.info(Message.WORK_SCENARIO_ACTION,
-                            actionItem.getType().name(),
-                            actionItem.getValue());
+                log.info(Message.WORK_SCENARIO_CONDITION,
+                        conditionItem.getType().name(),
+                        conditionItem.getOperation().name(),
+                        conditionItem.getValue());
 
-                    Condition condition = getCondition(
-                            conditionItem.getType().name(),
-                            conditionItem.getOperation().name(),
-                            conditionItem.getValue(),
-                            scenario.getConditions().stream()
-                                    .map(ScenarioCondition::getCondition)
-                                    .collect(Collectors.toSet()));
+                log.info(Message.WORK_SCENARIO_ACTION,
+                        actionItem.getType().name(),
+                        actionItem.getValue());
 
-                    Action action = getAction(
-                            actionItem.getType().name(),
-                            actionItem.getValue(),
-                            scenario.getActions().stream().map(ScenarioAction::getAction)
-                                    .collect(Collectors.toSet()));
+                Condition condition = getCondition(
+                        conditionItem.getType().name(),
+                        conditionItem.getOperation().name(),
+                        conditionItem.getValue(),
+                        scenario.getConditions().stream()
+                                .map(ScenarioCondition::getCondition)
+                                .collect(Collectors.toSet()));
 
-                    Sensor sensor = getSensor(event, conditionItem.getSensorId());
+                Action action = getAction(
+                        actionItem.getType().name(),
+                        actionItem.getValue(),
+                        scenario.getActions().stream().map(ScenarioAction::getAction)
+                                .collect(Collectors.toSet()));
 
-//                    ScenarioCondition scenarioCondition =
-//                            ScenarioCondition.builder()
-//                                    .scenario(scenario)
-//                                    .condition(condition)
-//                                    .sensor(sensor)
-//                                    .id(new ScenarioConditionId(scenario.getId(), sensor.getId(), condition.getId()))
-//                                    .build();
-//
-//                    log.info(Message.CREATED_SCENARIO_CONDITION, scenarioCondition);
+                Sensor sensorCondition = getSensor(event, conditionItem.getSensorId());
 
-//                    scenario.addCondition(scenarioCondition);
-//                    condition.addCondition(scenarioCondition);
-//                    sensor.addCondition(scenarioCondition);
+                ScenarioCondition scenarioCondition =
+                        ScenarioCondition.builder()
+                                .scenario(scenario)
+                                .condition(condition)
+                                .sensor(sensorCondition)
+                                .id(new ScenarioConditionId(scenario.getId(), sensorCondition.getId(), condition.getId()))
+                                .build();
 
-//                    ScenarioAction scenarioAction =
-//                            ScenarioAction.builder()
-//                                    .scenario(scenario)
-//                                    .action(action)
-//                                    .sensor(sensor)
-//                                    .id(new ScenarioActionId(scenario.getId(), sensor.getId(), action.getId()))
-//                                    .build();
-//
-//                    log.info(Message.CREATED_SCENARIO_ACTION, scenarioAction);
-//
-//                    scenario.addAction(scenarioAction);
-//                    action.addAction(scenarioAction);
-//                    sensor.addAction(scenarioAction);
-//
-//                    scenarioRepository.save(scenario);
-                }
+                scenarioConditionRepository.save(scenarioCondition);
+
+                log.info(Message.CREATED_SCENARIO_CONDITION, scenarioCondition);
+
+                scenario.addCondition(scenarioCondition);
+                condition.addCondition(scenarioCondition);
+                sensorCondition.addCondition(scenarioCondition);
+
+                Sensor sensorAction = getSensor(event, actionItem.getSensorId());
+
+                ScenarioAction scenarioAction =
+                        ScenarioAction.builder()
+                                .scenario(scenario)
+                                .action(action)
+                                .sensor(sensorAction)
+                                .id(new ScenarioActionId(scenario.getId(), sensorAction.getId(), action.getId()))
+                                .build();
+
+                scenarioActionRepository.save(scenarioAction);
+
+                log.info(Message.CREATED_SCENARIO_ACTION, scenarioAction);
+
+                scenario.addAction(scenarioAction);
+                action.addAction(scenarioAction);
+                sensorAction.addAction(scenarioAction);
             }
 
         } else if (event.getPayload().getClass().equals(DeviceAddedEventAvro.class)) {
