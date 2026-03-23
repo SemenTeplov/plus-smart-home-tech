@@ -6,4 +6,10 @@ public class Message {
     public static String SEND_REQUEST = "Отправлен DeviceActionRequest: HubId - {}, ScenarioName - {}, SensorId - {}," +
             "TypeValue - {}, Value - {}";
     public static String GET_SENSORS_SNAPSHOT = "Поступил SensorsSnapshotAvro с HubId: {}";
+    public static String GET_HUB_EVENT = "Поступил HubEventAvro с HubId: {}";
+    public static String HUB_EVENT_NAME = "HubEventAvro является {}";
+    public static String WORK_SCENARIO_CONDITION = "Обработка ScenarioCondition: Type - {}, Operation - {}, Value - {}";
+    public static String WORK_SCENARIO_ACTION = "Обработка ScenarioAction: Type - {}, Value - {}";
+    public static String CREATED_SCENARIO_CONDITION = "Был создан ScenarioCondition: {}";
+    public static String CREATED_SCENARIO_ACTION = "Был создан ScenarioAction: {}";
 }

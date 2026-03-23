@@ -1,5 +1,6 @@
 package app.java.app.processor;
 
+import app.java.app.constant.Message;
 import app.java.app.model.Action;
 import app.java.app.model.Condition;
 import app.java.app.model.Scenario;
@@ -52,10 +53,10 @@ public class HubEventProcessor {
     @Transactional
     @KafkaListener(topics = "${kafka.topics.hub}", containerFactory = "hubConsumer")
     public void handler(HubEventAvro event) {
-        log.info("Поступил HubEventAvro с HubId: {}", event.getHubId());
+        log.info(Message.GET_HUB_EVENT, event.getHubId());
 
         if (event.getPayload().getClass().equals(ScenarioAddedEventAvro.class)) {
-            log.info("HubEventAvro является ScenarioAddedEventAvro");
+            log.info(Message.HUB_EVENT_NAME, event.getPayload().getClass().getSimpleName());
 
             ScenarioAddedEventAvro eventAvro = (ScenarioAddedEventAvro) event.getPayload();
 
@@ -63,12 +64,12 @@ public class HubEventProcessor {
 
             for (var conditionItem : eventAvro.getConditions()) {
                 for (var actionItem : eventAvro.getActions()) {
-                    log.info("Обработка ScenarioCondition: Type - {}, Operation - {}, Value - {}",
+                    log.info(Message.WORK_SCENARIO_CONDITION,
                             conditionItem.getType().name(),
                             conditionItem.getOperation().name(),
                             conditionItem.getValue());
 
-                    log.info("Обработка ScenarioAction: Type - {}, Value - {}",
+                    log.info(Message.WORK_SCENARIO_ACTION,
                             actionItem.getType().name(),
                             actionItem.getValue());
 
@@ -96,7 +97,7 @@ public class HubEventProcessor {
                                     .id(new ScenarioConditionId(scenario.getId(), sensor.getId(), condition.getId()))
                                     .build());
 
-                    log.info("Был создан ScenarioCondition: {}", scenarioCondition);
+                    log.info(Message.CREATED_SCENARIO_CONDITION, scenarioCondition);
 
                     scenario.addCondition(scenarioCondition);
                     condition.addCondition(scenarioCondition);
@@ -110,7 +111,7 @@ public class HubEventProcessor {
                                     .id(new ScenarioActionId(scenario.getId(), sensor.getId(), action.getId()))
                                     .build());
 
-                    log.info("Был создан ScenarioAction: {}", scenarioAction);
+                    log.info(Message.CREATED_SCENARIO_ACTION, scenarioAction);
 
                     scenario.addAction(scenarioAction);
                     action.addAction(scenarioAction);
@@ -145,20 +146,20 @@ public class HubEventProcessor {
             }
 
         } else if (event.getPayload().getClass().equals(DeviceAddedEventAvro.class)) {
-            log.info("HubEventAvro является DeviceAddedEventAvro");
+            log.info(Message.HUB_EVENT_NAME, event.getPayload().getClass().getSimpleName());
 
             DeviceAddedEventAvro eventAvro = (DeviceAddedEventAvro) event.getPayload();
 
             getSensor(event, eventAvro.getId());
         } else if (event.getPayload().getClass().equals(ScenarioRemovedEventAvro.class)) {
-            log.info("HubEventAvro является ScenarioRemovedEventAvro");
+            log.info(Message.HUB_EVENT_NAME, event.getPayload().getClass().getSimpleName());
 
             ScenarioRemovedEventAvro eventAvro = (ScenarioRemovedEventAvro) event.getPayload();
 
             scenarioRepository
                     .findByHubIdAndName(event.getHubId(), eventAvro.getName()).ifPresent(scenarioRepository::delete);
         } else if (event.getPayload().getClass().equals(DeviceRemovedEventAvro.class)) {
-            log.info("HubEventAvro является DeviceRemovedEventAvro");
+            log.info(Message.HUB_EVENT_NAME, event.getPayload().getClass().getSimpleName());
 
             DeviceRemovedEventAvro eventAvro = (DeviceRemovedEventAvro) event.getPayload();
 

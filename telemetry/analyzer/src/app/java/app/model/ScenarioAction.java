@@ -1,5 +1,6 @@
 package app.java.app.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -25,17 +26,17 @@ public class ScenarioAction {
     @EmbeddedId
     private ScenarioActionId id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @MapsId("scenarioId")
     @JoinColumn(name = "scenario_id", referencedColumnName = "id")
     private Scenario scenario;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @MapsId("sensorId")
     @JoinColumn(name = "sensor_id", referencedColumnName = "id")
     private Sensor sensor;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @MapsId("actionId")
     @JoinColumn(name = "action_id", referencedColumnName = "id")
     private Action action;
