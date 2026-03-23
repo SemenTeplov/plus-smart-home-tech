@@ -62,18 +62,45 @@ public class HubEventProcessor {
 
             Scenario scenario = getScenario(event.getHubId(), eventAvro.getName());
 
-            for (int i = 0; i < eventAvro.getConditions().size(); i++) {
-                var conditionItem = eventAvro.getConditions().get(i);
-                var actionItem = eventAvro.getActions().get(i);
+            eventAvro.getActions().forEach(actionItem -> {
+                log.info(Message.WORK_SCENARIO_ACTION,
+                        actionItem.getType().name(),
+                        actionItem.getValue());
 
+                Action action = getAction(
+                        actionItem.getType().name(),
+                        actionItem.getValue(),
+                        scenario.getActions().stream().map(ScenarioAction::getAction)
+                                .collect(Collectors.toSet()));
+
+                Sensor sensorAction = getSensor(event, actionItem.getSensorId());
+
+                ScenarioActionId saId = new ScenarioActionId(scenario.getId(), sensorAction.getId(), action.getId());
+
+                scenarioActionRepository.findById(saId).ifPresent(o -> {
+                    ScenarioAction scenarioAction =
+                            ScenarioAction.builder()
+                                    .scenario(scenario)
+                                    .action(action)
+                                    .sensor(sensorAction)
+                                    .id(saId)
+                                    .build();
+
+                    scenarioActionRepository.save(scenarioAction);
+
+                    log.info(Message.CREATED_SCENARIO_ACTION, scenarioAction);
+
+                    scenario.addAction(scenarioAction);
+                    action.addAction(scenarioAction);
+                    sensorAction.addAction(scenarioAction);
+                });
+            });
+
+            eventAvro.getConditions().forEach(conditionItem -> {
                 log.info(Message.WORK_SCENARIO_CONDITION,
                         conditionItem.getType().name(),
                         conditionItem.getOperation().name(),
                         conditionItem.getValue());
-
-                log.info(Message.WORK_SCENARIO_ACTION,
-                        actionItem.getType().name(),
-                        actionItem.getValue());
 
                 Condition condition = getCondition(
                         conditionItem.getType().name(),
@@ -81,12 +108,6 @@ public class HubEventProcessor {
                         conditionItem.getValue(),
                         scenario.getConditions().stream()
                                 .map(ScenarioCondition::getCondition)
-                                .collect(Collectors.toSet()));
-
-                Action action = getAction(
-                        actionItem.getType().name(),
-                        actionItem.getValue(),
-                        scenario.getActions().stream().map(ScenarioAction::getAction)
                                 .collect(Collectors.toSet()));
 
                 Sensor sensorCondition = getSensor(event, conditionItem.getSensorId());
@@ -111,29 +132,7 @@ public class HubEventProcessor {
                     condition.addCondition(scenarioCondition);
                     sensorCondition.addCondition(scenarioCondition);
                 });
-
-                Sensor sensorAction = getSensor(event, actionItem.getSensorId());
-
-                ScenarioActionId saId = new ScenarioActionId(scenario.getId(), sensorAction.getId(), action.getId());
-
-                scenarioActionRepository.findById(saId).ifPresent(o -> {
-                    ScenarioAction scenarioAction =
-                            ScenarioAction.builder()
-                                    .scenario(scenario)
-                                    .action(action)
-                                    .sensor(sensorAction)
-                                    .id(saId)
-                                    .build();
-
-                    scenarioActionRepository.save(scenarioAction);
-
-                    log.info(Message.CREATED_SCENARIO_ACTION, scenarioAction);
-
-                    scenario.addAction(scenarioAction);
-                    action.addAction(scenarioAction);
-                    sensorAction.addAction(scenarioAction);
-                });
-            }
+            });
 
         } else if (event.getPayload().getClass().equals(DeviceAddedEventAvro.class)) {
             log.info(Message.HUB_EVENT_NAME, event.getPayload().getClass().getSimpleName());
