@@ -41,6 +41,7 @@ public class SnapshotProcessor {
             .forEach(e -> {
                 sensorRepository.findByIdAndHubId(e.getKey(), event.getHubId()).ifPresent(s -> {
                     log.info("Найден Sensor: {}", s);
+                    log.info("Найден Conditions: {}", s.getConditions());
                     List<ConditionDto> conditionsDto = s.getConditions().stream()
                         .map(c -> ConditionDto.builder()
                                 .scenario(c.getScenario())
@@ -50,6 +51,7 @@ public class SnapshotProcessor {
 
                     log.info("Список ConditionDto: {}", conditionsDto);
 
+                    log.info("Найден Actions: {}", s.getActions());
                     List<ActionDto> actionsDto = s.getActions().stream()
                         .map(a -> ActionDto.builder()
                                 .scenario(a.getScenario())
