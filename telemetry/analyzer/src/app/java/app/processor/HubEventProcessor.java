@@ -75,7 +75,8 @@ public class HubEventProcessor {
 
                 Sensor sensorAction = getSensor(event, actionItem.getSensorId());
 
-                ScenarioActionId saId = new ScenarioActionId(scenario.getId(), sensorAction.getId(), action.getId());
+                ScenarioActionId saId = new ScenarioActionId(
+                        scenario.getId(), sensorAction.getId(), action.getId());
 
                 scenarioActionRepository.findById(saId).ifPresent(o -> {
                     ScenarioAction scenarioAction =
@@ -86,13 +87,13 @@ public class HubEventProcessor {
                                     .id(saId)
                                     .build();
 
-                    scenarioActionRepository.save(scenarioAction);
-
                     log.info(Message.CREATED_SCENARIO_ACTION, scenarioAction);
 
                     scenario.addAction(scenarioAction);
                     action.addAction(scenarioAction);
                     sensorAction.addAction(scenarioAction);
+
+                    scenarioActionRepository.save(scenarioAction);
                 });
             });
 
@@ -112,7 +113,8 @@ public class HubEventProcessor {
 
                 Sensor sensorCondition = getSensor(event, conditionItem.getSensorId());
 
-                ScenarioConditionId scId = new ScenarioConditionId(scenario.getId(), sensorCondition.getId(), condition.getId());
+                ScenarioConditionId scId = new ScenarioConditionId(
+                        scenario.getId(), sensorCondition.getId(), condition.getId());
 
                 scenarioConditionRepository.findById(scId).ifPresent(o -> {
                     ScenarioCondition scenarioCondition =
@@ -123,14 +125,13 @@ public class HubEventProcessor {
                                     .id(scId)
                                     .build();
 
-
-                    scenarioConditionRepository.save(scenarioCondition);
-
                     log.info(Message.CREATED_SCENARIO_CONDITION, scenarioCondition);
 
                     scenario.addCondition(scenarioCondition);
                     condition.addCondition(scenarioCondition);
                     sensorCondition.addCondition(scenarioCondition);
+
+                    scenarioConditionRepository.save(scenarioCondition);
                 });
             });
 
