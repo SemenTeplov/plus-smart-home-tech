@@ -78,7 +78,7 @@ public class HubEventProcessor {
                 ScenarioActionId saId = new ScenarioActionId(
                         scenario.getId(), sensorAction.getId(), action.getId());
 
-                scenarioActionRepository.findById(saId).ifPresent(o -> {
+                if (scenarioActionRepository.findById(saId).isEmpty()) {
                     ScenarioAction scenarioAction =
                             ScenarioAction.builder()
                                     .scenario(scenario)
@@ -96,7 +96,7 @@ public class HubEventProcessor {
                     //scenarioActionRepository.save(scenarioAction);
 
                     sensorRepository.save(sensorAction);
-                });
+                }
             });
 
             eventAvro.getConditions().forEach(conditionItem -> {
@@ -118,7 +118,7 @@ public class HubEventProcessor {
                 ScenarioConditionId scId = new ScenarioConditionId(
                         scenario.getId(), sensorCondition.getId(), condition.getId());
 
-                scenarioConditionRepository.findById(scId).ifPresent(o -> {
+                if (scenarioConditionRepository.findById(scId).isEmpty()) {
                     ScenarioCondition scenarioCondition =
                             ScenarioCondition.builder()
                                     .scenario(scenario)
@@ -136,7 +136,7 @@ public class HubEventProcessor {
                     //scenarioConditionRepository.save(scenarioCondition);
 
                     sensorRepository.save(sensorCondition);
-                });
+                }
             });
 
         } else if (event.getPayload().getClass().equals(DeviceAddedEventAvro.class)) {
