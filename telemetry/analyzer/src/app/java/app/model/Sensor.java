@@ -31,10 +31,10 @@ public class Sensor {
 
     String hubId;
 
-    @OneToMany(mappedBy = "sensor", cascade = CascadeType.MERGE, orphanRemoval = true)
+    @OneToMany(mappedBy = "sensor", orphanRemoval = true)
     Set<ScenarioCondition> conditions = new HashSet<>();
 
-    @OneToMany(mappedBy = "sensor", cascade = CascadeType.MERGE, orphanRemoval = true)
+    @OneToMany(mappedBy = "sensor", orphanRemoval = true)
     Set<ScenarioAction> actions = new HashSet<>();
 
     public void addCondition(ScenarioCondition condition) {

@@ -94,8 +94,6 @@ public class HubEventProcessor {
                     scenario.addAction(scenarioAction);
                     action.addAction(scenarioAction);
                     sensorAction.addAction(scenarioAction);
-
-                    //sensorRepository.save(sensorAction);
                 }
             });
 
@@ -134,8 +132,6 @@ public class HubEventProcessor {
                     scenario.addCondition(scenarioCondition);
                     condition.addCondition(scenarioCondition);
                     sensorCondition.addCondition(scenarioCondition);
-
-                    //sensorRepository.save(sensorCondition);
                 }
             });
 
