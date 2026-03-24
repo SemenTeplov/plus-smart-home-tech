@@ -89,11 +89,11 @@ public class HubEventProcessor {
 
                     log.info(Message.CREATED_SCENARIO_ACTION, scenarioAction);
 
+                    scenarioActionRepository.save(scenarioAction);
+
                     scenario.addAction(scenarioAction);
                     action.addAction(scenarioAction);
                     sensorAction.addAction(scenarioAction);
-
-                    scenarioActionRepository.save(scenarioAction);
 
                     //sensorRepository.save(sensorAction);
                 }
@@ -129,11 +129,11 @@ public class HubEventProcessor {
 
                     log.info(Message.CREATED_SCENARIO_CONDITION, scenarioCondition);
 
+                    scenarioConditionRepository.save(scenarioCondition);
+
                     scenario.addCondition(scenarioCondition);
                     condition.addCondition(scenarioCondition);
                     sensorCondition.addCondition(scenarioCondition);
-
-                    scenarioConditionRepository.save(scenarioCondition);
 
                     //sensorRepository.save(sensorCondition);
                 }
