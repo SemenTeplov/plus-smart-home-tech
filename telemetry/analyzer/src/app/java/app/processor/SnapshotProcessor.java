@@ -40,6 +40,7 @@ public class SnapshotProcessor {
         event.getSensorsState().entrySet()
             .forEach(e -> {
                 sensorRepository.findByIdAndHubId(e.getKey(), event.getHubId()).ifPresent(s -> {
+                    log.info("Найден Sensor: {}", s);
                     List<ConditionDto> conditionsDto = s.getConditions().stream()
                         .map(c -> ConditionDto.builder()
                                 .scenario(c.getScenario())
