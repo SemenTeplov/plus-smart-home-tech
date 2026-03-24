@@ -92,7 +92,6 @@ public class HubEventProcessor {
                     scenarioActionRepository.save(scenarioAction);
 
                     scenario.addAction(scenarioAction);
-                    action.addAction(scenarioAction);
                     sensorAction.addAction(scenarioAction);
                 }
             });
@@ -130,7 +129,6 @@ public class HubEventProcessor {
                     scenarioConditionRepository.save(scenarioCondition);
 
                     scenario.addCondition(scenarioCondition);
-                    condition.addCondition(scenarioCondition);
                     sensorCondition.addCondition(scenarioCondition);
                 }
             });
@@ -228,7 +226,6 @@ public class HubEventProcessor {
                                 .type(type)
                                 .operation(operation)
                                 .value(value)
-                                .conditions(new HashSet<>())
                                 .build()));
 
         log.info("Получен Condition {}", condition);
@@ -254,7 +251,6 @@ public class HubEventProcessor {
                         Action.builder()
                                 .type(type)
                                 .value(value)
-                                .actions(new HashSet<>())
                                 .build()));
 
         log.info("Получен Action: {}", action);

@@ -36,10 +36,10 @@ public class Scenario {
 
     String name;
 
-    @OneToMany(mappedBy = "scenario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "scenario", cascade = CascadeType.REMOVE, orphanRemoval = true)
     Set<ScenarioCondition> conditions = new HashSet<>();
 
-    @OneToMany(mappedBy = "scenario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "scenario", cascade = CascadeType.REMOVE, orphanRemoval = true)
     Set<ScenarioAction> actions = new HashSet<>();
 
     public void addCondition(ScenarioCondition condition) {
