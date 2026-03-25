@@ -35,8 +35,8 @@ public class TemperatureSensorActionInterface implements ActionInterface {
 
             if (compareValues(
                     condition.getCondition().getOperation(),
-                    condition.getCondition().getValue(),
-                    sensor.getTemperatureC())) {
+                    sensor.getTemperatureC(),
+                    condition.getCondition().getValue())) {
                 DeviceActionRequest request = getDeviceActionRequest(action, condition);
 
                 log.info(Message.SEND_REQUEST,

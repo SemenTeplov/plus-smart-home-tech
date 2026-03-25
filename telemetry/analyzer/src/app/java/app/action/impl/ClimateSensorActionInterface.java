@@ -34,15 +34,11 @@ public class ClimateSensorActionInterface implements ActionInterface {
         switch (ConditionTypeAvro.valueOf(type)) {
             case ConditionTypeAvro.TEMPERATURE -> {
                 log.info(Message.CHECK_PARAMETER, type);
-                log.info("Проверка: operation: {}, value: {}, other value: {}",
-                        condition.getCondition().getOperation(),
-                        condition.getCondition().getValue(),
-                        sensor.getTemperatureC());
 
                 if (compareValues(
                         condition.getCondition().getOperation(),
-                        condition.getCondition().getValue(),
-                        sensor.getTemperatureC())) {
+                        sensor.getTemperatureC(),
+                        condition.getCondition().getValue())) {
                     DeviceActionRequest request = getDeviceActionRequest(action, condition);
 
                     log.info(Message.SEND_REQUEST,
@@ -60,8 +56,8 @@ public class ClimateSensorActionInterface implements ActionInterface {
 
                 if (compareValues(
                         condition.getCondition().getOperation(),
-                        condition.getCondition().getValue(),
-                        sensor.getHumidity())) {
+                        sensor.getHumidity(),
+                        condition.getCondition().getValue())) {
                     DeviceActionRequest request = getDeviceActionRequest(action, condition);
 
                     log.info(Message.SEND_REQUEST,
@@ -79,8 +75,8 @@ public class ClimateSensorActionInterface implements ActionInterface {
 
                 if (compareValues(
                         condition.getCondition().getOperation(),
-                        condition.getCondition().getValue(),
-                        sensor.getCo2Level())) {
+                        sensor.getCo2Level(),
+                        condition.getCondition().getValue())) {
                     DeviceActionRequest request = getDeviceActionRequest(action, condition);
 
                     log.info(Message.SEND_REQUEST,

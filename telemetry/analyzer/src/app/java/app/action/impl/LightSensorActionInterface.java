@@ -36,8 +36,8 @@ public class LightSensorActionInterface implements ActionInterface {
 
                     if (compareValues(
                             condition.getCondition().getOperation(),
-                            condition.getCondition().getValue(),
-                            sensor.getLuminosity())) {
+                            sensor.getLuminosity(),
+                            condition.getCondition().getValue())) {
                         DeviceActionRequest request = getDeviceActionRequest(action, condition);
 
                         log.info(Message.SEND_REQUEST,

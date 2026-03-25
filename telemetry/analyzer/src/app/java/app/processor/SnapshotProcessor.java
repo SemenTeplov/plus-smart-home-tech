@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
