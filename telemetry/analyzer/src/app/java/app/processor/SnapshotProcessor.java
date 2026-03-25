@@ -57,7 +57,7 @@ public class SnapshotProcessor {
 
         event.getSensorsState().entrySet()
             .forEach(e -> {
-                ConditionDto condition = scenarioConditionRepository.findAll().stream()
+                scenarioConditionRepository.findAll().stream()
                         .filter(sc -> sc.getSensor().getId().equals(e))
                         .map(sc ->
                                 ConditionDto.builder()
@@ -65,23 +65,23 @@ public class SnapshotProcessor {
                                     .condition(sc.getCondition())
                                     .sensor(sc.getSensor()).build())
                         .findFirst()
-                        .get();
-
-                ActionDto action = scenarioActionRepository.findAll().stream()
-                        .filter(sa -> sa.getScenario().equals(condition.getScenario()))
-                        .map(sa ->
-                                ActionDto.builder()
-                                    .action(sa.getAction())
-                                    .scenario(sa.getScenario())
-                                    .sensor(sa.getSensor())
-                                    .build())
-                        .findFirst().get();
-
-                actions.stream()
-                        .filter(a -> a.getActionClass().getName()
-                                .equals(e.getValue().getData().getClass().getName()))
-                        .forEach(a -> {
-                            a.sendAction(e.getValue().getData(), condition, action);
+                        .ifPresent(sc -> {
+                            scenarioActionRepository.findAll().stream()
+                                    .filter(sa -> sa.getScenario().equals(sc.getScenario()))
+                                    .map(sa ->
+                                            ActionDto.builder()
+                                                    .action(sa.getAction())
+                                                    .scenario(sa.getScenario())
+                                                    .sensor(sa.getSensor())
+                                                    .build())
+                                    .findFirst().ifPresent(sa -> {
+                                        actions.stream()
+                                                .filter(a -> a.getActionClass().getName()
+                                                        .equals(e.getValue().getData().getClass().getName()))
+                                                .forEach(a -> {
+                                                    a.sendAction(e.getValue().getData(), sc, sa);
+                                                });
+                                    });
                         });
 
 //                sensorRepository.findByIdAndHubId(e.getKey(), event.getHubId()).ifPresent(s -> {
