@@ -12,7 +12,7 @@ import telemetry.messages.DeviceActionRequest;
 import java.util.List;
 
 public interface ActionInterface {
-    void sendAction(Object obj, List<ConditionDto> conditionList, List<ActionDto> actionList);
+    void sendAction(Object obj, ConditionDto condition, ActionDto action);
 
     Class getActionClass();
 

@@ -17,8 +17,6 @@ import ru.yandex.practicum.kafka.telemetry.event.SwitchSensorAvro;
 
 import telemetry.messages.DeviceActionRequest;
 
-import java.util.List;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -26,35 +24,31 @@ public class SwitchSensorActionInterface implements ActionInterface {
     private final RpcClient client;
 
     @Override
-    public void sendAction(Object obj, List<ConditionDto> conditionList, List<ActionDto> actionList) {
+    public void sendAction(Object obj, ConditionDto condition, ActionDto action) {
         log.info(Message.OBJECT_NAME, obj.getClass().getSimpleName());
 
         SwitchSensorAvro sensor = (SwitchSensorAvro) obj;
 
-        for (var item : conditionList) {
-            String type = item.getCondition().getType();
+        String type = condition.getCondition().getType();
 
-            actionList.stream().filter(a -> a.getScenario().equals(item.getScenario())).forEach(a -> {
-                if (ConditionTypeAvro.valueOf(type).equals(ConditionTypeAvro.SWITCH)) {
-                    log.info(Message.CHECK_PARAMETER, type);
+        if (ConditionTypeAvro.valueOf(type).equals(ConditionTypeAvro.SWITCH)) {
+            log.info(Message.CHECK_PARAMETER, type);
 
-                    if (compareValues(
-                            item.getCondition().getOperation(),
-                            item.getCondition().getValue(),
-                            sensor.getState() ? 1 : 0)) {
-                        DeviceActionRequest request = getDeviceActionRequest(a, item);
+            if (compareValues(
+                    condition.getCondition().getOperation(),
+                    condition.getCondition().getValue(),
+                    sensor.getState() ? 1 : 0)) {
+                DeviceActionRequest request = getDeviceActionRequest(action, condition);
 
-                        log.info(Message.SEND_REQUEST,
-                                request.getHubId(),
-                                request.getScenarioName(),
-                                request.getAction().getSensorId(),
-                                request.getAction().getType(),
-                                request.getAction().getValue());
+                log.info(Message.SEND_REQUEST,
+                        request.getHubId(),
+                        request.getScenarioName(),
+                        request.getAction().getSensorId(),
+                        request.getAction().getType(),
+                        request.getAction().getValue());
 
-                        client.send(request);
-                    }
-                }
-            });
+                client.send(request);
+            }
         }
     }
 

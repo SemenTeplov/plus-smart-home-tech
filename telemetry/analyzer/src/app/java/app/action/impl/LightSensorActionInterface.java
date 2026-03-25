@@ -17,8 +17,6 @@ import ru.yandex.practicum.kafka.telemetry.event.LightSensorAvro;
 
 import telemetry.messages.DeviceActionRequest;
 
-import java.util.List;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -26,23 +24,21 @@ public class LightSensorActionInterface implements ActionInterface {
     private final RpcClient client;
 
     @Override
-    public void sendAction(Object obj, List<ConditionDto> conditionList, List<ActionDto> actionList) {
+    public void sendAction(Object obj, ConditionDto condition, ActionDto action) {
         log.info(Message.OBJECT_NAME, obj.getClass().getSimpleName());
 
         LightSensorAvro sensor = (LightSensorAvro) obj;
 
-        for (var item : conditionList) {
-            String type = item.getCondition().getType();
+        String type = condition.getCondition().getType();
 
-            actionList.stream().filter(a -> a.getScenario().equals(item.getScenario())).forEach(a -> {
                 if (ConditionTypeAvro.valueOf(type).equals(ConditionTypeAvro.LUMINOSITY)) {
                     log.info(Message.CHECK_PARAMETER, type);
 
                     if (compareValues(
-                            item.getCondition().getOperation(),
-                            item.getCondition().getValue(),
+                            condition.getCondition().getOperation(),
+                            condition.getCondition().getValue(),
                             sensor.getLuminosity())) {
-                        DeviceActionRequest request = getDeviceActionRequest(a, item);
+                        DeviceActionRequest request = getDeviceActionRequest(action, condition);
 
                         log.info(Message.SEND_REQUEST,
                                 request.getHubId(),
@@ -54,8 +50,6 @@ public class LightSensorActionInterface implements ActionInterface {
                         client.send(request);
                     }
                 }
-            });
-        }
     }
 
     @Override
