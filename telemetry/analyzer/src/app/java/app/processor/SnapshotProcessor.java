@@ -58,7 +58,7 @@ public class SnapshotProcessor {
         event.getSensorsState().entrySet()
             .forEach(e -> {
                 scenarioConditionRepository.findAll().stream()
-                        .filter(sc -> sc.getSensor().getId().equals(e))
+                        .filter(sc -> sc.getSensor().getId().equals(e.getKey()))
                         .map(sc ->
                                 ConditionDto.builder()
                                     .scenario(sc.getScenario())
