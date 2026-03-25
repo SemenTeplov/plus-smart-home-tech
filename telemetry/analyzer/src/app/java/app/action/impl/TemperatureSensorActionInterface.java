@@ -33,7 +33,7 @@ public class TemperatureSensorActionInterface implements ActionInterface {
         for (var item : conditionList) {
             String type = item.getCondition().getType();
 
-            actionList.forEach(a -> {
+            actionList.stream().filter(a -> a.getScenario().equals(item.getScenario())).forEach(a -> {
                 if (ConditionTypeAvro.valueOf(type).equals(ConditionTypeAvro.TEMPERATURE)) {
                     log.info(Message.CHECK_PARAMETER, type);
 

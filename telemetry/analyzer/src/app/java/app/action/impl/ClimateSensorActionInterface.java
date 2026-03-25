@@ -34,7 +34,7 @@ public class ClimateSensorActionInterface implements ActionInterface {
         for (var item : conditionList) {
             String type = item.getCondition().getType();
 
-            actionList.forEach(a -> {
+            actionList.stream().filter(a -> a.getScenario().equals(item.getScenario())).forEach(a -> {
                 switch (ConditionTypeAvro.valueOf(type)) {
                     case ConditionTypeAvro.TEMPERATURE -> {
                         log.info(Message.CHECK_PARAMETER, type);
