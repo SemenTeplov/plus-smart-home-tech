@@ -51,6 +51,7 @@ public class SnapshotProcessor {
                                 .scenario(c.getScenario())
                                 .condition(c.getCondition())
                                 .sensor(c.getSensor()).build())
+                        .filter(c -> c.getSensor().getId().equals(e))
                         .toList());
 
                     actionsDto.addAll(conditionsDto.stream()
@@ -60,6 +61,8 @@ public class SnapshotProcessor {
                                     .scenario(c.getScenario())
                                     .sensor(c.getSensor())
                                     .build())
+                            .filter(a -> a.getScenario().getName()
+                                    .equals(conditionsDto.get(0).getScenario().getName()))
                             .toList());
 
                     log.info("Conditions: {}", conditionsDto);
