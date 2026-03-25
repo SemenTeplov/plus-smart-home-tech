@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -37,29 +38,41 @@ public class SnapshotProcessor {
     public void handler(SensorsSnapshotAvro event) {
         log.info(Message.GET_SENSORS_SNAPSHOT, event.getHubId());
 
+        List<ActionDto> actionsDto = new ArrayList<>();
+
+        List<ConditionDto> conditionsDto = new ArrayList<>();
+
         event.getSensorsState().entrySet()
             .forEach(e -> {
                 sensorRepository.findByIdAndHubId(e.getKey(), event.getHubId()).ifPresent(s -> {
                     log.info("Найден Sensor: {}", s);
-                    log.info("Найден Conditions: {}", s.getConditions());
-                    List<ConditionDto> conditionsDto = s.getConditions().stream()
+                    conditionsDto.addAll(s.getConditions().stream()
                         .map(c -> ConditionDto.builder()
                                 .scenario(c.getScenario())
                                 .condition(c.getCondition())
                                 .sensor(c.getSensor()).build())
-                        .toList();
+                        .toList());
 
-                    log.info("Список ConditionDto: {}", conditionsDto);
+                    actionsDto.addAll(conditionsDto.stream()
+                            .flatMap(c -> c.getScenario().getActions().stream())
+                            .map(c -> ActionDto.builder()
+                                    .action(c.getAction())
+                                    .scenario(c.getScenario())
+                                    .sensor(c.getSensor())
+                                    .build())
+                            .toList());
 
-                    log.info("Найден Actions: {}", s.getActions());
-                    List<ActionDto> actionsDto = s.getActions().stream()
-                        .map(a -> ActionDto.builder()
-                                .scenario(a.getScenario())
-                                .sensor(a.getSensor())
-                                .action(a.getAction()).build())
-                        .toList();
-
-                    log.info("Список ActionDto: {}", actionsDto);
+//                    log.info("Список ConditionDto: {}", conditionsDto);
+//
+//                    log.info("Найден Actions: {}", s.getActions());
+//                    actionsDto.addAll(s.getActions().stream()
+//                        .map(a -> ActionDto.builder()
+//                                .scenario(a.getScenario())
+//                                .sensor(a.getSensor())
+//                                .action(a.getAction()).build())
+//                        .toList());
+//
+//                    log.info("Список ActionDto: {}", actionsDto);
 
                     actions.stream()
                         .filter(a -> a.getActionClass().getName()
