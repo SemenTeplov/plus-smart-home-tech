@@ -62,17 +62,8 @@ public class SnapshotProcessor {
                                     .build())
                             .toList());
 
-//                    log.info("Список ConditionDto: {}", conditionsDto);
-//
-//                    log.info("Найден Actions: {}", s.getActions());
-//                    actionsDto.addAll(s.getActions().stream()
-//                        .map(a -> ActionDto.builder()
-//                                .scenario(a.getScenario())
-//                                .sensor(a.getSensor())
-//                                .action(a.getAction()).build())
-//                        .toList());
-//
-//                    log.info("Список ActionDto: {}", actionsDto);
+                    log.info("Conditions: {}", conditionsDto);
+                    log.info("Actions: {}", actionsDto);
 
                     actions.stream()
                         .filter(a -> a.getActionClass().getName()
