@@ -9,8 +9,6 @@ import telemetry.messages.ActionTypeProto;
 import telemetry.messages.DeviceActionProto;
 import telemetry.messages.DeviceActionRequest;
 
-import java.util.List;
-
 public interface ActionInterface {
     void sendAction(Object obj, ConditionDto condition, ActionDto action);
 
