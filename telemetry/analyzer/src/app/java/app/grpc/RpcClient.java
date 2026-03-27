@@ -1,5 +1,7 @@
 package app.java.app.grpc;
 
+import lombok.extern.slf4j.Slf4j;
+
 import net.devh.boot.grpc.client.inject.GrpcClient;
 
 import org.springframework.stereotype.Service;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Service;
 import telemetry.messages.DeviceActionRequest;
 import telemetry.service.hubrouter.HubRouterControllerGrpc.HubRouterControllerBlockingStub;
 
+@Slf4j
 @Service
 public class RpcClient {
     private final HubRouterControllerBlockingStub hubRouterClient;
@@ -16,6 +19,9 @@ public class RpcClient {
     }
 
     public void send(DeviceActionRequest request) {
+        log.info("Отправляется DeviceActionRequest: HubId {}, ScenarioName {}, Value {}, Type {}, SensorId {}",
+                request.getHubId(), request.getScenarioName(), request.getAction().getValue(),
+                request.getAction().getType(), request.getAction().getSensorId());
         hubRouterClient.handleDeviceAction(request);
     }
 }
