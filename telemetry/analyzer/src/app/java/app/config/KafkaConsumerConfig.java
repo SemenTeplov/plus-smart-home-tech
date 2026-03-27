@@ -85,7 +85,10 @@ public class KafkaConsumerConfig {
 
         configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, server);
         configs.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        configs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offsetRest);
+        //configs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offsetRest);
+        configs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "true");
+        configs.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "5000");
+
         configs.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, sessionTimeout);
         configs.put(ConsumerConfig.HEARTBEAT_INTERVAL_MS_CONFIG, heartbeatInterval);
 
