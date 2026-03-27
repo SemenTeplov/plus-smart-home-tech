@@ -39,6 +39,11 @@ public class ClimateSensorActionInterface implements ActionInterface {
                         condition.getCondition().getOperation(),
                         sensor.getTemperatureC(),
                         condition.getCondition().getValue())) {
+                    log.info("Условие: Operation {}, Temperature {}, Value {}",
+                            condition.getCondition().getOperation(),
+                            sensor.getTemperatureC(),
+                            condition.getCondition().getValue());
+
                     DeviceActionRequest request = getDeviceActionRequest(action, condition);
 
                     log.info(Message.SEND_REQUEST,
@@ -58,6 +63,11 @@ public class ClimateSensorActionInterface implements ActionInterface {
                         condition.getCondition().getOperation(),
                         sensor.getHumidity(),
                         condition.getCondition().getValue())) {
+                    log.info("Условие: Operation {}, Humidity {}, Value {}",
+                            condition.getCondition().getOperation(),
+                            sensor.getHumidity(),
+                            condition.getCondition().getValue());
+
                     DeviceActionRequest request = getDeviceActionRequest(action, condition);
 
                     log.info(Message.SEND_REQUEST,
@@ -77,6 +87,11 @@ public class ClimateSensorActionInterface implements ActionInterface {
                         condition.getCondition().getOperation(),
                         sensor.getCo2Level(),
                         condition.getCondition().getValue())) {
+                    log.info("Условие: Operation {}, Co2Level {}, Value {}",
+                            condition.getCondition().getOperation(),
+                            sensor.getCo2Level(),
+                            condition.getCondition().getValue());
+
                     DeviceActionRequest request = getDeviceActionRequest(action, condition);
 
                     log.info(Message.SEND_REQUEST,

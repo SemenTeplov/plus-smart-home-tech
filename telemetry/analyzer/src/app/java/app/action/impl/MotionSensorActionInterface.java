@@ -38,6 +38,11 @@ public class MotionSensorActionInterface implements ActionInterface {
                     condition.getCondition().getOperation(),
                     sensor.getMotion() ? 1 : 0,
                     condition.getCondition().getValue())) {
+                log.info("Условие: Operation {}, Motion {}, Value {}",
+                        condition.getCondition().getOperation(),
+                        sensor.getMotion(),
+                        condition.getCondition().getValue());
+
                 DeviceActionRequest request = getDeviceActionRequest(action, condition);
 
                 log.info(Message.SEND_REQUEST,
