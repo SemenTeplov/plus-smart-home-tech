@@ -23,6 +23,8 @@ import java.util.List;
 public class SnapshotProcessor {
     private final List<ActionInterface> actions;
 
+    private final List<SensorsSnapshotAvro> cash;
+
     private final ScenarioConditionRepository scenarioConditionRepository;
 
     private final ScenarioActionRepository scenarioActionRepository;
@@ -30,9 +32,11 @@ public class SnapshotProcessor {
     @Autowired
     public SnapshotProcessor(
             List<ActionInterface> actions,
+            List<SensorsSnapshotAvro> cash,
             ScenarioConditionRepository scenarioConditionRepository,
             ScenarioActionRepository scenarioActionRepository) {
         this.actions = actions;
+        this.cash = cash;
         this.scenarioConditionRepository = scenarioConditionRepository;
         this.scenarioActionRepository = scenarioActionRepository;
     }
@@ -41,6 +45,12 @@ public class SnapshotProcessor {
     @KafkaListener(topics = "${kafka.topics.snapshot}", containerFactory = "snapshotConsumer")
     public void handler(SensorsSnapshotAvro event) {
         log.info(Message.GET_SENSORS_SNAPSHOT, event.getHubId());
+
+        if (cash.contains(event)) {
+            return;
+        }
+
+        cash.add(event);
 
         event.getSensorsState().entrySet()
             .forEach(e -> {
