@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.kafka.telemetry.event.ConditionTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.TemperatureSensorAvro;
+
 import telemetry.messages.DeviceActionRequest;
 
 @Slf4j

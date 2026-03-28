@@ -40,6 +40,15 @@ public class KafkaConsumerConfig {
     @Value("${kafka.consumer.heartbeat-interval-ms}")
     private String heartbeatInterval;
 
+    @Value("${kafka.properties.reconnect-backoff-ms}")
+    private String reconnectBackoff;
+
+    @Value("${kafka.properties.reconnect-backoff-max-ms}")
+    private String reconnectBackoffMax;
+
+    @Value("${kafka.properties.retry-backoff-ms}")
+    private String retryBackoff;
+
     @Bean
     public ConsumerFactory<String, HubEventAvro> hubConsumerFactory() {
         Map<String, Object> configs = consumerConfig();
@@ -88,6 +97,9 @@ public class KafkaConsumerConfig {
         configs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, offsetRest);
         configs.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, sessionTimeout);
         configs.put(ConsumerConfig.HEARTBEAT_INTERVAL_MS_CONFIG, heartbeatInterval);
+        configs.put(ConsumerConfig.RECONNECT_BACKOFF_MS_CONFIG, reconnectBackoff);
+        configs.put(ConsumerConfig.RECONNECT_BACKOFF_MAX_MS_CONFIG, reconnectBackoffMax);
+        configs.put(ConsumerConfig.RETRY_BACKOFF_MS_CONFIG, retryBackoff);
 
         return configs;
     }

@@ -39,12 +39,12 @@ public class SwitchSensorActionInterface implements ActionInterface {
                     sensor.getState() ? 1 : 0,
                     condition.getCondition().getValue());
 
-        if (compareValues(
-                condition.getCondition().getOperation(),
-                sensor.getState() ? 1 : 0,
-                condition.getCondition().getValue())) {
-            action.getAction().setValue(action.getAction().getValue() == 0 ? 1 : 0);
-        }
+            if (compareValues(
+                    condition.getCondition().getOperation(),
+                    sensor.getState() ? 1 : 0,
+                    condition.getCondition().getValue())) {
+                action.getAction().setValue(action.getAction().getValue() == 0 ? 1 : 0);
+            }
 
             DeviceActionRequest request = getDeviceActionRequest(action, condition);
 
