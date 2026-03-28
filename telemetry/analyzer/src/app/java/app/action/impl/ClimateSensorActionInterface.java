@@ -42,8 +42,8 @@ public class ClimateSensorActionInterface implements ActionInterface {
 
                 if (!compareValues(
                         condition.getCondition().getOperation(),
-                        sensor.getTemperatureC(),
-                        condition.getCondition().getValue())) {
+                        condition.getCondition().getValue(),
+                        sensor.getTemperatureC())) {
                     action.getAction().setValue(sensor.getTemperatureC());
                 }
 
@@ -68,8 +68,8 @@ public class ClimateSensorActionInterface implements ActionInterface {
 
                 if (!compareValues(
                         condition.getCondition().getOperation(),
-                        sensor.getHumidity(),
-                        condition.getCondition().getValue())) {
+                        condition.getCondition().getValue(),
+                        sensor.getHumidity())) {
                     action.getAction().setValue(sensor.getHumidity());
                 }
 
@@ -94,8 +94,8 @@ public class ClimateSensorActionInterface implements ActionInterface {
 
                 if (compareValues(
                         condition.getCondition().getOperation(),
-                        sensor.getCo2Level(),
-                        condition.getCondition().getValue())) {
+                        condition.getCondition().getValue(),
+                        sensor.getCo2Level())) {
                     action.getAction().setValue(sensor.getCo2Level());
                 }
 
