@@ -61,50 +61,54 @@ public class ClimateSensorActionInterface implements ActionInterface {
             case ConditionTypeAvro.HUMIDITY -> {
                 log.info(Message.CHECK_PARAMETER, type);
 
-                if (compareValues(
+                log.info("Условие: Operation {}, Humidity {}, Value {}",
+                        condition.getCondition().getOperation(),
+                        sensor.getHumidity(),
+                        condition.getCondition().getValue());
+
+                if (!compareValues(
                         condition.getCondition().getOperation(),
                         sensor.getHumidity(),
                         condition.getCondition().getValue())) {
-                    log.info("Условие: Operation {}, Humidity {}, Value {}",
-                            condition.getCondition().getOperation(),
-                            sensor.getHumidity(),
-                            condition.getCondition().getValue());
-
-                    DeviceActionRequest request = getDeviceActionRequest(action, condition);
-
-                    log.info(Message.SEND_REQUEST,
-                            request.getHubId(),
-                            request.getScenarioName(),
-                            request.getAction().getSensorId(),
-                            request.getAction().getType(),
-                            request.getAction().getValue());
-
-                    client.send(request);
+                    action.getAction().setValue(sensor.getHumidity());
                 }
+
+                DeviceActionRequest request = getDeviceActionRequest(action, condition);
+
+                log.info(Message.SEND_REQUEST,
+                        request.getHubId(),
+                        request.getScenarioName(),
+                        request.getAction().getSensorId(),
+                        request.getAction().getType(),
+                        request.getAction().getValue());
+
+                client.send(request);
             }
             case ConditionTypeAvro.CO2LEVEL -> {
                 log.info(Message.CHECK_PARAMETER, type);
+
+                log.info("Условие: Operation {}, Co2Level {}, Value {}",
+                        condition.getCondition().getOperation(),
+                        sensor.getCo2Level(),
+                        condition.getCondition().getValue());
 
                 if (compareValues(
                         condition.getCondition().getOperation(),
                         sensor.getCo2Level(),
                         condition.getCondition().getValue())) {
-                    log.info("Условие: Operation {}, Co2Level {}, Value {}",
-                            condition.getCondition().getOperation(),
-                            sensor.getCo2Level(),
-                            condition.getCondition().getValue());
-
-                    DeviceActionRequest request = getDeviceActionRequest(action, condition);
-
-                    log.info(Message.SEND_REQUEST,
-                            request.getHubId(),
-                            request.getScenarioName(),
-                            request.getAction().getSensorId(),
-                            request.getAction().getType(),
-                            request.getAction().getValue());
-
-                    client.send(request);
+                    action.getAction().setValue(sensor.getCo2Level());
                 }
+
+                DeviceActionRequest request = getDeviceActionRequest(action, condition);
+
+                log.info(Message.SEND_REQUEST,
+                        request.getHubId(),
+                        request.getScenarioName(),
+                        request.getAction().getSensorId(),
+                        request.getAction().getType(),
+                        request.getAction().getValue());
+
+                client.send(request);
             }
         }
     }
