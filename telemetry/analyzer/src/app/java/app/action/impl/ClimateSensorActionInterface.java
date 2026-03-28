@@ -37,8 +37,8 @@ public class ClimateSensorActionInterface implements ActionInterface {
 
                 log.info("Условие: Operation {}, Temperature {}, Value {}",
                         condition.getCondition().getOperation(),
-                        condition.getCondition().getValue(),
-                        sensor.getTemperatureC());
+                        sensor.getTemperatureC(),
+                        condition.getCondition().getValue());
 
                 if (!compareValues(
                         condition.getCondition().getOperation(),
