@@ -34,26 +34,28 @@ public class SwitchSensorActionInterface implements ActionInterface {
         if (ConditionTypeAvro.valueOf(type).equals(ConditionTypeAvro.SWITCH)) {
             log.info(Message.CHECK_PARAMETER, type);
 
-            if (compareValues(
+            log.info("Условие: Operation {}, State {}, Value {}",
                     condition.getCondition().getOperation(),
                     sensor.getState() ? 1 : 0,
-                    condition.getCondition().getValue())) {
-                log.info("Условие: Operation {}, State {}, Value {}",
-                        condition.getCondition().getOperation(),
-                        sensor.getState() ? 1 : 0,
-                        condition.getCondition().getValue());
+                    condition.getCondition().getValue());
 
-                DeviceActionRequest request = getDeviceActionRequest(action, condition);
+        if (compareValues(
+                condition.getCondition().getOperation(),
+                sensor.getState() ? 1 : 0,
+                condition.getCondition().getValue())) {
+            action.getAction().setValue(action.getAction().getValue() == 0 ? 1 : 0);
+        }
 
-                log.info(Message.SEND_REQUEST,
-                        request.getHubId(),
-                        request.getScenarioName(),
-                        request.getAction().getSensorId(),
-                        request.getAction().getType(),
-                        request.getAction().getValue());
+            DeviceActionRequest request = getDeviceActionRequest(action, condition);
 
-                client.send(request);
-            }
+            log.info(Message.SEND_REQUEST,
+                    request.getHubId(),
+                    request.getScenarioName(),
+                    request.getAction().getSensorId(),
+                    request.getAction().getType(),
+                    request.getAction().getValue());
+
+            client.send(request);
         }
     }
 
