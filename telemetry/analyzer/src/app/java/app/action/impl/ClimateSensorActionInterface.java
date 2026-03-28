@@ -35,26 +35,28 @@ public class ClimateSensorActionInterface implements ActionInterface {
             case ConditionTypeAvro.TEMPERATURE -> {
                 log.info(Message.CHECK_PARAMETER, type);
 
-                if (compareValues(
+                log.info("Условие: Operation {}, Temperature {}, Value {}",
                         condition.getCondition().getOperation(),
                         condition.getCondition().getValue(),
-                        sensor.getTemperatureC())) {
-                    log.info("Условие: Operation {}, Temperature {}, Value {}",
-                            condition.getCondition().getOperation(),
-                            sensor.getTemperatureC(),
-                            condition.getCondition().getValue());
+                        sensor.getTemperatureC());
 
-                    DeviceActionRequest request = getDeviceActionRequest(action, condition);
-
-                    log.info(Message.SEND_REQUEST,
-                            request.getHubId(),
-                            request.getScenarioName(),
-                            request.getAction().getSensorId(),
-                            request.getAction().getType(),
-                            request.getAction().getValue());
-
-                    client.send(request);
+                if (!compareValues(
+                        condition.getCondition().getOperation(),
+                        sensor.getTemperatureC(),
+                        condition.getCondition().getValue())) {
+                    action.getAction().setValue(sensor.getTemperatureC());
                 }
+
+                DeviceActionRequest request = getDeviceActionRequest(action, condition);
+
+                log.info(Message.SEND_REQUEST,
+                        request.getHubId(),
+                        request.getScenarioName(),
+                        request.getAction().getSensorId(),
+                        request.getAction().getType(),
+                        request.getAction().getValue());
+
+                client.send(request);
             }
             case ConditionTypeAvro.HUMIDITY -> {
                 log.info(Message.CHECK_PARAMETER, type);
