@@ -40,7 +40,7 @@ public class ClimateSensorActionInterface implements ActionInterface {
                         sensor.getTemperatureC(),
                         condition.getCondition().getValue());
 
-                if (!compareValues(
+                if (compareValues(
                         condition.getCondition().getOperation(),
                         sensor.getTemperatureC(),
                         condition.getCondition().getValue())) {
