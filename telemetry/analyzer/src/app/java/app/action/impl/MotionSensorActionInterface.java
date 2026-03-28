@@ -43,19 +43,18 @@ public class MotionSensorActionInterface implements ActionInterface {
                     condition.getCondition().getOperation(),
                     sensor.getMotion() ? 1 : 0,
                     condition.getCondition().getValue())) {
-                action.getAction().setValue(action.getAction().getValue() == 0 ? 1 : 0);
+
+                DeviceActionRequest request = getDeviceActionRequest(action, condition);
+
+                log.info(Message.SEND_REQUEST,
+                        request.getHubId(),
+                        request.getScenarioName(),
+                        request.getAction().getSensorId(),
+                        request.getAction().getType(),
+                        request.getAction().getValue());
+
+                client.send(request);
             }
-
-            DeviceActionRequest request = getDeviceActionRequest(action, condition);
-
-            log.info(Message.SEND_REQUEST,
-                    request.getHubId(),
-                    request.getScenarioName(),
-                    request.getAction().getSensorId(),
-                    request.getAction().getType(),
-                    request.getAction().getValue());
-
-            client.send(request);
         }
     }
 
