@@ -1,5 +1,7 @@
 package app.java.app.model;
 
+import app.java.app.constant.Value;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -54,6 +56,6 @@ public class Scenario {
 
     @Override
     public String toString() {
-        return String.format("id: %d, hubId: %s, name: %s", id, hubId, name);
+        return String.format(Value.SCENARIO_STRING, id, hubId, name);
     }
 }

@@ -1,5 +1,7 @@
 package app.java.app.model;
 
+import app.java.app.constant.Value;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -35,6 +37,6 @@ public class Condition {
 
     @Override
     public String toString() {
-        return String.format("id: %d, type: %s, operation: %s, value: %d", id, type, operation, value);
+        return String.format(Value.CONDITION_STRING, id, type, operation, value);
     }
 }

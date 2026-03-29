@@ -1,5 +1,7 @@
 package app.java.app.model;
 
+import app.java.app.constant.Value;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,6 +35,6 @@ public class Action {
 
     @Override
     public String toString() {
-        return String.format("id: %d, type: %s, value: %d", id, type, value);
+        return String.format(Value.ACTION_STRING, id, type, value);
     }
 }
