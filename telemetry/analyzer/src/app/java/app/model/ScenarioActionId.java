@@ -1,5 +1,7 @@
 package app.java.app.model;
 
+import app.java.app.constant.Value;
+
 import jakarta.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
@@ -23,6 +25,6 @@ public class ScenarioActionId implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("scenarioId: %d, sensorId: %s, actionId: %d", scenarioId, sensorId, actionId);
+        return String.format(Value.SCENARIO_ACTION_ID_STRING, scenarioId, sensorId, actionId);
     }
 }

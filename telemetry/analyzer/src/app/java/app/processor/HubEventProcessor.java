@@ -1,5 +1,6 @@
 package app.java.app.processor;
 
+import app.java.app.constant.Exceptions;
 import app.java.app.constant.Message;
 import app.java.app.model.Action;
 import app.java.app.model.Condition;
@@ -158,11 +159,11 @@ public class HubEventProcessor {
 
     private Sensor getSensor(HubEventAvro event, String id) {
         if (event == null) {
-            throw new IllegalArgumentException("В методе getSensor не может event быть null");
+            throw new IllegalArgumentException(Exceptions.SENSOR_IS_NOT_NULL);
         }
 
         if (id == null) {
-            throw new IllegalArgumentException("В методе getSensor не может id быть null");
+            throw new IllegalArgumentException(Exceptions.ID_IS_NOT_NULL);
         }
 
         Sensor sensor = sensorRepository
@@ -174,18 +175,18 @@ public class HubEventProcessor {
                                 .actions(new HashSet<>())
                                 .build()));
 
-        log.info("Получен Sensor: {}", sensor);
+        log.info(Message.GET_SENSOR, sensor);
 
         return sensor;
     }
 
     private Scenario getScenario(String hubId, String name) {
         if (hubId == null) {
-            throw new IllegalArgumentException("В методе getScenario не может hubId быть null");
+            throw new IllegalArgumentException(Exceptions.HUB_ID_IS_NOT_NULL);
         }
 
         if (name == null) {
-            throw new IllegalArgumentException("В методе getScenario не может name быть null");
+            throw new IllegalArgumentException(Exceptions.SCENARIO_IS_NOT_NULL);
         }
 
         Scenario scenario = scenarioRepository
@@ -197,22 +198,22 @@ public class HubEventProcessor {
                         .actions(new HashSet<>())
                         .build()));
 
-        log.info("Получен Scenario: {}", scenario);
+        log.info(Message.GET_SCENARIO, scenario);
 
         return scenario;
     }
 
     private Condition getCondition(String type, String operation, Integer value, Set<Condition> set) {
         if (type == null) {
-            throw new IllegalArgumentException("В методе getCondition не может type быть null");
+            throw new IllegalArgumentException(Exceptions.TYPE_IS_NOT_NULL);
         }
 
         if (operation == null) {
-            throw new IllegalArgumentException("В методе getCondition не может operation быть null");
+            throw new IllegalArgumentException(Exceptions.OPERATION_IS_NOT_NULL);
         }
 
         if (value == null) {
-            throw new IllegalArgumentException("В методе getCondition не может value быть null");
+            throw new IllegalArgumentException(Exceptions.VALUE_IS_NOT_NULL);
         }
 
         Condition condition =  set.stream()
@@ -228,14 +229,14 @@ public class HubEventProcessor {
                                 .value(value)
                                 .build()));
 
-        log.info("Получен Condition {}", condition);
+        log.info(Message.GET_CONDITION, condition);
 
         return condition;
     }
 
     private Action getAction(String type, Integer value, Set<Action> set) {
         if (type == null) {
-            throw new IllegalArgumentException("В методе getAction не может type быть null");
+            throw new IllegalArgumentException(Exceptions.ACTION_TYPE_IS_NOT_NULL);
         }
 
         if (ActionTypeAvro.ACTIVATE.name().equals(type)) {
@@ -253,7 +254,7 @@ public class HubEventProcessor {
                                 .value(value)
                                 .build()));
 
-        log.info("Получен Action: {}", action);
+        log.info(Message.GET_ACTION, action);
 
         return action;
     }

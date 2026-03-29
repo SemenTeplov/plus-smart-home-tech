@@ -1,5 +1,7 @@
 package app.java.app.model;
 
+import app.java.app.constant.Value;
+
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -42,6 +44,6 @@ public class ScenarioAction {
 
     @Override
     public String toString() {
-        return String.format("id: %s", id);
+        return String.format(Value.SCENARIO_ACTION_STRING, id);
     }
 }

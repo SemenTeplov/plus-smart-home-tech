@@ -34,11 +34,6 @@ public class MotionSensorActionInterface implements ActionInterface {
         if (ConditionTypeAvro.valueOf(type).equals(ConditionTypeAvro.MOTION)) {
             log.info(Message.CHECK_PARAMETER, type);
 
-            log.info("Условие: Operation {}, Motion {}, Value {}",
-                    condition.getCondition().getOperation(),
-                    sensor.getMotion() ? 1 : 0,
-                    condition.getCondition().getValue());
-
             if (compareValues(
                     condition.getCondition().getOperation(),
                     sensor.getMotion() ? 1 : 0,

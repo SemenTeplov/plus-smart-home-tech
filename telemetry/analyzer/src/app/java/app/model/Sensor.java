@@ -1,5 +1,7 @@
 package app.java.app.model;
 
+import app.java.app.constant.Value;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -49,6 +51,6 @@ public class Sensor {
 
     @Override
     public String toString() {
-        return String.format("id: %s, hubId: %s", id, hubId);
+        return String.format(Value.SENSOR_STRING, id, hubId);
     }
 }

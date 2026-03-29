@@ -12,4 +12,8 @@ public class Message {
     public static String WORK_SCENARIO_ACTION = "Обработка ScenarioAction: Type - {}, Value - {}";
     public static String CREATED_SCENARIO_CONDITION = "Был создан ScenarioCondition: {}";
     public static String CREATED_SCENARIO_ACTION = "Был создан ScenarioAction: {}";
+    public static String GET_SENSOR = "Получен Sensor: {}";
+    public static String GET_SCENARIO = "Получен Scenario: {}";
+    public static String GET_CONDITION = "Получен Condition {}";
+    public static String GET_ACTION = "Получен Action: {}";
 }

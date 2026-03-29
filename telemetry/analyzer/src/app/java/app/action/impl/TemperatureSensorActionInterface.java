@@ -38,10 +38,6 @@ public class TemperatureSensorActionInterface implements ActionInterface {
                     condition.getCondition().getOperation(),
                     sensor.getTemperatureC(),
                     condition.getCondition().getValue())) {
-                log.info("Условие: Operation {}, Temperature {}, Value {}",
-                        condition.getCondition().getOperation(),
-                        sensor.getTemperatureC(),
-                        condition.getCondition().getValue());
 
                 DeviceActionRequest request = getDeviceActionRequest(action, condition);
 

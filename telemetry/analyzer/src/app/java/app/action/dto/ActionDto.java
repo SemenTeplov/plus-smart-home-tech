@@ -1,5 +1,6 @@
 package app.java.app.action.dto;
 
+import app.java.app.constant.Value;
 import app.java.app.model.Action;
 import app.java.app.model.Scenario;
 import app.java.app.model.Sensor;
@@ -25,6 +26,6 @@ public class ActionDto {
 
     @Override
     public String toString() {
-        return String.format("%s, %s, %s", sensor, scenario, action);
+        return String.format(Value.DTO_STRING, sensor, scenario, action);
     }
 }
