@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
-import ru.yandex.practicum.kafka.telemetry.event.ActionTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ConditionTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.LightSensorAvro;
@@ -35,28 +34,22 @@ public class LightSensorActionInterface implements ActionInterface {
                 if (ConditionTypeAvro.valueOf(type).equals(ConditionTypeAvro.LUMINOSITY)) {
                     log.info(Message.CHECK_PARAMETER, type);
 
-                    log.info("Условие: Operation {}, Luminosity {}, Value {}",
-                            condition.getCondition().getOperation(),
-                            sensor.getLuminosity(),
-                            condition.getCondition().getValue());
-
                     if (compareValues(
                             condition.getCondition().getOperation(),
                             sensor.getLuminosity(),
                             condition.getCondition().getValue())) {
-                        action.getAction().setValue(action.getAction().getValue() == 0 ? 1 : 0);
+
+                        DeviceActionRequest request = getDeviceActionRequest(action, condition);
+
+                        log.info(Message.SEND_REQUEST,
+                                request.getHubId(),
+                                request.getScenarioName(),
+                                request.getAction().getSensorId(),
+                                request.getAction().getType(),
+                                request.getAction().getValue());
+
+                        client.send(request);
                     }
-
-                    DeviceActionRequest request = getDeviceActionRequest(action, condition);
-
-                    log.info(Message.SEND_REQUEST,
-                            request.getHubId(),
-                            request.getScenarioName(),
-                            request.getAction().getSensorId(),
-                            request.getAction().getType(),
-                            request.getAction().getValue());
-
-                    client.send(request);
                 }
     }
 

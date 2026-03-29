@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
-import ru.yandex.practicum.kafka.telemetry.event.ActionTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ConditionTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SwitchSensorAvro;
@@ -34,11 +33,6 @@ public class SwitchSensorActionInterface implements ActionInterface {
 
         if (ConditionTypeAvro.valueOf(type).equals(ConditionTypeAvro.SWITCH)) {
             log.info(Message.CHECK_PARAMETER, type);
-
-            log.info("Условие: Operation {}, State {}, Value {}",
-                    condition.getCondition().getOperation(),
-                    sensor.getState() ? 1 : 0,
-                    condition.getCondition().getValue());
 
             if (compareValues(
                     condition.getCondition().getOperation(),
