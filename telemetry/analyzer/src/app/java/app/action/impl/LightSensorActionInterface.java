@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
+import ru.yandex.practicum.kafka.telemetry.event.ActionTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.ConditionTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.DeviceTypeAvro;
 import ru.yandex.practicum.kafka.telemetry.event.LightSensorAvro;
@@ -44,6 +45,10 @@ public class LightSensorActionInterface implements ActionInterface {
                             sensor.getLuminosity(),
                             condition.getCondition().getValue())) {
                         action.getAction().setValue(action.getAction().getValue() == 0 ? 1 : 0);
+
+                        if (ActionTypeAvro.DEACTIVATE.name().equals(action.getAction().getType())) {
+                            action.getAction().setValue(0);
+                        }
                     }
 
                     DeviceActionRequest request = getDeviceActionRequest(action, condition);
