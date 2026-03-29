@@ -51,8 +51,8 @@ public class SnapshotProcessor {
                                     .scenario(sc.getScenario())
                                     .condition(sc.getCondition())
                                     .sensor(sc.getSensor()).build())
-                        .findFirst()
-                        .ifPresent(sc -> {
+                        .toList().forEach(
+                        sc -> {
                             scenarioActionRepository.findAll().stream()
                                     .filter(sa -> sa.getScenario().equals(sc.getScenario()))
                                     .map(sa ->
@@ -61,7 +61,7 @@ public class SnapshotProcessor {
                                                     .scenario(sa.getScenario())
                                                     .sensor(sa.getSensor())
                                                     .build())
-                                    .findFirst().ifPresent(sa -> {
+                                    .toList().forEach(sa -> {
                                         actions.stream()
                                                 .filter(a -> a.getActionClass().getName()
                                                         .equals(e.getValue().getData().getClass().getName()))
