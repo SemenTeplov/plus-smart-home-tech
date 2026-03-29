@@ -34,26 +34,28 @@ public class LightSensorActionInterface implements ActionInterface {
                 if (ConditionTypeAvro.valueOf(type).equals(ConditionTypeAvro.LUMINOSITY)) {
                     log.info(Message.CHECK_PARAMETER, type);
 
+                    log.info("Условие: Operation {}, Luminosity {}, Value {}",
+                            condition.getCondition().getOperation(),
+                            sensor.getLuminosity(),
+                            condition.getCondition().getValue());
+
                     if (compareValues(
                             condition.getCondition().getOperation(),
                             sensor.getLuminosity(),
                             condition.getCondition().getValue())) {
-                        log.info("Условие: Operation {}, Co2Level {}, Value {}",
-                                condition.getCondition().getOperation(),
-                                sensor.getLuminosity(),
-                                condition.getCondition().getValue());
-
-                        DeviceActionRequest request = getDeviceActionRequest(action, condition);
-
-                        log.info(Message.SEND_REQUEST,
-                                request.getHubId(),
-                                request.getScenarioName(),
-                                request.getAction().getSensorId(),
-                                request.getAction().getType(),
-                                request.getAction().getValue());
-
-                        client.send(request);
+                        action.getAction().setValue(action.getAction().getValue() == 0 ? 1 : 0);
                     }
+
+                    DeviceActionRequest request = getDeviceActionRequest(action, condition);
+
+                    log.info(Message.SEND_REQUEST,
+                            request.getHubId(),
+                            request.getScenarioName(),
+                            request.getAction().getSensorId(),
+                            request.getAction().getType(),
+                            request.getAction().getValue());
+
+                    client.send(request);
                 }
     }
 
