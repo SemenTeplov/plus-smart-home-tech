@@ -7,10 +7,11 @@ import app.java.app.constant.Message;
 import app.java.app.repository.ScenarioActionRepository;
 import app.java.app.repository.ScenarioConditionRepository;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class SnapshotProcessor {
     private final List<ActionInterface> actions;
 
@@ -27,19 +29,9 @@ public class SnapshotProcessor {
 
     private final ScenarioActionRepository scenarioActionRepository;
 
-    @Autowired
-    public SnapshotProcessor(
-            List<ActionInterface> actions,
-            ScenarioConditionRepository scenarioConditionRepository,
-            ScenarioActionRepository scenarioActionRepository) {
-        this.actions = actions;
-        this.scenarioConditionRepository = scenarioConditionRepository;
-        this.scenarioActionRepository = scenarioActionRepository;
-    }
-
     @Transactional
     @KafkaListener(topics = "${kafka.topics.snapshot}", containerFactory = "snapshotConsumer")
-    public void handler(SensorsSnapshotAvro event) {
+    public void handler(SensorsSnapshotAvro event, Acknowledgment acknowledgment) {
         log.info(Message.GET_SENSORS_SNAPSHOT, event.getHubId());
 
         event.getSensorsState().entrySet()
@@ -71,5 +63,6 @@ public class SnapshotProcessor {
                                     });
                         });
             });
+        acknowledgment.acknowledge();
     }
 }

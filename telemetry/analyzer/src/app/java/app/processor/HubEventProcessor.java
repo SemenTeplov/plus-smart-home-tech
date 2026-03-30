@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,7 +54,7 @@ public class HubEventProcessor {
 
     @Transactional
     @KafkaListener(topics = "${kafka.topics.hub}", containerFactory = "hubConsumer")
-    public void handler(HubEventAvro event) {
+    public void handler(HubEventAvro event, Acknowledgment acknowledgment) {
         log.info(Message.GET_HUB_EVENT, event.getHubId());
 
         if (event.getPayload().getClass().equals(ScenarioAddedEventAvro.class)) {
@@ -134,12 +135,15 @@ public class HubEventProcessor {
                 }
             });
 
+            acknowledgment.acknowledge();
         } else if (event.getPayload().getClass().equals(DeviceAddedEventAvro.class)) {
             log.info(Message.HUB_EVENT_NAME, event.getPayload().getClass().getSimpleName());
 
             DeviceAddedEventAvro eventAvro = (DeviceAddedEventAvro) event.getPayload();
 
             getSensor(event, eventAvro.getId());
+
+            acknowledgment.acknowledge();
         } else if (event.getPayload().getClass().equals(ScenarioRemovedEventAvro.class)) {
             log.info(Message.HUB_EVENT_NAME, event.getPayload().getClass().getSimpleName());
 
@@ -147,6 +151,8 @@ public class HubEventProcessor {
 
             scenarioRepository
                     .findByHubIdAndName(event.getHubId(), eventAvro.getName()).ifPresent(scenarioRepository::delete);
+
+            acknowledgment.acknowledge();
         } else if (event.getPayload().getClass().equals(DeviceRemovedEventAvro.class)) {
             log.info(Message.HUB_EVENT_NAME, event.getPayload().getClass().getSimpleName());
 
@@ -154,6 +160,8 @@ public class HubEventProcessor {
 
             sensorRepository
                     .findByIdAndHubId(eventAvro.getId(), event.getHubId()).ifPresent(sensorRepository::delete);
+
+            acknowledgment.acknowledge();
         }
     }
 

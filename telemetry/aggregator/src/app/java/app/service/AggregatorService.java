@@ -6,6 +6,7 @@ import app.java.app.constant.Values;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
 
 import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
@@ -80,11 +81,13 @@ public class AggregatorService {
     }
 
     @KafkaListener(topics = "${kafka.topics.snapshot}", containerFactory = Values.SNAPSHOT_CONSUMER)
-    public void handler(SensorsSnapshotAvro event) {
+    public void handler(SensorsSnapshotAvro event, Acknowledgment acknowledgment) {
         if (!snapshots.containsKey(event.getHubId())) {
             snapshots.putIfAbsent(event.getHubId(), event);
         } else {
             snapshots.replace(event.getHubId(), event);
         }
+
+        acknowledgment.acknowledge();
     }
 }

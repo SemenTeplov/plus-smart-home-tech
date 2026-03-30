@@ -10,6 +10,7 @@ import app.java.app.constant.Message;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -49,7 +50,8 @@ public class AggregationStarter {
     }
 
     @KafkaListener(topics = "${kafka.topics.sensor}", containerFactory = Values.EVENT_CONSUMER)
-    public void handler(SensorEventAvro event) {
+    public void handler(SensorEventAvro event, Acknowledgment acknowledgment) {
         sensors.addIfAbsent(event);
+        acknowledgment.acknowledge();
     }
 }
