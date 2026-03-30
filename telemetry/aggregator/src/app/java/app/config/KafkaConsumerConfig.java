@@ -41,6 +41,9 @@ public class KafkaConsumerConfig {
     @Value("${kafka.consumer.heartbeat-interval-ms}")
     private String heartbeatInterval;
 
+    @Value("${kafka.consumer.enable-auto-commit}")
+    private Boolean autoCommit;
+
     @Bean
     public ConsumerFactory<String, SensorEventAvro> eventConsumerFactory() {
         Map<String, Object> configs = consumerConfig();
@@ -88,6 +91,7 @@ public class KafkaConsumerConfig {
         configs.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configs.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, sessionTimeout);
         configs.put(ConsumerConfig.HEARTBEAT_INTERVAL_MS_CONFIG, heartbeatInterval);
+        configs.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, autoCommit);
 
         return configs;
     }

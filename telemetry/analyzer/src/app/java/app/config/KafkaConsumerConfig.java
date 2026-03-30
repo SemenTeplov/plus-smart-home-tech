@@ -49,6 +49,9 @@ public class KafkaConsumerConfig {
     @Value("${kafka.properties.retry-backoff-ms}")
     private String retryBackoff;
 
+    @Value("${kafka.consumer.enable-auto-commit}")
+    private Boolean autoCommit;
+
     @Bean
     public ConsumerFactory<String, HubEventAvro> hubConsumerFactory() {
         Map<String, Object> configs = consumerConfig();
@@ -99,6 +102,7 @@ public class KafkaConsumerConfig {
         configs.put(ConsumerConfig.RECONNECT_BACKOFF_MS_CONFIG, reconnectBackoff);
         configs.put(ConsumerConfig.RECONNECT_BACKOFF_MAX_MS_CONFIG, reconnectBackoffMax);
         configs.put(ConsumerConfig.RETRY_BACKOFF_MS_CONFIG, retryBackoff);
+        configs.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, autoCommit);
 
         return configs;
     }
