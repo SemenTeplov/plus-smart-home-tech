@@ -1,0 +1,20 @@
+kafka:
+  bootstrap-servers: localhost:9092
+  topics:
+    sensor: telemetry.sensors.v1
+    hub: telemetry.hubs.v1
+    snapshot: telemetry.snapshots.v1
+  group:
+    snapshot-group: hub
+    sensor-group: sensor
+  offset:
+    rest-config: latest
+  consumer:
+    session-timeout-ms: 30000
+    heartbeat-interval-ms: 10000
+    enable-auto-commit: false
+
+spring:
+  kafka:
+    listener:
+      ack-mode: MANUAL_IMMEDIATE
