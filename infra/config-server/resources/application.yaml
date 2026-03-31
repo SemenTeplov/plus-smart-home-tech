@@ -6,9 +6,9 @@ spring:
     name: config-server
   profiles:
     active: native
-cloud:
-  config:
-    server:
-      native:
-        searchLocations:
-          - classpath:config/telemetry/{application}
+  cloud:
+    config:
+      server:
+        native:
+          searchLocations:
+            - classpath:config/telemetry/{application}

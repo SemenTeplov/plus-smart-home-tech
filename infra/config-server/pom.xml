@@ -20,15 +20,4 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <sourceDirectory>src</sourceDirectory>
-
-        <resources>
-            <resource>
-                <directory>src/app/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-    </build>
-
 </project>
