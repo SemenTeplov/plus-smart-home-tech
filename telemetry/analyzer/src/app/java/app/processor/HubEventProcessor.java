@@ -53,7 +53,7 @@ public class HubEventProcessor {
     private final ScenarioActionRepository scenarioActionRepository;
 
     @Transactional
-    @KafkaListener(topics = "${kafka.topics.hub}", containerFactory = "hubConsumer")
+    @KafkaListener(topics = "${analyzer.kafka.topics.hub}", containerFactory = "hubConsumer")
     public void handler(HubEventAvro event, Acknowledgment acknowledgment) {
         log.info(Message.GET_HUB_EVENT, event.getHubId());
 

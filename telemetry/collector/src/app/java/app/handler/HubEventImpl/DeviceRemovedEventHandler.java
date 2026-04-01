@@ -23,7 +23,7 @@ public class DeviceRemovedEventHandler implements HubEventHandler {
 
     private final Producer<String, SpecificRecordBase> eventProducer;
 
-    @Value("${kafka.topics.hub}")
+    @Value("${collector.kafka.topics.hub}")
     private String topic;
 
     @Override

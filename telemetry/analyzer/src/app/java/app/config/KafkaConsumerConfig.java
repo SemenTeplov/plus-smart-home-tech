@@ -23,34 +23,34 @@ import java.util.Map;
 @Configuration
 @EnableKafka
 public class KafkaConsumerConfig {
-    @Value("${kafka.bootstrap-servers}")
+    @Value("${analyzer.kafka.bootstrap-servers}")
     private String server;
 
-    @Value("${kafka.group.snapshot-group}")
+    @Value("${analyzer.kafka.group.snapshot-group}")
     private String snapshotGroup;
 
-    @Value("${kafka.group.hub-group}")
+    @Value("${analyzer.kafka.group.hub-group}")
     private String hubGroup;
 
-    @Value("${kafka.offset.rest-config}")
+    @Value("${analyzer.kafka.offset.rest-config}")
     private String offsetRest;
 
-    @Value("${kafka.consumer.session-timeout-ms}")
+    @Value("${analyzer.kafka.consumer.session-timeout-ms}")
     private String sessionTimeout;
 
-    @Value("${kafka.consumer.heartbeat-interval-ms}")
+    @Value("${analyzer.kafka.consumer.heartbeat-interval-ms}")
     private String heartbeatInterval;
 
-    @Value("${kafka.properties.reconnect-backoff-ms}")
+    @Value("${analyzer.kafka.properties.reconnect-backoff-ms}")
     private String reconnectBackoff;
 
-    @Value("${kafka.properties.reconnect-backoff-max-ms}")
+    @Value("${analyzer.kafka.properties.reconnect-backoff-max-ms}")
     private String reconnectBackoffMax;
 
-    @Value("${kafka.properties.retry-backoff-ms}")
+    @Value("${analyzer.kafka.properties.retry-backoff-ms}")
     private String retryBackoff;
 
-    @Value("${kafka.consumer.enable-auto-commit}")
+    @Value("${analyzer.kafka.consumer.enable-auto-commit}")
     private Boolean autoCommit;
 
     @Bean

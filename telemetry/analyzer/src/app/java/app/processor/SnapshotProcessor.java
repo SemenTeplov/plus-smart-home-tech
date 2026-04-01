@@ -30,7 +30,7 @@ public class SnapshotProcessor {
     private final ScenarioActionRepository scenarioActionRepository;
 
     @Transactional
-    @KafkaListener(topics = "${kafka.topics.snapshot}", containerFactory = "snapshotConsumer")
+    @KafkaListener(topics = "${analyzer.kafka.topics.snapshot}", containerFactory = "snapshotConsumer")
     public void handler(SensorsSnapshotAvro event, Acknowledgment acknowledgment) {
         log.info(Message.GET_SENSORS_SNAPSHOT, event.getHubId());
 

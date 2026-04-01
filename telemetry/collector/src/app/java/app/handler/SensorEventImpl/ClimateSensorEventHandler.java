@@ -23,7 +23,7 @@ public class ClimateSensorEventHandler implements SensorEventHandler {
 
     private final Producer<String, SpecificRecordBase> eventProducer;
 
-    @Value("${kafka.topics.sensor}")
+    @Value("${collector.kafka.topics.sensor}")
     private String topic;
 
     @Override

@@ -80,7 +80,7 @@ public class AggregatorService {
         return Optional.of(snapshot);
     }
 
-    @KafkaListener(topics = "${kafka.topics.snapshot}", containerFactory = Values.SNAPSHOT_CONSUMER)
+    @KafkaListener(topics = "${aggregator.kafka.topics.snapshot}", containerFactory = Values.SNAPSHOT_CONSUMER)
     public void handler(SensorsSnapshotAvro event, Acknowledgment acknowledgment) {
         if (!snapshots.containsKey(event.getHubId())) {
             snapshots.putIfAbsent(event.getHubId(), event);

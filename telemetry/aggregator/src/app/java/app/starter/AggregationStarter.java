@@ -32,7 +32,7 @@ public class AggregationStarter {
 
     private final KafkaTemplate<String, SensorsSnapshotAvro> template;
 
-    @Value("${kafka.topics.snapshot}")
+    @Value("${aggregator.kafka.topics.snapshot}")
     private String snapshotTopic;
 
     @Scheduled(fixedDelay = Values.FIXED_DELAY)
@@ -49,7 +49,7 @@ public class AggregationStarter {
         }
     }
 
-    @KafkaListener(topics = "${kafka.topics.sensor}", containerFactory = Values.EVENT_CONSUMER)
+    @KafkaListener(topics = "${aggregator.kafka.topics.sensor}", containerFactory = Values.EVENT_CONSUMER)
     public void handler(SensorEventAvro event, Acknowledgment acknowledgment) {
         sensors.addIfAbsent(event);
         acknowledgment.acknowledge();

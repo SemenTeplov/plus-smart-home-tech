@@ -10,14 +10,14 @@ import org.springframework.kafka.config.TopicBuilder;
 @Configuration
 public class KafkaTopicConfig {
     @Bean
-    public NewTopic hubConsumerTopic(@Value("${kafka.topics.hub}") String topic) {
+    public NewTopic hubConsumerTopic(@Value("${analyzer.kafka.topics.hub}") String topic) {
         return TopicBuilder
                 .name(topic)
                 .build();
     }
 
     @Bean
-    public NewTopic snapshotConsumerTopic(@Value("${kafka.topics.snapshot}") String topic) {
+    public NewTopic snapshotConsumerTopic(@Value("${analyzer.kafka.topics.snapshot}") String topic) {
         return TopicBuilder
                 .name(topic)
                 .build();

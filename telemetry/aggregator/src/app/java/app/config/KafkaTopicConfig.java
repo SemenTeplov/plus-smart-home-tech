@@ -10,14 +10,14 @@ import org.springframework.kafka.config.TopicBuilder;
 @Configuration
 public class KafkaTopicConfig {
     @Bean
-    public NewTopic eventConsumerTopic(@Value("${kafka.topics.sensor}") String topic) {
+    public NewTopic eventConsumerTopic(@Value("${aggregator.kafka.topics.sensor}") String topic) {
         return TopicBuilder
                 .name(topic)
                 .build();
     }
 
     @Bean
-    public NewTopic snapshotConsumerTopic(@Value("${kafka.topics.snapshot}") String topic) {
+    public NewTopic snapshotConsumerTopic(@Value("${aggregator.kafka.topics.snapshot}") String topic) {
         return TopicBuilder
                 .name(topic)
                 .build();
