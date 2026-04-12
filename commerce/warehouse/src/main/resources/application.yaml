@@ -4,14 +4,17 @@ server:
 spring:
   application:
     name: warehouse
+  config:
+    import: configserver:http://localhost:8888
   cloud:
     config:
-      uri: http://localhost:8888
       fail-fast: true
       retry:
         useRandomPolicy: true
         max-interval: 6000
+    discovery:
       enabled: true
+      serviceId: config-server
 
 eureka:
   client:
