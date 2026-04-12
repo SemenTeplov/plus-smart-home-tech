@@ -48,7 +48,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>app.java.app.ConfigServer</mainClass>
+                    <mainClass>src.app.java.app.ConfigServer</mainClass>
                 </configuration>
             </plugin>
         </plugins>
