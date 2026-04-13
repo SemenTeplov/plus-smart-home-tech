@@ -7,4 +7,4 @@ CREATE TABLE IF NOT EXISTS products (
     product_state VARCHAR(255),
     product_category VARCHAR(255),
     price DOUBLE
-)
+);
