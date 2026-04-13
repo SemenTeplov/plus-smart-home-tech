@@ -49,7 +49,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     public ProductDto updateProduct(ProductDto productDto) {
         log.info(Message.GET_PRODUCT_FOR_UPDATE, productDto);
 
-        Product product = productRepository.findById(UUID.fromString(productDto.productId()))
+        Product product = productRepository.findById(UUID.fromString(productDto.getProductId()))
                 .orElseThrow(() -> new NotFoundException(Message.EXCEPTION_NOT_FOUND));
 
         productMapper.updateProduct(product, productDto);
