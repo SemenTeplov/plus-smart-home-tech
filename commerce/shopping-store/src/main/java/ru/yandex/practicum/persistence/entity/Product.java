@@ -31,6 +31,7 @@ import java.util.UUID;
 @Table(name = "products")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Product {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     UUID productId;
