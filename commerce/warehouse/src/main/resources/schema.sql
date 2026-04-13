@@ -1,5 +1,5 @@
-CREATE TABLE IF NOT EXISTS products (
-    product_id UUID GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS wares (
+    product_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     fragile BOOLEAN NOT NULL,
     dimension_id UUID NOT NULL,
     width DOUBLE NOT NULL,

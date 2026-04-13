@@ -23,7 +23,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "products")
+@Table(name = "wares")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Product {
 
