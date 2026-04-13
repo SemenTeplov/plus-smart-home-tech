@@ -2,6 +2,9 @@ package ru.yandex.practicum.persistence.entity;
 
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 import lombok.AccessLevel;
@@ -24,6 +27,8 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Product {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     UUID productId;
 
     Boolean fragile;
