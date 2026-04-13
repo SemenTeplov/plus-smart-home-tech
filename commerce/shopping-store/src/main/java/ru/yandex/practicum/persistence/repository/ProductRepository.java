@@ -11,6 +11,7 @@ import ru.yandex.practicum.persistence.entity.Product;
 import java.util.UUID;
 
 public interface ProductRepository extends JpaRepository<Product, UUID> {
+
     @Query(nativeQuery = true, value = """
             SELECT *
             FROM products

@@ -8,9 +8,9 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/analyzer
-    username: analyzer
-    password: analyzer
+    url: jdbc:postgresql://localhost:5432/shoppingStore
+    username: shoppingStore
+    password: shoppingStore
   sql:
     init:
       mode: always
