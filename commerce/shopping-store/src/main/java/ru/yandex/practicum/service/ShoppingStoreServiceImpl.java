@@ -42,8 +42,12 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     public ProductDto createNewProduct(ProductDto productDto) {
         log.info(Message.GET_PRODUCT_FOR_SAVE, productDto);
 
+        Product product = productMapper.productDtoToProduct(productDto);
+
+        log.info("Продукт {}", product);
+
         return productMapper
-                .productToProductDto(productRepository.save(productMapper.productDtoToProduct(productDto)));
+                .productToProductDto(productRepository.save(product));
     }
 
     @Override

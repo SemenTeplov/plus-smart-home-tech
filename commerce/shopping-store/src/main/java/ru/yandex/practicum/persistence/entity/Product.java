@@ -52,4 +52,11 @@ public class Product {
     ProductCategory productCategory;
 
     Double price;
+
+    @Override
+    public String toString() {
+        return String.format(
+                "id: %s, name: %s, description: %s, quantity state: %s, product state: %s, product category: %s",
+                productId, productName, description, quantityState, productState, productCategory);
+    }
 }
