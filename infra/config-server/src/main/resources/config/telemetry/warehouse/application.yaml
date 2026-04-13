@@ -15,9 +15,3 @@ spring:
     init:
       mode: always
       schema-locations: classpath:schema.sql
-
-logging:
-  level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    org.springframework.transaction: DEBUG

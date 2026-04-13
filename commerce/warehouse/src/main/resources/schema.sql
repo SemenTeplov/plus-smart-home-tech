@@ -7,4 +7,4 @@ CREATE TABLE IF NOT EXISTS wares (
     depth DECIMAL(10, 8) NOT NULL,
     weight DECIMAL(10, 8) NOT NULL,
     quantity INTEGER NOT NULL
-)
+);
