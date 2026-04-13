@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
+import ru.yandex.practicum.dto.DimensionDto;
 import ru.yandex.practicum.dto.NewProductInWarehouseRequest;
 import ru.yandex.practicum.persistence.entity.Product;
 import ru.yandex.practicum.persistence.entity.Dimension;
@@ -14,15 +15,15 @@ public interface ProductMapper {
     Product toProduct(NewProductInWarehouseRequest request);
 
     @Named("toDimension")
-    default Dimension toDimension(NewProductInWarehouseRequest request) {
-        if (request == null) {
+    default Dimension toDimension(DimensionDto dto) {
+        if (dto == null) {
             return null;
         }
 
         return Dimension.builder()
-                .depth(request.dimension().depth())
-                .height(request.dimension().height())
-                .width(request.dimension().width())
+                .depth(dto.depth())
+                .height(dto.height())
+                .width(dto.width())
                 .build();
     }
 }
