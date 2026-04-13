@@ -1,11 +1,11 @@
 CREATE TABLE IF NOT EXISTS carts (
-    id UUID GENERATED PRIMARY KEY,
+    id UUID PRIMARY KEY,
     username VARCHAR(255),
     state VARCHAR(255)
 )
 
 CREATE TABLE IF NOT EXISTS orders (
-    id UUID GENERATED ALWAYS PRIMARY KEY,
+    id UUID PRIMARY KEY,
     cart_id UUID,
     name VARCHAR(255),
     count_products INTEGER

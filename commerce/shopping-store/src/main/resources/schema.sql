@@ -6,5 +6,5 @@ CREATE TABLE IF NOT EXISTS products (
     quantity_state VARCHAR(255),
     product_state VARCHAR(255),
     product_category VARCHAR(255),
-    price DOUBLE
+    price DECIMAL(10, 2)
 );
