@@ -44,8 +44,6 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
 
         Product product = productMapper.productDtoToProduct(productDto);
 
-        log.info("Продукт {}", product);
-
         return productMapper
                 .productToProductDto(productRepository.save(product));
     }
