@@ -3,13 +3,17 @@ package ru.yandex.practicum.dto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+
 import ru.yandex.practicum.persistence.enums.ProductCategory;
 import ru.yandex.practicum.persistence.enums.ProductState;
 import ru.yandex.practicum.persistence.enums.QuantityState;
 
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
