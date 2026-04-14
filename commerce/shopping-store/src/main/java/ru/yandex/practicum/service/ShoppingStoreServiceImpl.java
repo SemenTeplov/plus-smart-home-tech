@@ -123,6 +123,6 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
                 ? s.getProperty()
                 : s.getProperty().replace(
                 s.getProperty().substring(s.getProperty().indexOf("_"), s.getProperty().indexOf("_") + 2),
-                String.valueOf(Character.toLowerCase(s.getProperty().charAt(s.getProperty().indexOf("_") + 1))));
+                String.valueOf(Character.toUpperCase(s.getProperty().charAt(s.getProperty().indexOf("_") + 1))));
     }
 }

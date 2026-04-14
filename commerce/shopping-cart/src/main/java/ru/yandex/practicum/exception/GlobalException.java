@@ -24,6 +24,19 @@ public class GlobalException {
                 .build());
     }
 
+    @ExceptionHandler(NotEmptyProductException.class)
+    public ResponseEntity<ExceptionDto> handleNotEmptyProductException(NotEmptyProductException ex) {
+        return ResponseEntity.ok(ExceptionDto.builder()
+                .cause(ex.getCause())
+                .stackTrace(ex.getStackTrace())
+                .httpStatus(HttpStatus.BAD_REQUEST)
+                .userMessage(Message.EXCEPTION_PRODUCT_IS_NOT_EMPTY)
+                .message(ex.getMessage())
+                .suppressed(ex.getSuppressed())
+                .localizedMessage(ex.getLocalizedMessage())
+                .build());
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ExceptionDto> handleIllegalArgumentException(IllegalArgumentException ex) {
         return ResponseEntity.ok(ExceptionDto.builder()

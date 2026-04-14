@@ -44,4 +44,8 @@ public class Cart {
 
     @Enumerated(value = EnumType.STRING)
     CartState state = CartState.ACTIVE;
+
+    public void addOrder(Order order) {
+        orders.add(order);
+    }
 }

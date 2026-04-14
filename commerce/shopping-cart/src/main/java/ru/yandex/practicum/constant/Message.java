@@ -13,4 +13,5 @@ public class Message {
     public static final String EXCEPTION_WRONG_ARGUMENT = "Некорректные данные";
     public static final String EXCEPTION_INNER_ERROR_SERVER = "Внутренняя ошибка сервера.";
     public static final String EXCEPTION_NAME_IS_NOT_EMPTY = "Имя пользователя не должно быть пустым.";
+    public static final String EXCEPTION_PRODUCT_IS_NOT_EMPTY = "Список продуктов не может быть пустым.";
 }

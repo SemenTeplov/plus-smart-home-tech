@@ -5,11 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.client.ProductClient;
 import ru.yandex.practicum.constant.Message;
 import ru.yandex.practicum.dto.ChangeProductQuantityRequest;
 import ru.yandex.practicum.dto.ShoppingCartDto;
 import ru.yandex.practicum.exception.NotEmptyNameException;
+import ru.yandex.practicum.exception.NotEmptyProductException;
 import ru.yandex.practicum.mapper.ProductMapper;
 import ru.yandex.practicum.persistence.entity.Cart;
 import ru.yandex.practicum.persistence.entity.Order;
@@ -19,6 +21,7 @@ import ru.yandex.practicum.persistence.ststus.CartState;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -33,41 +36,63 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final ProductClient productClient;
 
     @Override
+    @Transactional(readOnly = true)
     public ShoppingCartDto getShoppingCart(String username) {
 
-        if (username.isBlank()) {
+        if (username == null || username.isBlank()) {
             throw new NotEmptyNameException();
         }
 
         log.info(Message.GET_CART, username);
 
         Cart cart = cartRepository.getCartByUsername(username)
-                .orElse(cartRepository.save(Cart.builder().username(username).build()));
+                .orElseGet(() -> cartRepository.save(Cart.builder().username(username).build()));
 
         return productMapper.toShoppingCartDto(cart);
     }
 
     @Override
+    @Transactional
     public ShoppingCartDto addProductToShoppingCart(String username, Map<String, Long> products) {
 
-        if (username.isBlank()) {
+        if (username == null || username.isBlank()) {
             throw new NotEmptyNameException();
+        }
+
+        if (products == null || products.isEmpty()) {
+            throw new NotEmptyProductException();
         }
 
         log.info(Message.GET_PRODUCTS, username, products);
 
         Cart cart = cartRepository.getCartByUsername(username)
-                .orElse(cartRepository.save(Cart.builder().username(username).build()));
+                .orElseGet(() -> cartRepository.save(Cart.builder().username(username).build()));
 
         productClient.checkProducts(ShoppingCartDto.builder()
                 .shoppingCartId(cart.getId()).products(products).build());
 
-        cart.setOrders(products.entrySet().stream()
-                .map(e -> Order.builder().cart(cart)
-                        .id(UUID.fromString(e.getKey())).countProducts(e.getValue()).build())
-                .collect(Collectors.toList()));
+        Map<UUID, Order> existingOrdersMap = cart.getOrders().stream()
+                .collect(Collectors.toMap(Order::getId, Function.identity()));
 
-        cartRepository.save(cart);
+        for (var entry : products.entrySet()) {
+
+            UUID id = UUID.fromString(entry.getKey());
+            Long quantity = entry.getValue();
+            Order order = existingOrdersMap.get(id);
+
+            if (order != null) {
+                order.setCountProducts(order.getCountProducts() + quantity);
+            } else {
+                Order newOrder = Order.builder()
+                        .id(id)
+                        .cart(cart)
+                        .countProducts(quantity)
+                        .build();
+                cart.addOrder(newOrder);
+            }
+        }
+
+        cart = cartRepository.save(cart);
 
         return productMapper.toShoppingCartDto(cart);
     }
