@@ -28,7 +28,6 @@ import java.util.UUID;
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     UUID productId;
 
     Boolean fragile;

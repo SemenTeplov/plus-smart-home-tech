@@ -19,10 +19,10 @@ public class StringToSortOrderConverter implements Converter<String, Sort.Order>
             return Sort.Order.by(parts[0]);
         }
 
-        if (parts[0].contains("desc")) {
+        if (parts[1].contains("desc")) {
             return Sort.Order.desc(parts[1]);
         }
 
-        return Sort.Order.asc(parts[1]);
+        return Sort.Order.asc(parts[0]);
     }
 }
