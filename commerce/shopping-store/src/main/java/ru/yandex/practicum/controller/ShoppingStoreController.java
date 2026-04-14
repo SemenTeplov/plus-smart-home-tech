@@ -40,7 +40,7 @@ public class ShoppingStoreController {
             @RequestParam(value = "category") String category,
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "size", defaultValue = "20") Integer size,
-            @RequestParam(value = "sort", defaultValue = "productName,asc") List<String> sort) {
+            @RequestParam(value = "sort", defaultValue = "productName,ASC") List<String> sort) {
         return ResponseEntity.ok(shoppingStoreService.getProducts(
                 category, page, size, sort.stream().map(converter::convert).toList()));
     }

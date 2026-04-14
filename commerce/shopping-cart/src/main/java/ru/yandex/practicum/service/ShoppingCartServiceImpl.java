@@ -20,6 +20,7 @@ import ru.yandex.practicum.persistence.ststus.CartState;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -59,12 +60,12 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         Cart cart = cartRepository.getCartByUsername(username)
                 .orElse(cartRepository.save(Cart.builder().username(username).build()));
 
-        BookedProductsDto bookedProductsDto = productClient.checkProducts(ShoppingCartDto.builder()
+        productClient.checkProducts(ShoppingCartDto.builder()
                 .shoppingCartId(cart.getId()).products(products).build());
 
         cart.setOrders(products.entrySet().stream()
                 .map(e -> Order.builder().cart(cart).name(e.getKey()).countProducts(e.getValue()).build())
-                .toList());
+                .collect(Collectors.toList()));
 
         cartRepository.save(cart);
 

@@ -15,11 +15,17 @@ public class StringToSortOrderConverter implements Converter<String, Sort.Order>
 
         String[] parts = source.split(",");
 
+        parts[0] = parts[0]
+                .replace("I", "_i")
+                .replace("C", "_c")
+                .replace("N", "_n")
+                .replace("S", "_s");
+
         if (parts.length == 1) {
             return Sort.Order.by(parts[0]);
         }
 
-        if (parts[1].toLowerCase().contains("desc")) {
+        if (parts[1].equalsIgnoreCase("desc")) {
             return Sort.Order.desc(parts[0]);
         }
 
