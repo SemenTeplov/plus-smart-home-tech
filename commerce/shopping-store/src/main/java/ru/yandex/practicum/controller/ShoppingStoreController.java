@@ -21,6 +21,7 @@ import ru.yandex.practicum.dto.SetProductQuantityStateRequest;
 import ru.yandex.practicum.persistence.entity.Product;
 import ru.yandex.practicum.persistence.enums.QuantityState;
 import ru.yandex.practicum.service.ShoppingStoreService;
+import ru.yandex.practicum.util.StringToSortOrderConverter;
 
 import java.util.List;
 import java.util.UUID;
@@ -31,13 +32,16 @@ import java.util.UUID;
 public class ShoppingStoreController {
     private final ShoppingStoreService shoppingStoreService;
 
+    private final StringToSortOrderConverter converter;
+
     @GetMapping
     public ResponseEntity<Page<Product>> getProducts(
             @RequestParam(value = "category") String category,
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "size", defaultValue = "20") Integer size,
-            @RequestParam(value = "sort") List<Sort.Order> sort) {
-        return ResponseEntity.ok(shoppingStoreService.getProducts(category, page, size, sort));
+            @RequestParam(value = "sort", defaultValue = "productName,asc") List<String> sort) {
+        return ResponseEntity.ok(shoppingStoreService.getProducts(
+                category, page, size, sort.stream().map(converter::convert).toList()));
     }
 
     @PutMapping

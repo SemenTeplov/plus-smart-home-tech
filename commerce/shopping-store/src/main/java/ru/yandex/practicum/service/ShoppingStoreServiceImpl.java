@@ -13,6 +13,7 @@ import ru.yandex.practicum.dto.ProductDto;
 import ru.yandex.practicum.dto.SetProductQuantityStateRequest;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.persistence.entity.Product;
+import ru.yandex.practicum.persistence.enums.ProductState;
 import ru.yandex.practicum.persistence.mapper.ProductMapper;
 import ru.yandex.practicum.persistence.repository.ProductRepository;
 
@@ -67,7 +68,9 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
         Product product = productRepository.findById(uuid)
                 .orElseThrow(() -> new NotFoundException(Message.EXCEPTION_NOT_FOUND));
 
-        productRepository.delete(product);
+        product.setProductState(ProductState.DEACTIVATE);
+
+        productRepository.save(product);
 
         return true;
     }
@@ -79,6 +82,8 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
         Product product = productRepository.findById(UUID.fromString(setProductQuantityStateRequest.productId()))
                 .orElseThrow(() -> new NotFoundException(Message.EXCEPTION_NOT_FOUND));
         product.setQuantityState(setProductQuantityStateRequest.quantityState());
+
+        productRepository.save(product);
 
         return true;
     }
