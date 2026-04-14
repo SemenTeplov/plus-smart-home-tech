@@ -26,6 +26,6 @@ public interface ProductMapper {
             return null;
         }
 
-        return orders.stream().collect(Collectors.toMap(Order::getName, Order::getCountProducts));
+        return orders.stream().collect(Collectors.toMap(o -> o.getId().toString(), Order::getCountProducts));
     }
 }
