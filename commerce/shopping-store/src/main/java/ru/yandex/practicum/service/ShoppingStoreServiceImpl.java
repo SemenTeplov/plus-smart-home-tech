@@ -53,7 +53,7 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
                                 .direction(s.getDirection().name())
                                 .nullHandling(s.getNullHandling().name())
                                 .ascending(s.isAscending())
-                                .property(s.getProperty())
+                                .property(toParameterName(s))
                                 .ignoreCase(s.isIgnoreCase()).build())
                         .toList())
                 .numberOfElements(products.getNumberOfElements())
@@ -116,5 +116,13 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
 
         return productMapper.productToProductDto(productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException(Message.EXCEPTION_NOT_FOUND)));
+    }
+
+    private String toParameterName(Sort.Order s) {
+        return !s.getProperty().contains("_")
+                ? s.getProperty()
+                : s.getProperty().replace(
+                s.getProperty().substring(s.getProperty().indexOf("_"), s.getProperty().indexOf("_") + 2),
+                String.valueOf(Character.toLowerCase(s.getProperty().charAt(s.getProperty().indexOf("_") + 1))));
     }
 }

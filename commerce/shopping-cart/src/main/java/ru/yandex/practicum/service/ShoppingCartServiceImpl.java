@@ -117,8 +117,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         log.info(Message.CHANGE_PRODUCTS, username, changeProductQuantityRequest);
 
-        Cart cart = cartRepository.getCartByUsername(username)
-                .orElse(cartRepository.save(Cart.builder().username(username).build()));
+        Cart cart = cartRepository.getCartByUsername(username).orElseThrow(NotEmptyNameException::new);
 
         for (int i = 0; i < cart.getOrders().size(); i++) {
             if (cart.getOrders().get(i).getId().equals(changeProductQuantityRequest.productId())) {
