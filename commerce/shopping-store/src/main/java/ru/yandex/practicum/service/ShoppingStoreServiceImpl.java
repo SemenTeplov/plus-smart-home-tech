@@ -61,10 +61,10 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     }
 
     @Override
-    public Boolean removeProductFromStore(String uuid) {
+    public Boolean removeProductFromStore(UUID uuid) {
         log.info(Message.GET_ID_FOR_DELETE, uuid);
 
-        Product product = productRepository.findById(UUID.fromString(uuid))
+        Product product = productRepository.findById(uuid)
                 .orElseThrow(() -> new NotFoundException(Message.EXCEPTION_NOT_FOUND));
 
         productRepository.delete(product);

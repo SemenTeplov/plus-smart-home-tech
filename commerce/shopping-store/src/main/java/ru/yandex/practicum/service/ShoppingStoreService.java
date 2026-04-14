@@ -18,7 +18,7 @@ public interface ShoppingStoreService {
 
     public ProductDto updateProduct(ProductDto productDto);
 
-    public Boolean removeProductFromStore(String uuid);
+    public Boolean removeProductFromStore(UUID uuid);
 
     public Boolean setProductQuantityState(SetProductQuantityStateRequest setProductQuantityStateRequest);
 

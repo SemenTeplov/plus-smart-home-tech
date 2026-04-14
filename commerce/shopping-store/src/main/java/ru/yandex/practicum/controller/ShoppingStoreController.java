@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.dto.ProductDto;
 import ru.yandex.practicum.dto.SetProductQuantityStateRequest;
 import ru.yandex.practicum.persistence.entity.Product;
+import ru.yandex.practicum.persistence.enums.QuantityState;
 import ru.yandex.practicum.service.ShoppingStoreService;
 
 import java.util.List;
@@ -32,10 +33,10 @@ public class ShoppingStoreController {
 
     @GetMapping
     public ResponseEntity<Page<Product>> getProducts(
-            @Valid @RequestParam(required = false, value = "category") String category,
-            @Valid @RequestParam(required = false, value = "page", defaultValue = "0") Integer page,
-            @Valid @RequestParam(required = false, value = "size", defaultValue = "20") Integer size,
-            @Valid @RequestParam(required = false, value = "sort") List<Sort.Order> sort) {
+            @Valid @RequestParam(value = "category") String category,
+            @Valid @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @Valid @RequestParam(value = "size", defaultValue = "20") Integer size,
+            @Valid @RequestParam(value = "sort", defaultValue = "productName,(asc)") List<Sort.Order> sort) {
         return ResponseEntity.ok(shoppingStoreService.getProducts(category, page, size, sort));
     }
 
@@ -50,13 +51,17 @@ public class ShoppingStoreController {
     }
 
     @PostMapping("/removeProductFromStore")
-    public ResponseEntity<Boolean> removeProductFromStore(@Valid @RequestBody String uuid) {
+    public ResponseEntity<Boolean> removeProductFromStore(@Valid @RequestBody UUID uuid) {
         return ResponseEntity.ok(shoppingStoreService.removeProductFromStore(uuid));
     }
 
     @PostMapping("/quantityState")
     public ResponseEntity<Boolean> setProductQuantityState(
-            @Valid @RequestBody SetProductQuantityStateRequest setProductQuantityStateRequest) {
+            @Valid @RequestParam(value = "productId") String productId,
+            @Valid @RequestParam(value = "quantityState") QuantityState quantityState) {
+        SetProductQuantityStateRequest setProductQuantityStateRequest =
+                new SetProductQuantityStateRequest(productId, quantityState);
+
         return ResponseEntity.ok(shoppingStoreService.setProductQuantityState(setProductQuantityStateRequest));
     }
 
