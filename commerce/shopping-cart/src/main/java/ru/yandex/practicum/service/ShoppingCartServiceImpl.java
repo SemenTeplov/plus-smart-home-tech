@@ -100,7 +100,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public void deactivateCurrentShoppingCart(String username) {
 
-        if (username.isBlank()) {
+        if (username == null || username.isBlank()) {
             throw new NotEmptyNameException();
         }
 
@@ -117,7 +117,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public ShoppingCartDto removeFromShoppingCart(String username, List<UUID> products) {
 
-        if (username.isBlank()) {
+        if (username == null || username.isBlank()) {
             throw new NotEmptyNameException();
         }
 
@@ -134,21 +134,22 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    @Transactional
     public ShoppingCartDto changeProductQuantity(String username, ChangeProductQuantityRequest changeProductQuantityRequest) {
 
-        if (username.isBlank()) {
+        if (username == null || username.isBlank()) {
             throw new NotEmptyNameException();
         }
 
         log.info(Message.CHANGE_PRODUCTS, username, changeProductQuantityRequest);
 
-        Cart cart = cartRepository.getCartByUsername(username).orElseThrow(NotEmptyNameException::new);
+        Cart cart = cartRepository.getCartByUsername(username).orElseThrow(NotEmptyProductException::new);
 
-        for (int i = 0; i < cart.getOrders().size(); i++) {
-            if (cart.getOrders().get(i).getId().equals(changeProductQuantityRequest.productId())) {
-                cart.getOrders().get(i).setCountProducts(changeProductQuantityRequest.newQuantity());
-            }
-        }
+        Order order = cart.getOrders().stream()
+                .filter(o -> o.getId().equals(changeProductQuantityRequest.productId()))
+                .findFirst().orElseThrow(NotEmptyProductException::new);
+
+        order.setCountProducts(order.getCountProducts() + changeProductQuantityRequest.newQuantity());
 
         cartRepository.save(cart);
 
