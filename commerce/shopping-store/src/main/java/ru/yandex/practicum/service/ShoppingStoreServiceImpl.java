@@ -9,8 +9,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import ru.yandex.practicum.contains.Message;
+import ru.yandex.practicum.dto.PageProductDto;
 import ru.yandex.practicum.dto.ProductDto;
 import ru.yandex.practicum.dto.SetProductQuantityStateRequest;
+import ru.yandex.practicum.dto.SortObject;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.persistence.entity.Product;
 import ru.yandex.practicum.persistence.enums.ProductState;
@@ -30,13 +32,33 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     private final ProductMapper productMapper;
 
     @Override
-    public Page<Product> getProducts(String category, Integer page, Integer size, List<Sort.Order> sort) {
+    public PageProductDto getProducts(String category, Integer page, Integer size, List<Sort.Order> sort) {
         log.info(Message.GET_PAGES_BY_CATEGORY, category, page, size, sort);
 
         Sort order = Sort.by(sort);
         PageRequest pageable = PageRequest.of(page, size, order);
 
-        return productRepository.getProducts(category, pageable);
+        Page<Product> products = productRepository.getProducts(category, pageable);
+
+        return PageProductDto.builder()
+                .totalElements(products.getTotalElements())
+                .totalPages(products.getTotalPages())
+                .first(products.isFirst())
+                .last(products.isLast())
+                .size(products.getSize())
+                .content(products.getContent())
+                .number(products.getNumber())
+                .sort(sort.stream()
+                        .map(s -> SortObject.builder()
+                                .direction(s.getDirection().name())
+                                .nullHandling(s.getNullHandling().name())
+                                .ascending(s.isAscending())
+                                .property(s.getProperty())
+                                .ignoreCase(s.isIgnoreCase()).build())
+                        .toList())
+                .numberOfElements(products.getNumberOfElements())
+                .pageable(products.getPageable())
+                .empty(products.isEmpty()).build();
     }
 
     @Override

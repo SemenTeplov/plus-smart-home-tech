@@ -11,7 +11,3 @@ spring:
     url: jdbc:postgresql://localhost:5432/shoppingStore
     username: shoppingStore
     password: shoppingStore
-  sql:
-    init:
-      mode: always
-      schema-locations: classpath:schema.sql
