@@ -115,6 +115,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    @Transactional
     public ShoppingCartDto removeFromShoppingCart(String username, List<UUID> products) {
 
         if (username == null || username.isBlank()) {
@@ -124,9 +125,12 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         log.info(Message.REMOVED_PRODUCTS, username, products);
 
         Cart cart = cartRepository.getCartByUsername(username)
-                .orElse(cartRepository.saveAndFlush(Cart.builder().username(username).build()));
+                .orElseThrow(NotEmptyProductException::new);
 
-        cart.getOrders().removeIf(order -> products.contains(order.getId()));
+        List<Order> orderListForRemove = cart.getOrders().stream()
+                .filter(o -> products.contains(o.getId())).toList();
+
+        cart.getOrders().removeAll(orderListForRemove);
 
         cartRepository.save(cart);
 
