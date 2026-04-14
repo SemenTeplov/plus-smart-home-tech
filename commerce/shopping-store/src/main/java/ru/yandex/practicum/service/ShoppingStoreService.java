@@ -2,11 +2,13 @@ package ru.yandex.practicum.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+
 import ru.yandex.practicum.dto.ProductDto;
 import ru.yandex.practicum.dto.SetProductQuantityStateRequest;
 import ru.yandex.practicum.persistence.entity.Product;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ShoppingStoreService {
 
@@ -20,5 +22,5 @@ public interface ShoppingStoreService {
 
     public Boolean setProductQuantityState(SetProductQuantityStateRequest setProductQuantityStateRequest);
 
-    public ProductDto getProduct(String productId, String uuid);
+    public ProductDto getProduct(UUID productId);
 }

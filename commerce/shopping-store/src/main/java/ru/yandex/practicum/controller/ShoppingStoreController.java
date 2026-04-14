@@ -22,6 +22,7 @@ import ru.yandex.practicum.persistence.entity.Product;
 import ru.yandex.practicum.service.ShoppingStoreService;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/shopping-store")
@@ -31,10 +32,10 @@ public class ShoppingStoreController {
 
     @GetMapping
     public ResponseEntity<Page<Product>> getProducts(
-            @Valid @RequestParam(value = "category") String category,
-            @Valid @RequestParam(value = "page", defaultValue = "0") Integer page,
-            @Valid @RequestParam(value = "size", defaultValue = "20") Integer size,
-            @Valid @RequestParam(value = "sort") List<Sort.Order> sort) {
+            @Valid @RequestParam(required = false, value = "category") String category,
+            @Valid @RequestParam(required = false, value = "page", defaultValue = "0") Integer page,
+            @Valid @RequestParam(required = false, value = "size", defaultValue = "20") Integer size,
+            @Valid @RequestParam(required = false, value = "sort") List<Sort.Order> sort) {
         return ResponseEntity.ok(shoppingStoreService.getProducts(category, page, size, sort));
     }
 
@@ -61,7 +62,7 @@ public class ShoppingStoreController {
 
     @GetMapping("/{productId}")
     public ResponseEntity<ProductDto> getProduct(
-            @Valid @PathVariable("productId") String productId, @Valid @RequestBody String uuid) {
-        return ResponseEntity.ok(shoppingStoreService.getProduct(productId, uuid));
+            @Valid @PathVariable("productId") UUID productId) {
+        return ResponseEntity.ok(shoppingStoreService.getProduct(productId));
     }
 }

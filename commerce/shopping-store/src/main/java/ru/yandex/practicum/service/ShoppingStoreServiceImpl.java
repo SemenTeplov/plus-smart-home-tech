@@ -84,10 +84,10 @@ public class ShoppingStoreServiceImpl implements ShoppingStoreService {
     }
 
     @Override
-    public ProductDto getProduct(String productId, String uuid) {
-        log.info(Message.GET_PRODUCT_BY_ID, uuid);
+    public ProductDto getProduct(UUID productId) {
+        log.info(Message.GET_PRODUCT_BY_ID, productId);
 
-        return productMapper.productToProductDto(productRepository.findById(UUID.fromString(uuid))
+        return productMapper.productToProductDto(productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException(Message.EXCEPTION_NOT_FOUND)));
     }
 }
