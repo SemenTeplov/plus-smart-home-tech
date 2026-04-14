@@ -30,6 +30,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/shopping-store")
 @RequiredArgsConstructor
 public class ShoppingStoreController {
+
     private final ShoppingStoreService shoppingStoreService;
 
     private final StringToSortOrderConverter converter;

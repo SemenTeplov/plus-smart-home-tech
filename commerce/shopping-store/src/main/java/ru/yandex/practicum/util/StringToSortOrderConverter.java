@@ -2,7 +2,9 @@ package ru.yandex.practicum.util;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Component;
 
+@Component
 public class StringToSortOrderConverter implements Converter<String, Sort.Order> {
 
     @Override
