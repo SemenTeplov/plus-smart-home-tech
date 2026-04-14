@@ -19,8 +19,8 @@ public class StringToSortOrderConverter implements Converter<String, Sort.Order>
             return Sort.Order.by(parts[0]);
         }
 
-        if (parts[1].contains("desc")) {
-            return Sort.Order.desc(parts[1]);
+        if (parts[1].toLowerCase().contains("desc")) {
+            return Sort.Order.desc(parts[0]);
         }
 
         return Sort.Order.asc(parts[0]);

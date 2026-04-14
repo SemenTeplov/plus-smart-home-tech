@@ -91,7 +91,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
         Product product = productRepository.findById(request.productId())
                 .orElseThrow(NotInformationAboutProductException::new);
-        product.setQuantity(product.getQuantity() + request.quantity());
+        product.setQuantity(product.getQuantity() == null ? 0 : product.getQuantity() + request.quantity());
 
         productRepository.save(product);
     }

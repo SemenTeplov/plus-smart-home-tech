@@ -37,5 +37,5 @@ public class Product {
 
     Double weight;
 
-    Long quantity = 0L;
+    Long quantity;
 }
