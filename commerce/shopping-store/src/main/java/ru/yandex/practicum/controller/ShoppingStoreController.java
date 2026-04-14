@@ -33,10 +33,10 @@ public class ShoppingStoreController {
 
     @GetMapping
     public ResponseEntity<Page<Product>> getProducts(
-            @Valid @RequestParam(value = "category") String category,
-            @Valid @RequestParam(value = "page", defaultValue = "0") Integer page,
-            @Valid @RequestParam(value = "size", defaultValue = "20") Integer size,
-            @Valid @RequestParam(value = "sort", defaultValue = "productName,(asc)") List<Sort.Order> sort) {
+            @RequestParam(value = "category") String category,
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "size", defaultValue = "20") Integer size,
+            @RequestParam(value = "sort") List<Sort.Order> sort) {
         return ResponseEntity.ok(shoppingStoreService.getProducts(category, page, size, sort));
     }
 
@@ -57,8 +57,8 @@ public class ShoppingStoreController {
 
     @PostMapping("/quantityState")
     public ResponseEntity<Boolean> setProductQuantityState(
-            @Valid @RequestParam(value = "productId") String productId,
-            @Valid @RequestParam(value = "quantityState") QuantityState quantityState) {
+            @RequestParam(value = "productId") String productId,
+            @RequestParam(value = "quantityState") QuantityState quantityState) {
         SetProductQuantityStateRequest setProductQuantityStateRequest =
                 new SetProductQuantityStateRequest(productId, quantityState);
 
@@ -67,7 +67,7 @@ public class ShoppingStoreController {
 
     @GetMapping("/{productId}")
     public ResponseEntity<ProductDto> getProduct(
-            @Valid @PathVariable("productId") UUID productId) {
+            @PathVariable("productId") UUID productId) {
         return ResponseEntity.ok(shoppingStoreService.getProduct(productId));
     }
 }
