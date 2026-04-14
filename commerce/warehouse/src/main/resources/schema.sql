@@ -5,5 +5,5 @@ CREATE TABLE IF NOT EXISTS wares (
     height DECIMAL(10, 2) NOT NULL,
     depth DECIMAL(10, 2) NOT NULL,
     weight DECIMAL(10, 2) NOT NULL,
-    quantity INTEGER NOT NULL
+    quantity INTEGER NOT NULL DEFAULT 0
 );
