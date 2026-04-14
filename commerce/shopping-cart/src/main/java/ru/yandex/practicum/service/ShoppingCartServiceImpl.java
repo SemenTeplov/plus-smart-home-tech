@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import ru.yandex.practicum.client.ProductClient;
 import ru.yandex.practicum.constant.Message;
-import ru.yandex.practicum.dto.BookedProductsDto;
 import ru.yandex.practicum.dto.ChangeProductQuantityRequest;
 import ru.yandex.practicum.dto.ShoppingCartDto;
 import ru.yandex.practicum.exception.NotEmptyNameException;
@@ -64,7 +63,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                 .shoppingCartId(cart.getId()).products(products).build());
 
         cart.setOrders(products.entrySet().stream()
-                .map(e -> Order.builder().cart(cart).name(e.getKey()).countProducts(e.getValue()).build())
+                .map(e -> Order.builder().cart(cart)
+                        .id(UUID.fromString(e.getKey())).countProducts(e.getValue()).build())
                 .collect(Collectors.toList()));
 
         cartRepository.save(cart);

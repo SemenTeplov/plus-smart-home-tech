@@ -7,6 +7,5 @@ CREATE TABLE IF NOT EXISTS carts (
 CREATE TABLE IF NOT EXISTS orders (
     id UUID PRIMARY KEY,
     cart_id UUID,
-    name VARCHAR(255),
     count_products INTEGER
 );
