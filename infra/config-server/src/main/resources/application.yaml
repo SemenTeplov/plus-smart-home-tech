@@ -12,10 +12,6 @@ spring:
         native:
           searchLocations:
             - classpath:config/telemetry/{application}/
-  sql:
-    init:
-      mode: always
-      schema-locations: classpath:config/telemetry/warehouse/schema.sql
 
 eureka:
   client:

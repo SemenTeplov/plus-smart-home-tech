@@ -11,7 +11,3 @@ spring:
     url: jdbc:postgresql://localhost:5432/warehouse
     username: warehouse
     password: warehouse
-  sql:
-    init:
-      mode: always
-      schema-locations: classpath:config/telemetry/warehouse/schema.sql
