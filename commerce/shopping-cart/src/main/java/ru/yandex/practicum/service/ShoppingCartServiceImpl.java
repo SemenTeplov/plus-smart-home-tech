@@ -46,7 +46,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         log.info(Message.GET_CART, username);
 
         Cart cart = cartRepository.getCartByUsername(username)
-                .orElseGet(() -> cartRepository.save(Cart.builder().username(username).build()));
+                .orElseGet(() -> cartRepository.saveAndFlush(Cart.builder().username(username).build()));
 
         return productMapper.toShoppingCartDto(cart);
     }
@@ -66,7 +66,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         log.info(Message.GET_PRODUCTS, username, products);
 
         Cart cart = cartRepository.getCartByUsername(username)
-                .orElseGet(() -> cartRepository.save(Cart.builder().username(username).build()));
+                .orElseGet(() -> cartRepository.saveAndFlush(Cart.builder().username(username).build()));
 
         productClient.checkProducts(ShoppingCartDto.builder()
                 .shoppingCartId(cart.getId()).products(products).build());
@@ -107,7 +107,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         log.info(Message.DEACTIVATE_CART, username);
 
         Cart cart = cartRepository.getCartByUsername(username)
-                .orElse(cartRepository.save(Cart.builder().username(username).build()));
+                .orElse(cartRepository.saveAndFlush(Cart.builder().username(username).build()));
 
         cart.setState(CartState.DEACTIVATE);
 
@@ -124,7 +124,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         log.info(Message.REMOVED_PRODUCTS, username, products);
 
         Cart cart = cartRepository.getCartByUsername(username)
-                .orElse(cartRepository.save(Cart.builder().username(username).build()));
+                .orElse(cartRepository.saveAndFlush(Cart.builder().username(username).build()));
 
         cart.getOrders().removeIf(order -> products.contains(order.getId()));
 
