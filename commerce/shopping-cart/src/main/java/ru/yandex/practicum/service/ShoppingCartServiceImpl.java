@@ -20,6 +20,7 @@ import ru.yandex.practicum.persistence.ststus.CartState;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -70,14 +71,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         Cart cart = cartRepository.getCartByUsername(username)
                 .orElseGet(() -> cartRepository.saveAndFlush(Cart.builder().username(username).build()));
 
-        try {
-            productClient.checkProductQuantityEnoughForShoppingCart(ShoppingCartDto.builder()
-                    .shoppingCartId(cart.getId()).products(products).build());
-        } catch (Exception e) {
-            log.error("productClient выбросил исключение {}", e.getMessage());
-        }
+        productClient.checkProductQuantityEnoughForShoppingCart(ShoppingCartDto.builder()
+                .shoppingCartId(cart.getId()).products(products).build());
 
         Map<UUID, Order> existingOrdersMap = cart.getOrders().stream()
+                .filter(Objects::nonNull)
                 .collect(Collectors.toMap(Order::getId, Function.identity()));
 
         for (var entry : products.entrySet()) {

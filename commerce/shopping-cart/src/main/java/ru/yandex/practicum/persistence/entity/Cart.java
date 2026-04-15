@@ -21,8 +21,8 @@ import lombok.experimental.FieldDefaults;
 
 import ru.yandex.practicum.persistence.ststus.CartState;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -41,7 +41,7 @@ public class Cart {
     String username;
 
     @OneToMany(mappedBy = "cart",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    List<Order> orders = new ArrayList<>();
+    Set<Order> orders = new HashSet<>();
 
     @Enumerated(value = EnumType.STRING)
     CartState state = CartState.ACTIVE;
