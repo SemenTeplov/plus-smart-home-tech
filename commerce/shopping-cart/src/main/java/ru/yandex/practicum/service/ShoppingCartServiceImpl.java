@@ -45,7 +45,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         log.info(Message.GET_CART, username);
 
         Cart cart = cartRepository.getCartByUsername(username)
-                .orElseGet(() -> cartRepository.saveAndFlush(Cart.builder().username(username).build()));
+                .orElseGet(() -> {
+                    log.info("Не найден {}", username);
+                    return cartRepository.saveAndFlush(Cart.builder().username(username).build());
+                });
 
         return productMapper.toShoppingCartDto(cart);
     }
