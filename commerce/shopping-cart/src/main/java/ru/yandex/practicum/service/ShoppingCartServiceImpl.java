@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
+
 import ru.yandex.practicum.client.ProductClient;
 import ru.yandex.practicum.constant.Message;
 import ru.yandex.practicum.dto.ChangeProductQuantityRequest;
@@ -36,7 +36,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final ProductClient productClient;
 
     @Override
-    @Transactional(readOnly = true)
     public ShoppingCartDto getShoppingCart(String username) {
 
         if (username == null || username.isBlank()) {
