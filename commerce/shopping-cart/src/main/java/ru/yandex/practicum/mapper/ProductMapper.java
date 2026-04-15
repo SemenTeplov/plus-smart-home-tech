@@ -9,8 +9,8 @@ import ru.yandex.practicum.dto.ShoppingCartDto;
 import ru.yandex.practicum.persistence.entity.Cart;
 import ru.yandex.practicum.persistence.entity.Order;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -21,7 +21,7 @@ public interface ProductMapper {
     ShoppingCartDto toShoppingCartDto(Cart cart);
 
     @Named("ordersToMap")
-    default Map<String, Long> ordersToMap(List<Order> orders) {
+    default Map<String, Long> ordersToMap(Set<Order> orders) {
         if (orders == null) {
             return null;
         }
