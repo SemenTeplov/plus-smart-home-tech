@@ -18,11 +18,11 @@ import ru.yandex.practicum.persistence.entity.Order;
 import ru.yandex.practicum.persistence.repository.CartRepository;
 import ru.yandex.practicum.persistence.ststus.CartState;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -46,10 +46,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         log.info(Message.GET_CART, username);
 
         Cart cart = cartRepository.getCartByUsername(username)
-                .orElseGet(() -> {
-                    log.info("Не найден {}", username);
-                    return cartRepository.saveAndFlush(Cart.builder().username(username).build());
-                });
+                .orElseGet(() -> cartRepository.saveAndFlush(Cart.builder().username(username).build()));
 
         return productMapper.toShoppingCartDto(cart);
     }
@@ -74,10 +71,15 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         productClient.checkProductQuantityEnoughForShoppingCart(ShoppingCartDto.builder()
                 .shoppingCartId(cart.getId()).products(products).build());
 
-        Map<UUID, Order> existingOrdersMap = cart.getOrders().stream()
-                .filter(Objects::nonNull)
-                .filter(o -> o.getId() != null)
-                .collect(Collectors.toMap(Order::getId, o -> o));
+        Map<UUID, Order> existingOrdersMap;
+
+        if (cart.getOrders() != null) {
+            existingOrdersMap = cart.getOrders().stream()
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toMap(Order::getId, o -> o));
+        } else {
+            existingOrdersMap = new HashMap<>();
+        }
 
         for (var entry : products.entrySet()) {
 

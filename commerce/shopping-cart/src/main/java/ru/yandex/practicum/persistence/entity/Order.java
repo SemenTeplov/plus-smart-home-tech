@@ -32,7 +32,7 @@ public class Order {
 
     Long countProducts;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "cart_id")
     Cart cart;
 }
