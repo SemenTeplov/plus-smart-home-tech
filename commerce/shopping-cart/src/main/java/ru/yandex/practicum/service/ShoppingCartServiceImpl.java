@@ -70,8 +70,12 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         Cart cart = cartRepository.getCartByUsername(username)
                 .orElseGet(() -> cartRepository.saveAndFlush(Cart.builder().username(username).build()));
 
-        productClient.checkProductQuantityEnoughForShoppingCart(ShoppingCartDto.builder()
-                .shoppingCartId(cart.getId()).products(products).build());
+        try {
+            productClient.checkProductQuantityEnoughForShoppingCart(ShoppingCartDto.builder()
+                    .shoppingCartId(cart.getId()).products(products).build());
+        } catch (Exception e) {
+            log.error("productClient выбросил исключение {}", e.getMessage());
+        }
 
         Map<UUID, Order> existingOrdersMap = cart.getOrders().stream()
                 .collect(Collectors.toMap(Order::getId, Function.identity()));
