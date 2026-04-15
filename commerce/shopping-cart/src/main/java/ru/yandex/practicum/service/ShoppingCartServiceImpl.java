@@ -19,6 +19,7 @@ import ru.yandex.practicum.persistence.repository.CartRepository;
 import ru.yandex.practicum.persistence.ststus.CartState;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -95,6 +96,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                         .cart(cart)
                         .countProducts(quantity)
                         .build();
+
+                if (cart.getOrders() == null ) {
+                    cart.setOrders(new HashSet<>());
+                }
+
                 cart.addOrder(newOrder);
             }
         }
