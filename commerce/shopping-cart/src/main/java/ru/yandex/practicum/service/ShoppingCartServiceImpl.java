@@ -76,6 +76,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         Map<UUID, Order> existingOrdersMap = cart.getOrders().stream()
                 .filter(Objects::nonNull)
+                .filter(o -> o.getId() != null)
                 .collect(Collectors.toMap(Order::getId, o -> o));
 
         for (var entry : products.entrySet()) {
@@ -157,7 +158,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                 .filter(o -> o.getId().equals(changeProductQuantityRequest.productId()))
                 .findFirst().orElseThrow(NotEmptyProductException::new);
 
-        order.setCountProducts(order.getCountProducts() + changeProductQuantityRequest.newQuantity());
+        order.setCountProducts(changeProductQuantityRequest.newQuantity());
 
         cartRepository.save(cart);
 
