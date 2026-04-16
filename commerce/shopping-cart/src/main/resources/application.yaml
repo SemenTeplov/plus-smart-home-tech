@@ -1,6 +1,6 @@
 spring:
   application:
-    name: shopping-store
+    name: shopping-cart
   cloud:
     config:
       uri: http://localhost:8888
