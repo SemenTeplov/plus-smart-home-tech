@@ -7,5 +7,6 @@ CREATE TABLE IF NOT EXISTS carts (
 CREATE TABLE IF NOT EXISTS orders (
     id UUID PRIMARY KEY,
     cart_id UUID,
-    count_products INTEGER
+    count_products INTEGER,
+    CONSTRAINT fk_on_cart FOREIGN KEY (cart_id) REFERENCES carts (id)
 );

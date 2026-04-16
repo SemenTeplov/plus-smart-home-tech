@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import ru.yandex.practicum.client.ProductClient;
+import ru.yandex.practicum.client.WarehouseClient;
 import ru.yandex.practicum.constant.Message;
 import ru.yandex.practicum.dto.ChangeProductQuantityRequest;
 import ru.yandex.practicum.dto.ShoppingCartDto;
@@ -35,7 +35,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     private final ProductMapper productMapper;
 
-    private final ProductClient productClient;
+    private final WarehouseClient productClient;
 
     @Override
     public ShoppingCartDto getShoppingCart(String username) {
@@ -69,8 +69,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         Cart cart = cartRepository.getCartByUsername(username)
                 .orElseGet(() -> cartRepository.saveAndFlush(Cart.builder().username(username).build()));
 
-        productClient.checkProductQuantityEnoughForShoppingCart(ShoppingCartDto.builder()
-                .shoppingCartId(cart.getId()).products(products).build());
+        productClient.checkProductQuantityEnoughForShoppingCart(new ShoppingCartDto(cart.getId(), products));
 
         Map<UUID, Order> existingOrdersMap;
 

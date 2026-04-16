@@ -27,7 +27,7 @@ public class WarehouseController {
     private final WarehouseService warehouseService;
 
     @PutMapping
-    public ResponseEntity<BookedProductsDto> newProductInWarehouse(
+    public ResponseEntity<Void> newProductInWarehouse(
             @Valid @RequestBody NewProductInWarehouseRequest request) {
         warehouseService.newProductInWarehouse(request);
 
@@ -41,7 +41,7 @@ public class WarehouseController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<BookedProductsDto> addProductToWarehouse(
+    public ResponseEntity<Void> addProductToWarehouse(
             @Valid @RequestBody AddProductToWarehouseRequest request) {
         warehouseService.addProductToWarehouse(request);
 

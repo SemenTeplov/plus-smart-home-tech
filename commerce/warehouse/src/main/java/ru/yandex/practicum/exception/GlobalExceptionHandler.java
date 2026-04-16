@@ -9,7 +9,7 @@ import ru.yandex.practicum.constant.Message;
 import ru.yandex.practicum.dto.ExceptionDto;
 
 @RestControllerAdvice
-public class GlobalException {
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityExistException.class)
     public ResponseEntity<ExceptionDto> handleEntityExistException(EntityExistException ex) {

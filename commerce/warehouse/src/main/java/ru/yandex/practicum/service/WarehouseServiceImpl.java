@@ -77,11 +77,7 @@ public class WarehouseServiceImpl implements WarehouseService {
             }
         }
 
-        return BookedProductsDto.builder()
-                .deliveryWeight(deliveryWeight)
-                .deliveryVolume(deliveryVolume)
-                .fragile(fragile)
-                .build();
+        return new BookedProductsDto(deliveryWeight, deliveryVolume, fragile);
     }
 
     @Override

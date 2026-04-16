@@ -1,10 +1,7 @@
 package ru.yandex.practicum.dto;
 
-import lombok.Builder;
-
 import ru.yandex.practicum.persistence.enums.QuantityState;
 
-@Builder
 public record SetProductQuantityStateRequest(
         String productId,
         QuantityState quantityState

@@ -20,6 +20,7 @@ import ru.yandex.practicum.persistence.enums.ProductCategory;
 import ru.yandex.practicum.persistence.enums.ProductState;
 import ru.yandex.practicum.persistence.enums.QuantityState;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Getter
@@ -51,7 +52,7 @@ public class Product {
     @Enumerated(EnumType.STRING)
     ProductCategory productCategory;
 
-    Double price;
+    BigDecimal price;
 
     @Override
     public String toString() {

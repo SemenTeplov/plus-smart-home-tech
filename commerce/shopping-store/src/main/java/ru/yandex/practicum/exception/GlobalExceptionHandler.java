@@ -9,7 +9,7 @@ import ru.yandex.practicum.contains.Message;
 import ru.yandex.practicum.dto.ProductNotFoundException;
 
 @RestControllerAdvice
-public class GlobalException {
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ProductNotFoundException> handleNotFoundException(NotFoundException ex) {

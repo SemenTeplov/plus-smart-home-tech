@@ -12,6 +12,8 @@ import ru.yandex.practicum.persistence.enums.ProductCategory;
 import ru.yandex.practicum.persistence.enums.ProductState;
 import ru.yandex.practicum.persistence.enums.QuantityState;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Builder
@@ -34,7 +36,7 @@ public class ProductDto {
 
     ProductCategory productCategory;
 
-    Double price;
+    BigDecimal price;
 
     @Override
     public String toString() {

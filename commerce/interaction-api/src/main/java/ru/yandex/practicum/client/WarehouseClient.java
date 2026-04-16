@@ -8,7 +8,7 @@ import ru.yandex.practicum.dto.BookedProductsDto;
 import ru.yandex.practicum.dto.ShoppingCartDto;
 
 @FeignClient(name = "warehouse")
-public interface ProductClient {
+public interface WarehouseClient {
 
     @PostMapping("/check")
     BookedProductsDto checkProductQuantityEnoughForShoppingCart(@RequestBody ShoppingCartDto shoppingCartDto);

@@ -43,7 +43,7 @@ public class ShoppingCartController {
     }
 
     @DeleteMapping
-    public ResponseEntity<ShoppingCartDto> deactivateCurrentShoppingCart(
+    public ResponseEntity<Void> deactivateCurrentShoppingCart(
             @Valid @RequestParam(value = "username") String username) {
         shoppingCartService.deactivateCurrentShoppingCart(username);
 

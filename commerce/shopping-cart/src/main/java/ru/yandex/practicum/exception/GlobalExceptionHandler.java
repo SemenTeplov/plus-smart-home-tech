@@ -9,7 +9,7 @@ import ru.yandex.practicum.constant.Message;
 import ru.yandex.practicum.dto.ExceptionDto;
 
 @RestControllerAdvice
-public class GlobalException {
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotEmptyNameException.class)
     public ResponseEntity<ExceptionDto> handleNotEmptyNameException(NotEmptyNameException ex) {
