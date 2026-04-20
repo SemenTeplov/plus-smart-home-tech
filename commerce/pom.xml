@@ -25,6 +25,7 @@
         <module>order</module>
         <module>payment</module>
         <module>delivery</module>
+
     </modules>
 
     <dependencies>

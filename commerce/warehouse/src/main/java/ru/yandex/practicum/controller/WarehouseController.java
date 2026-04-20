@@ -54,7 +54,7 @@ public class WarehouseController {
 
         return ResponseEntity.ok().build();
     }
-
+  
     @PostMapping("/check")
     public ResponseEntity<BookedProductsDto> checkProductQuantityEnoughForShoppingCart(
             @Valid @RequestBody ShoppingCartDto shoppingCartDto) {
