@@ -1,6 +1,6 @@
 package ru.yandex.practicum.dto;
 
-import ru.yandex.practicum.persistence.enums.QuantityState;
+import ru.yandex.practicum.status.QuantityState;
 
 public record SetProductQuantityStateRequest(
         String productId,

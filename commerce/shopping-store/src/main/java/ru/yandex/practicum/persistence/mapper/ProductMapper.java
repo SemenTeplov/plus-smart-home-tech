@@ -9,6 +9,7 @@ import ru.yandex.practicum.persistence.entity.Product;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ProductMapper {
+
     ProductDto productToProductDto(Product product);
 
     Product productDtoToProduct(ProductDto product);

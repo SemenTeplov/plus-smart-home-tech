@@ -14,10 +14,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ru.yandex.practicum.dto.AddProductToWarehouseRequest;
 import ru.yandex.practicum.dto.AddressDto;
+import ru.yandex.practicum.dto.AssemblyProductsForOrderRequest;
 import ru.yandex.practicum.dto.BookedProductsDto;
 import ru.yandex.practicum.dto.NewProductInWarehouseRequest;
+import ru.yandex.practicum.dto.ShippedToDeliveryRequest;
 import ru.yandex.practicum.dto.ShoppingCartDto;
 import ru.yandex.practicum.service.WarehouseService;
+
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/warehouse")
@@ -34,10 +39,32 @@ public class WarehouseController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/shipped")
+    public ResponseEntity<Void> shippedToDelivery(
+            @Valid @RequestBody ShippedToDeliveryRequest request) {
+        warehouseService.shippedToDelivery(request);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/return")
+    public ResponseEntity<Void> acceptReturn(
+            @Valid @RequestBody Map<UUID, Long> request) {
+        warehouseService.acceptReturn(request);
+
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/check")
     public ResponseEntity<BookedProductsDto> checkProductQuantityEnoughForShoppingCart(
             @Valid @RequestBody ShoppingCartDto shoppingCartDto) {
         return ResponseEntity.ok(warehouseService.checkProductQuantityEnoughForShoppingCart(shoppingCartDto));
+    }
+
+    @PostMapping("/assembly")
+    public ResponseEntity<BookedProductsDto> assemblyProductsForOrder(
+            @Valid @RequestBody AssemblyProductsForOrderRequest request) {
+        return ResponseEntity.ok(warehouseService.assemblyProductsForOrder(request));
     }
 
     @PostMapping("/add")

@@ -1,0 +1,13 @@
+package ru.yandex.practicum.persistence.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import ru.yandex.practicum.persistence.entity.Pay;
+
+import java.util.UUID;
+
+@Repository
+public interface PayRepository extends JpaRepository<Pay, UUID> {
+
+}

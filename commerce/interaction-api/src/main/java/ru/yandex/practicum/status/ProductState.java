@@ -1,4 +1,4 @@
-package ru.yandex.practicum.persistence.enums;
+package ru.yandex.practicum.status;
 
 public enum ProductState {
     ACTIVE,
