@@ -10,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 
 import ru.yandex.practicum.status.State;
 
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 
@@ -39,9 +40,9 @@ public class OrderDto {
 
     Boolean fragile;
 
-    Double totalPrice;
+    BigDecimal totalPrice;
 
-    Double deliveryPrice;
+    BigDecimal deliveryPrice;
 
-    Double productPrice;
+    BigDecimal productPrice;
 }

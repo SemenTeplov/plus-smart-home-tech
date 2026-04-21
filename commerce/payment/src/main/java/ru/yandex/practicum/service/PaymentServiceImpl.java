@@ -19,6 +19,7 @@ import ru.yandex.practicum.persistence.entity.Pay;
 import ru.yandex.practicum.persistence.repository.PayRepository;
 import ru.yandex.practicum.persistence.status.PayStatus;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Slf4j
@@ -39,7 +40,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         log.info(Message.PAY_ORDER, orderDto.getOrderId());
 
-        double totalPayment = 0.0;
+        BigDecimal totalPayment = BigDecimal.valueOf(0.0);
 
         for (var item : orderDto.getProducts().entrySet()) {
             ProductDto productDto = shoppingStoreClient.getProduct(item.getKey()).getBody();
@@ -48,27 +49,27 @@ public class PaymentServiceImpl implements PaymentService {
                 throw new NotInformationException();
             }
 
-            totalPayment += productDto.getPrice().doubleValue() * item.getValue();
+            totalPayment = totalPayment.add(productDto.getPrice().multiply(BigDecimal.valueOf(item.getValue())));
         }
 
         return PaymentDto.builder()
                 .paymentId(orderDto.getPaymentId())
                 .totalPayment(totalPayment)
                 .deliveryTotal(orderDto.getDeliveryPrice())
-                .feeTotal(totalPayment + orderDto.getDeliveryPrice())
+                .feeTotal(totalPayment.add(orderDto.getDeliveryPrice()))
                 .build();
     }
 
     @Override
-    public Double getTotalCost(OrderDto orderDto) {
+    public BigDecimal getTotalCost(OrderDto orderDto) {
 
         log.info(Message.PREPARED_COST_ORDER, orderDto.getOrderId());
 
         checkOrder(orderDto.getTotalPrice(), orderDto.getDeliveryPrice());
 
-        double Nds = orderDto.getTotalPrice() * 0.1;
+        BigDecimal Nds = orderDto.getTotalPrice().multiply( BigDecimal.valueOf(0.1));
 
-        return orderDto.getTotalPrice() + Nds + orderDto.getDeliveryPrice();
+        return orderDto.getTotalPrice().add(Nds).add(orderDto.getDeliveryPrice());
     }
 
     @Override
@@ -84,14 +85,14 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Double productCost(OrderDto orderDto) {
+    public BigDecimal productCost(OrderDto orderDto) {
 
         log.info(Message.COST_ORDER, orderDto.getOrderId());
 
         checkOrder(orderDto.getTotalPrice(), orderDto.getDeliveryPrice());
         payRepository.save(payMapper.orderDtoToPay(orderDto));
 
-        return orderDto.getTotalPrice() + orderDto.getDeliveryPrice();
+        return orderDto.getTotalPrice().add(orderDto.getDeliveryPrice());
     }
 
     @Override
@@ -106,7 +107,7 @@ public class PaymentServiceImpl implements PaymentService {
         pay.setStatus(PayStatus.FAILED);
     }
 
-    private void checkOrder(Double totalPrice, Double deliveryPrice) {
+    private void checkOrder(BigDecimal totalPrice, BigDecimal deliveryPrice) {
         if (totalPrice == null || deliveryPrice == null) {
             throw new NotInformationException();
         }

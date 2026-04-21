@@ -1,5 +1,6 @@
 package ru.yandex.practicum.controller;
 
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -26,33 +27,33 @@ public class DeliveryController {
     private final DeliveryService deliveryService;
 
     @PutMapping
-    ResponseEntity<DeliveryDto> planDelivery(@RequestBody DeliveryDto dto) {
+    ResponseEntity<DeliveryDto> planDelivery(@Valid @RequestBody DeliveryDto dto) {
         return ResponseEntity.ok(deliveryService.planDelivery(dto));
     }
 
     @PostMapping("/successful")
-    ResponseEntity<Void> deliverySuccessful(@RequestBody UUID id) {
+    ResponseEntity<Void> deliverySuccessful(@Valid @RequestBody UUID id) {
         deliveryService.deliverySuccessful(id);
 
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/picked")
-    ResponseEntity<Void> deliveryPicked(@RequestBody UUID id) {
+    ResponseEntity<Void> deliveryPicked(@Valid @RequestBody UUID id) {
         deliveryService.deliveryPicked(id);
 
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/failed")
-    ResponseEntity<Void> deliveryFailed(@RequestBody UUID id) {
+    ResponseEntity<Void> deliveryFailed(@Valid @RequestBody UUID id) {
         deliveryService.deliveryFailed(id);
 
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/cost")
-    ResponseEntity<Double> deliveryCost(@RequestBody OrderDto orderDto) {
+    ResponseEntity<Double> deliveryCost(@Valid @RequestBody OrderDto orderDto) {
         return ResponseEntity.ok(deliveryService.deliveryCost(orderDto));
     }
 }

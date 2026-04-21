@@ -21,6 +21,7 @@ import lombok.experimental.FieldDefaults;
 
 import ru.yandex.practicum.status.State;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -59,11 +60,11 @@ public class Order {
 
     Boolean fragile;
 
-    Double totalPrice;
+    BigDecimal totalPrice;
 
-    Double deliveryPrice;
+    BigDecimal deliveryPrice;
 
-    Double productPrice;
+    BigDecimal productPrice;
 
     public void addProduct(Product product) {
         products.add(product);

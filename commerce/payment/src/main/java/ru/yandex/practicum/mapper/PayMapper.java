@@ -11,7 +11,7 @@ import ru.yandex.practicum.persistence.entity.Pay;
 public interface PayMapper {
 
     @Mapping(target = "id", source = "paymentId")
-    @Mapping(target = "feeTotal", expression = "java(orderDto.getTotalPrice() + orderDto.getDeliveryPrice())")
+    @Mapping(target = "feeTotal", expression = "java(orderDto.getTotalPrice().add(orderDto.getDeliveryPrice()))")
     @Mapping(target = "status", expression = "java(ru.yandex.practicum.persistence.status.PayStatus.PENDING)")
     Pay orderDtoToPay(OrderDto orderDto);
 }

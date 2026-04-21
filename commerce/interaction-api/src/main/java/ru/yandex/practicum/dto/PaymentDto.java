@@ -2,13 +2,14 @@ package ru.yandex.practicum.dto;
 
 import lombok.Builder;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Builder
 public record PaymentDto(
         UUID paymentId,
-        Double totalPayment,
-        Double deliveryTotal,
-        Double feeTotal
+        BigDecimal totalPayment,
+        BigDecimal deliveryTotal,
+        BigDecimal feeTotal
 ) {
 }

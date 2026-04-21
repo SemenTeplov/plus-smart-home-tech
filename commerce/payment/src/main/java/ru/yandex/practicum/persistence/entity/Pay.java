@@ -16,6 +16,7 @@ import lombok.experimental.FieldDefaults;
 
 import ru.yandex.practicum.persistence.status.PayStatus;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Getter
@@ -31,11 +32,11 @@ public class Pay {
     @Id
     UUID id;
 
-    Double totalPrice;
+    BigDecimal totalPrice;
 
-    Double deliveryPrice;
+    BigDecimal deliveryPrice;
 
-    Double feeTotal;
+    BigDecimal feeTotal;
 
     @Enumerated(EnumType.STRING)
     PayStatus status = PayStatus.PENDING;
