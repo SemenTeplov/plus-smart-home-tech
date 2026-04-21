@@ -15,13 +15,14 @@ public interface DeliveryMapping {
 
     @Mapping(target = "fromAddress", source = "fromAddress", qualifiedByName = "toAddress")
     @Mapping(target = "toAddress", source = "toAddress", qualifiedByName = "toAddress")
-    @Mapping(target = "deliveryState", expression = "java(ru.yandex.practicum.persistence.status.DeliveryState.CREATED)")
+    @Mapping(target = "deliveryState", ignore = true)
     Delivery deliveryDtoToDelivery(DeliveryDto dto);
 
     @Mapping(target = "fromAddress", source = "fromAddress", qualifiedByName = "toAddressDto")
     @Mapping(target = "toAddress", source = "toAddress", qualifiedByName = "toAddressDto")
     DeliveryDto deliveryToDeliveryDto(Delivery delivery);
 
+    @Mapping(target = "id", ignore = true)
     Address addressDtoToAddress(AddressDto dto);
 
     AddressDto deliveryToAddressDto(Address address);

@@ -7,15 +7,14 @@
         <groupId>ru.yandex.practicum</groupId>
         <artifactId>commerce</artifactId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <groupId>interaction.api</groupId>
     <artifactId>interaction-api</artifactId>
-
-    <properties>
-        <maven.compiler.source>24</maven.compiler.source>
-        <maven.compiler.target>24</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <version>1.0-SNAPSHOT</version>
+    <name>interaction-api</name>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
@@ -30,12 +29,14 @@
     </dependencies>
 
     <build>
+        <sourceDirectory>src/main/java</sourceDirectory>
+
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
                 <configuration>
-                    <mainClass>ru.yandex.practicum.Main</mainClass>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
         </plugins>
