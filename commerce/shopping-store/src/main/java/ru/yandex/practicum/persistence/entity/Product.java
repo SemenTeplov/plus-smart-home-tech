@@ -16,9 +16,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-import ru.yandex.practicum.persistence.enums.ProductCategory;
-import ru.yandex.practicum.persistence.enums.ProductState;
-import ru.yandex.practicum.persistence.enums.QuantityState;
+import ru.yandex.practicum.status.ProductCategory;
+import ru.yandex.practicum.status.ProductState;
+import ru.yandex.practicum.status.QuantityState;
 
 import java.math.BigDecimal;
 import java.util.UUID;

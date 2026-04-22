@@ -4,12 +4,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import ru.yandex.practicum.constant.Message;
 import ru.yandex.practicum.dto.AddProductToWarehouseRequest;
 import ru.yandex.practicum.dto.AddressDto;
+import ru.yandex.practicum.dto.AssemblyProductsForOrderRequest;
 import ru.yandex.practicum.dto.BookedProductsDto;
 import ru.yandex.practicum.dto.NewProductInWarehouseRequest;
+import ru.yandex.practicum.dto.ShippedToDeliveryRequest;
 import ru.yandex.practicum.dto.ShoppingCartDto;
 import ru.yandex.practicum.exception.EntityExistException;
 import ru.yandex.practicum.exception.NotEnoughQuantityException;
@@ -20,7 +23,9 @@ import ru.yandex.practicum.persistence.repository.ProductRepository;
 
 import java.security.SecureRandom;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -46,6 +51,19 @@ public class WarehouseServiceImpl implements WarehouseService {
         }
 
         productRepository.save(productMapper.toProduct(request));
+    }
+
+    @Override
+    @Transactional
+    public void shippedToDelivery(ShippedToDeliveryRequest request) {
+
+        log.info(Message.SEND_PRODUCT, request);
+    }
+
+    @Override
+    public void acceptReturn(Map<UUID, Long> request) {
+
+        log.info(Message.RETURN_PRODUCT, request);
     }
 
     @Override
@@ -78,6 +96,14 @@ public class WarehouseServiceImpl implements WarehouseService {
         }
 
         return new BookedProductsDto(deliveryWeight, deliveryVolume, fragile);
+    }
+
+    @Override
+    public BookedProductsDto assemblyProductsForOrder(AssemblyProductsForOrderRequest request) {
+
+        log.info(Message.PREPARED_PRODUCT, request);
+
+        return null;
     }
 
     @Override

@@ -15,9 +15,9 @@ import ru.yandex.practicum.dto.SetProductQuantityStateRequest;
 import ru.yandex.practicum.dto.SortObject;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.persistence.entity.Product;
-import ru.yandex.practicum.persistence.enums.ProductState;
 import ru.yandex.practicum.persistence.mapper.ProductMapper;
 import ru.yandex.practicum.persistence.repository.ProductRepository;
+import ru.yandex.practicum.status.ProductState;
 
 import java.util.List;
 import java.util.UUID;
